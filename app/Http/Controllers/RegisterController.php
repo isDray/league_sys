@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use DB;
+use File;
 
 class RegisterController extends Controller
 {
@@ -17,14 +18,27 @@ class RegisterController extends Controller
 
     public function index()
     {   
-       
+       File::put('test.html',
+        view('register')
+        ->render()
+       );
 
         return view('register');
     }
     
+
+
+
+    /*
+    |----------------------------------------------------------------
+    | 註冊執行
+    |----------------------------------------------------------------
+    | 將申請者所填寫的資料再做一次檢測之後 , 開始寫入資料庫 
+    |
+    */
     public function register_act( Request $request ){
 
-        var_dump( $request->all() );
+        
     }
 
 

@@ -296,7 +296,7 @@ $(function(){
         }
     });
 
-    $("#register_form").validate({
+    $("#stopregister_form").validate({
         
         //debug: true,
 
