@@ -1,0 +1,42 @@
+body{
+	background-color: #ecf0f5;
+	overflow: scroll;
+}
+/* 共用header */
+#front_head{
+    background-color: #367fa9;	
+    height: 60px;
+    margin-bottom: 40px;
+}
+#front_head > h1 {
+	font-weight: 900;
+	margin: 0px!important;
+	line-height: 60px;
+	font-family: '微軟正黑體';
+	color: #124360;
+}
+@media( max-width: 992px){
+    
+    #front_head > h1 {
+        text-align: center;
+    }
+}
+
+.label_box{
+	border-radius: 4px;
+	box-shadow: 2px 2px 5px #4d4d4d;
+	padding-top: 40px;
+	background-color: white;
+	width: 100%;
+
+}
+
+#register_intro{
+	padding-left: 15px!important;
+	padding-right: 15px!important;
+}
+
+/* 錯誤訊息樣式 */
+label[class="form_invalid"]{
+    color: #ff6464;
+}
