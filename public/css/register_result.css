@@ -1,0 +1,18 @@
+/*
+|-------------------------------------------------------------------------- 
+| 註冊結果頁面 
+|--------------------------------------------------------------------------
+|
+*/
+
+#register_result_title {
+    font-weight: 900!important;
+    font-family: '微軟正黑體';
+}
+#register_result > .box-solid{
+    box-shadow: 2px 2px 5px #4d4d4d;
+}
+#register_result > .box-solid > .box-body{
+    font-family: '微軟正黑體';
+    font-size: 16px;
+}

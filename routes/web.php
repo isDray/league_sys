@@ -15,6 +15,16 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+
+
+
+/*
+|--------------------------------------------------------------------------
+| 註冊相關
+|--------------------------------------------------------------------------
+| 
+|
+*/
 // 申請
 Route::get('/register','RegisterController@index');
 
@@ -27,6 +37,11 @@ Route::post('/register_act','RegisterController@register_act');
 Route::get('/get_captcha/{config?}', function (\Mews\Captcha\Captcha $captcha, $config = 'default') {
     return $captcha->src($config);
 });
+
+// 註冊成功
+Route::get('/register_result/{status}','RegisterController@register_result');
+
+
 // 登入
 Route::get('/login',function(){
 
