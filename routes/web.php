@@ -35,14 +35,26 @@ Route::post('/register_act','RegisterController@register_act');
 
 // 重新產生驗證碼
 Route::get('/get_captcha/{config?}', function (\Mews\Captcha\Captcha $captcha, $config = 'default') {
+
     return $captcha->src($config);
+
 });
 
 // 註冊成功
 Route::get('/register_result/{status}','RegisterController@register_result');
 
 
-// 登入
-Route::get('/login',function(){
 
-});
+
+/*
+|--------------------------------------------------------------------------
+| 登入相關
+|--------------------------------------------------------------------------
+|
+*/
+
+// 登入頁面
+Route::get('/login','LoginController@index');
+
+// 登入驗證
+Route::post('/login_act','LoginController@login_act');
