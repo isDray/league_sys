@@ -47,16 +47,25 @@
                     <div class="form-group">
                         <label for="account">帳號:</label>
                         <input type="text" class="form-control" id="account" name="account" placeholder="請輸入帳號">
+                        @if ($errors->has('account'))
+                        <label id="account-error" class="form_invalid" for="account">{{ $errors->first('account') }}</label>
+                        @endif
                     </div>
                     
                     <div class="form-group">
                         <label for="password1">密碼</label>
                         <input type="password" class="form-control" id="password1" name="password1" placeholder="請輸入密碼">
+                        @if ($errors->has('password1'))
+                        <label id="password1-error" class="form_invalid" for="password1">{{ $errors->first('password1') }}</label>
+                        @endif                        
                     </div>
     
                     <div class="form-group">
                         <label for="password2">密碼確認</label>
                         <input type="password" class="form-control" id="password2" name="password2" placeholder="請再次輸入密碼,確認密碼無誤">
+                        @if ($errors->has('password2'))
+                        <label id="password2-error" class="form_invalid" for="password2">{{ $errors->first('password2') }}</label>
+                        @endif                          
                     </div>                
                     
                     <div class='form_subtitle'>加盟商基本資料</div>
@@ -64,26 +73,41 @@
                     <div class="form-group">
                         <label for="name">姓名:</label>
                         <input type="text" class="form-control" id="name" name="name" placeholder="請輸入姓名">
+                        @if ($errors->has('name'))
+                        <label id="name-error" class="form_invalid" for="name">{{ $errors->first('name') }}</label>
+                        @endif                            
                     </div>
 
                     <div class="form-group">
                         <label for="phone">手機:</label>
                         <input type="text" class="form-control" id="phone" name="phone" placeholder="請輸入手機">
+                        @if ($errors->has('phone'))
+                        <label id="phone-error" class="form_invalid" for="phone">{{ $errors->first('phone') }}</label>
+                        @endif                           
                     </div>     
 
                     <div class="form-group">
                         <label for="tel">電話:</label>
                         <input type="text" class="form-control" id="tel" name="tel" placeholder="請輸入電話">
+                        @if ($errors->has('tel'))
+                        <label id="tel-error" class="form_invalid" for="tel">{{ $errors->first('tel') }}</label>
+                        @endif                          
                     </div>  
 
                     <div class="form-group">
                         <label for="email">信箱:</label>
                         <input type="text" class="form-control" id="email" name="email" placeholder="請輸入信箱">
+                        @if ($errors->has('email'))
+                        <label id="email-error" class="form_invalid" for="email">{{ $errors->first('email') }}</label>
+                        @endif                         
                     </div> 
 
                     <div class="form-group">
                         <label for="storename">加盟商店名稱:</label>
                         <input type="text" class="form-control" id="storename" name="storename" placeholder="請輸入商店名稱">
+                        @if ($errors->has('storename'))
+                        <label id="storename-error" class="form_invalid" for="storename">{{ $errors->first('storename') }}</label>
+                        @endif                        
                     </div>  
 
                     <div class="form-group">
@@ -209,17 +233,34 @@
                                     <option value="951">951 - 北農中心</option>
                                     <option value="954">954 - 中南部地區農漁會</option>
                         </select>  
-                        
+                        @if ($errors->has('bank'))
+                        <label id="bank-error" class="form_invalid" for="bank">{{ $errors->first('bank') }}</label>
+                        @endif 
                     </div>  
                     <div class="form-group">
                         <label for="bankaccount">分行名稱:</label>                    
                         <input type="text" class="form-control" id="banksub" name="banksub" placeholder="請輸入分行名稱" >
+                        @if ($errors->has('banksub'))
+                        <label id="banksub-error" class="form_invalid" for="banksub">{{ $errors->first('banksub') }}</label>
+                        @endif                         
                      </div> 
 
                     <div class="form-group">
                         <label for="bankaccount">匯款帳號:</label>
                         <input type="text" class="form-control" id="bankaccount" name="bankaccount" placeholder="請輸入匯款帳號">
+                        @if ($errors->has('bankaccount'))
+                        <label id="bankaccount-error" class="form_invalid" for="bankaccount">{{ $errors->first('bankaccount') }}</label>
+                        @endif                            
                     </div>  
+
+                    <div class="form-group">
+                        <label for="captcha">驗證碼:</label>
+                        <input type="text" class="form-control" id="captcha" name="captcha" placeholder="請輸入下方驗證碼">
+                        @if ($errors->has('captcha'))
+                        <label id="captcha-error" class="form_invalid" for="captcha">{{ $errors->first('captcha') }}</label>
+                        @endif                        
+                    </div>  
+                    <img src="{{Captcha::src()}}" id="captcha_img" data-refresh-config="default">
 
                     <button type="submit" class="btn btn-primary">確認送出</button>
                 </div>        
@@ -296,7 +337,7 @@ $(function(){
         }
     });
 
-    $("#stopregister_form").validate({
+    $("#register_form").validate({
         
         //debug: true,
 
@@ -352,6 +393,9 @@ $(function(){
             },
             bankaccount:{
                 required: true,
+            },
+            captcha:{
+                required: true,
             }
         },
         messages: {
@@ -396,8 +440,38 @@ $(function(){
             },
             bankaccount:{
                 required: "匯款帳號為必填",
-            }                              
+            },
+            captcha:{
+                required: "驗證碼為必填",
+            }
         }        
+    });
+    
+
+
+
+    /*
+    |----------------------------------------------------------------
+    | 重新產生驗證碼
+    |----------------------------------------------------------------
+    | 為了避免驗證碼不清楚 , 如果點擊驗證碼後立即產生一組驗證碼
+    |
+    */
+    $("#captcha_img").click(function(){
+
+        var captcha = $(this);
+        var config = captcha.data('refresh-config');
+
+
+        $.ajax({
+            method: 'GET',
+            url: '/get_captcha/' + config,
+        
+        }).done(function (response) {
+            
+            captcha.prop('src', response);
+        });
+    
     });
 
 })
