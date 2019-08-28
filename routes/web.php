@@ -88,5 +88,9 @@ Route::group(['middleware' => ['CheckLogin']], function () {
 
     // 中央區塊排序
     Route::get('/league_sort_center','LeagueController@league_sort_center');    
+    
+    // 中央區塊排序功能
+    Route::post('/league_sort_center_act','LeagueController@league_sort_center_act');
+    
 
 });

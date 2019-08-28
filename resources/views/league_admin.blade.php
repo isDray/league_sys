@@ -101,7 +101,7 @@
         <li class="header">報表查詢</li>
         <li class="treeview">
           <a href="#">
-            <i class="fa fa-dashboard text-red"></i> <span>Dashboard</span>
+            <i class="fa fa-dashboard text-red"></i> <span>後台管理首頁</span>
             <span class="pull-right-container">
               <i class="fa fa-angle-left pull-right"></i>
             </span>
@@ -123,7 +123,9 @@
                 </span>                
             </a>
             <ul class="treeview-menu">
-                <li><a href="/league_sort_center"><i class="fa fa-fw fa-angle-right"></i>中央區塊</a></li>
+                <li><a href="/league_sort_center"><i class="fa fa-fw fa-angle-right"></i>中央區塊排序</a></li>
+                <li><a href="/league_sort_center"><i class="fa fa-fw fa-angle-right"></i>左側區塊排序</a></li>
+                <li><a href="/league_sort_center"><i class="fa fa-fw fa-angle-right"></i>banner設定</a></li>
             </ul>            
         </li>
 
@@ -142,8 +144,12 @@
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <h1>
-        Blank page
-        <small>it all starts here</small>
+        @if( isset( $PageTitle ) )
+
+        {{$PageTitle}}
+
+        @endif
+        <!-- <small>it all starts here</small> -->
       </h1>
       <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
@@ -153,7 +159,7 @@
     </section>
 
     <!-- Main content -->
-    <section class="container-fluid" style="border:2px solid red;">
+    <section class="container-fluid">
     @yield('content')
     </section>
     <!-- /.content -->
