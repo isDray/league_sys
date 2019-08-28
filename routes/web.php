@@ -78,4 +78,15 @@ Route::group(['middleware' => ['CheckLogin']], function () {
     // 測試
     Route::get('/league_test','LeagueController@league_test');
 
+
+    /*
+    |--------------------------------------------------------------------------
+    | 網站設定相關
+    |--------------------------------------------------------------------------
+    |
+    */
+
+    // 中央區塊排序
+    Route::get('/league_sort_center','LeagueController@league_sort_center');    
+
 });

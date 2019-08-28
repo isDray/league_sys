@@ -114,7 +114,19 @@
 
         <li><a href="https://adminlte.io/docs"><i class="fa fa-book"></i> <span>Documentation</span></a></li>
         <li class="header">網站設定</li>
-        <li><a href="#"><i class="fa fa-circle-o text-red"></i> <span>Important</span></a></li>
+        
+        <li class="treeview" >
+            <a href="#">
+                <i class="fa fa-fw fa-sort text-green"></i> <span>功能排序</span>
+                <span class="pull-right-container">
+                    <i class="fa fa-angle-left pull-right"></i>
+                </span>                
+            </a>
+            <ul class="treeview-menu">
+                <li><a href="/league_sort_center"><i class="fa fa-fw fa-angle-right"></i>中央區塊</a></li>
+            </ul>            
+        </li>
+
         <li><a href="#"><i class="fa fa-circle-o text-yellow"></i> <span>Warning</span></a></li>
         <li><a href="#"><i class="fa fa-circle-o text-aqua"></i> <span>Information</span></a></li>
         <li class="header">個人資料設定</li>
@@ -141,8 +153,8 @@
     </section>
 
     <!-- Main content -->
-    <section class="content">
-@yield('content')
+    <section class="container-fluid" style="border:2px solid red;">
+    @yield('content')
     </section>
     <!-- /.content -->
   </div>
@@ -175,10 +187,16 @@
 <script src="{{url('/AdminLTE/dist/js/adminlte.min.js')}}"></script>
 <!-- AdminLTE fmo purposes -->
 <script src="{{url('/AdminLTE//dist/js/demo.js')}}"></script>
+
+
+
 <script>
   $(document).ready(function () {
     $('.sidebar-menu').tree()
   })
 </script>
+@yield('selfcss')
+
+@yield('selfjs')
 </body>
 </html>

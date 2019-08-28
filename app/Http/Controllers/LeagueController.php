@@ -36,4 +36,20 @@ class LeagueController extends Controller
         
         echo 'OMGGGG';
     }
+    
+    
+
+
+    // 網站設定相關
+    
+    /*
+    |--------------------------------------------------------------------------
+    | 中央區塊排序
+    |--------------------------------------------------------------------------
+    |
+    */
+    public function league_sort_center( Request $request ){
+        
+        return view('/league_sort_center');
+    }
 }
