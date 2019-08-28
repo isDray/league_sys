@@ -6,6 +6,21 @@
 
 @section('content')
 <div class='col-md-4 col-md-offset-4 col-sm-12 col-xs-12' id='login_box'>
+
+@if($errors->count())
+<div class="alert callout callout-danger">
+
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+    
+    <h4>登入失敗</h4>
+    
+    @foreach ($errors->all() as $error)
+        <p>{{ $error }}</p>
+    @endforeach
+    
+</div>    
+@endif
+
 <div class="login-box">
     
     <div class="login-logo">

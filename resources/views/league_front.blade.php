@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>@if( !empty($title) ){{$title}} - @endif{{ env('APP_NAME') }}</title>
+    <title>@if( !empty($title) ){{$title}} - @endif{{ config('app.name') }}</title>
     
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
@@ -40,7 +40,7 @@
 <div class='container-fluid'>
 <div class='row'>
     <div class='col-md-12 col-sm-12 col-xs-12' id='front_head'>
-    <h1>{{ env('APP_NAME') }}</h1>
+    <h1>{{ config('app.name') }}</h1>
     </div>
     @yield('content')
 </div>

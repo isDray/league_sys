@@ -1,5 +1,4 @@
 <?php
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -58,3 +57,22 @@ Route::get('/login','LoginController@index');
 
 // 登入驗證
 Route::post('/login_act','LoginController@login_act');
+
+
+
+
+/*
+|--------------------------------------------------------------------------
+| 會員相關操作
+|--------------------------------------------------------------------------
+| 在此群組中的頁面 , 都必須要登入後才可以存取
+|
+*/
+Route::group(['middleware' => ['CheckLogin']], function () {
+    
+    // 儀錶板頁面
+    Route::get('/league_dashboard','LeagueController@index');
+
+    // 
+
+});
