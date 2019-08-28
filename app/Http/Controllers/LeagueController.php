@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+
 
 class LeagueController extends Controller
 {
@@ -14,7 +16,24 @@ class LeagueController extends Controller
     |
     */
     public function index( Request $request ){
-        
+
+        //$request->session()->forget('user_id');
+
         return view('league_dashboard');
+    }
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | 測試畫面
+    |--------------------------------------------------------------------------
+    |
+    |
+    */
+    public function league_test( Request $request ){
+        
+        echo 'OMGGGG';
     }
 }

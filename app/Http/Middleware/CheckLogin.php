@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Middleware;
-
+use Illuminate\Support\Facades\Route;
 use Closure;
 
 class CheckLogin
@@ -16,8 +16,12 @@ class CheckLogin
     public function handle($request, Closure $next)
     {   
         if( empty($request->session()->get('user_id')) ){
+           
+           $WantTo = Route::getFacadeRoot()->current()->uri();
 
-            echo 'DAME';
+           $request->session()->put('WantTo', $WantTo );
+           
+           return redirect('/login');
         }
         
         return $next($request);

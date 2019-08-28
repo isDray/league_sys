@@ -10,10 +10,10 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
+// Route::get('/', function () {
+//     return view('welcome');
+// });
+Route::get('/','LoginController@index');
 
 
 
@@ -58,6 +58,8 @@ Route::get('/login','LoginController@index');
 // 登入驗證
 Route::post('/login_act','LoginController@login_act');
 
+// 登出
+Route::get('/logout_act','LoginController@logout_act');
 
 
 
@@ -73,6 +75,7 @@ Route::group(['middleware' => ['CheckLogin']], function () {
     // 儀錶板頁面
     Route::get('/league_dashboard','LeagueController@index');
 
-    // 
+    // 測試
+    Route::get('/league_test','LeagueController@league_test');
 
 });

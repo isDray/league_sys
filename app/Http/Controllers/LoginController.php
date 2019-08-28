@@ -20,6 +20,14 @@ class LoginController extends Controller
         
         // $request->session()->get('user_id');
         // $request->session()->forget('user_id');
+        
+        //var_dump( $request->session()->get('user_id') );
+
+        // 如果已經有登入狀態了 , 就直接將其轉跳進入後台
+        if( !empty($request->session()->get('user_id')) ){
+
+            return redirect('/league_dashboard');
+        }
 
         $title = '登入頁面';
 
@@ -81,6 +89,37 @@ class LoginController extends Controller
 
             $request->session()->put('user_id', $user->user_id );
 
+            if( $request->session()->get('WantTo') !== NULL ){
+
+                $WantTo = $request->session()->get('WantTo');
+                $request->session()->forget('WantTo');
+
+                return redirect("/$WantTo");
+
+            }else{
+
+                return redirect('/league_dashboard');
+
+            }
+
         }
+    }
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | 登出功能
+    |--------------------------------------------------------------------------
+    |
+    |
+    */
+    public function logout_act( Request $request ){
+        
+        // 清除登入session後 , 轉跳到登入頁面
+        $request->session()->forget('user_id');
+
+        return redirect('/login');
     }
 }
