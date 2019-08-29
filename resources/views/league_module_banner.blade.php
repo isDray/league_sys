@@ -27,7 +27,7 @@
                         <img src="{{url('/banner/'.Session::get('user_id').'/'.$banner['banner'])}}">
                             
                             <div class='btn_grp'>
-                                <a class="btn btn-social-icon btn-primary" href="{{url('/')}}"><i class="fa fa-fw fa-edit"></i></a>
+                                <a class="btn btn-social-icon btn-primary" href="{{url('/league_module_banner_edit/'.$banner['id'])}}"><i class="fa fa-fw fa-edit"></i></a>
                                 <a class="btn btn-social-icon btn-danger"><i class="fa fa-fw fa-remove"></i></a>
                             </div>
                         </div>
@@ -76,5 +76,6 @@ $( function() {
     $( "#banner_sortable" ).sortable();
     $( "#banner_sortable" ).disableSelection();
 } );
+
 </script>
 @endsection

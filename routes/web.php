@@ -110,7 +110,13 @@ Route::group(['middleware' => ['CheckLogin']], function () {
 
     // banner 新增功能
     Route::post('/league_module_banner_new_act','LeagueController@league_module_banner_new_act');
+    
+    // banner 編輯
+    Route::get('/league_module_banner_edit/{id}','LeagueController@league_module_banner_edit');
 
+    // banner 編輯功能
+    Route::post('/league_module_banner_edit_act/','LeagueController@league_module_banner_edit_act');
+    
     // banner 排序功能
     Route::post('league_module_banner_sort_act','LeagueController@league_module_banner_sort_act');
 

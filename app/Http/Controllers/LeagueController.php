@@ -284,6 +284,76 @@ class LeagueController extends Controller
 
     /*
     |--------------------------------------------------------------------------
+    | banner 管理 - 編輯
+    |--------------------------------------------------------------------------
+    |
+    */
+    public function league_module_banner_edit( Request $request ){
+        
+        // 當下加盟會員的代碼
+        $LeagueId = $request->session()->get('user_id');
+
+        // 先確認banner存在 , 而且確實是當下加盟會員的banner
+        $Banner = DB::table('xyzs_league_banner')->where('id',$request->id)->where('user_id',$LeagueId)->first();
+        
+        // 如果找不到對應的資料 , 表示不可以編輯
+        if( $Banner === NULL){
+
+            $league_message =   [ '0',
+                                  "此banner不存在 , 或者不屬於您 , 請勿嘗試非法操作 。",
+                                  [ ['operate_text'=>'回banner功能管理','operate_path'=>'/league_module_banner'] ],
+                                  3
+                                ];
+
+            $request->session()->put('league_message', $league_message);
+
+            return redirect('/league_message');
+        }
+        
+        $Banner = (array)$Banner ;
+
+        $PageTitle = '編輯banner'; 
+        
+        return view('league_module_banner_edit',['PageTitle'=>$PageTitle , 'Banner' => $Banner ]);
+    }
+    
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | banner 管理 - 編輯功能
+    |--------------------------------------------------------------------------
+    |
+    */
+    public function league_module_banner_edit_act( Request $request ){
+        
+        $validator = Validator::make($request->all(), 
+        [
+            'banner'     => 'required|mimes:jpeg,jpg,png',
+            'sort'       => 'nullable|integer',
+            'banner_id'  => 'required|exists:xyzs_league_banner,id',
+
+
+        ],
+        [   'banner.required'=> 'banner圖片尚未選取',
+            'banner.mimes'   => 'banner只接受 jpg 及 png 格式',
+            'sort.integer'   => '排序只接受數字',
+
+        ]); 
+
+        if ( $validator->fails() ) {
+
+            return back()->withErrors( $validator->errors() )->with('success', 'your message,here');
+        }
+
+    }
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
     | banner 管理 - 排序調整
     |--------------------------------------------------------------------------
     |
