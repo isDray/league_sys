@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>AdminLTE 2 | Blank Page</title>
+  <title>享愛加盟會員管理後台</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <!-- Bootstrap 3.3.7 -->
@@ -17,6 +17,8 @@
   <!-- AdminLTE Skins. Choose a skin from the css/skins
        folder instead of downloading all of them to reduce the load. -->
   <link rel="stylesheet" href="{{url('/AdminLTE/dist/css/skins/_all-skins.min.css')}}">
+
+    <link rel="stylesheet" href="{{url('/css/admin_all.css')}}">
 
   <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
   <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -114,8 +116,9 @@
 
         <li><a href="https://adminlte.io/docs"><i class="fa fa-book"></i> <span>Documentation</span></a></li>
         <li class="header">網站設定</li>
-        
+        <!-- 功能排序 -->
         <li class="treeview" >
+            
             <a href="#">
                 <i class="fa fa-fw fa-sort text-green"></i> <span>功能排序</span>
                 <span class="pull-right-container">
@@ -125,9 +128,27 @@
             <ul class="treeview-menu">
                 <li><a href="/league_sort_center"><i class="fa fa-fw fa-angle-right"></i>中央區塊排序</a></li>
                 <li><a href="/league_sort_center"><i class="fa fa-fw fa-angle-right"></i>左側區塊排序</a></li>
-                <li><a href="/league_sort_center"><i class="fa fa-fw fa-angle-right"></i>banner設定</a></li>
-            </ul>            
+            </ul>        
+            
         </li>
+        <!--  /功能排序 -->
+        
+        <!-- 模組管理 -->
+        <li class="treeview" >
+            <a href="#">
+                <i class="fa fa-fw fa-cubes text-green"></i> <span>功能管理</span>
+                <span class="pull-right-container">
+                    <i class="fa fa-angle-left pull-right"></i>
+                </span>                
+            </a>
+            <ul class="treeview-menu">
+                <li><a href="/league_module_banner"><i class="fa fa-fw fa-angle-right"></i>banner功能管理</a></li>
+                <li><a href="/league_sort_center"><i class="fa fa-fw fa-angle-right"></i>熱銷商品功能管理</a></li>
+                <li><a href="/league_sort_center"><i class="fa fa-fw fa-angle-right"></i>推薦商品功能管理</a></li>
+                <li><a href="/league_sort_center"><i class="fa fa-fw fa-angle-right"></i>新品上市功能管理</a></li>
+            </ul>                
+        </li>
+        <!-- /模組管理 -->
 
         <li><a href="#"><i class="fa fa-circle-o text-yellow"></i> <span>Warning</span></a></li>
         <li><a href="#"><i class="fa fa-circle-o text-aqua"></i> <span>Information</span></a></li>

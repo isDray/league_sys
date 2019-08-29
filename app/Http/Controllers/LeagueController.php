@@ -134,4 +134,59 @@ class LeagueController extends Controller
 
         return redirect('/league_sort_center');
     }
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | banner 管理
+    |--------------------------------------------------------------------------
+    | 加盟會員banner管理介面
+    |
+    */
+    public function league_module_banner( Request $request ){
+        
+        $PageTitle = 'banner功能管理'; 
+        
+        return view('league_module_banner',['PageTitle'=>$PageTitle]);
+    }
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | banner 管理 - 新增
+    |--------------------------------------------------------------------------
+    | 提供新增一組圖檔的介面
+    |
+    */
+    public function league_module_banner_new( Request $request ){
+        
+        $PageTitle = '新增banner'; 
+        
+        return view('league_module_banner_new',['PageTitle'=>$PageTitle]);
+    }
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | banner 管理 - 新增功能
+    |--------------------------------------------------------------------------
+    |
+    */
+    public function league_module_banner_new_do( Request $request ){
+        
+
+        $league_message = ['0',"BALA BALA BALA BALA BALA",[ ['operate_text'=>'回banner功能管理',
+                                                             'operate_path'=>'/league_module_banner']
+                                                          ] ,5];
+
+        $request->session()->put('league_message', $league_message);
+
+        return redirect('/league_message');
+    }
 }

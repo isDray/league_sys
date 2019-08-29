@@ -1,0 +1,19 @@
+/*
+|--------------------------------------------------------------------------
+| 加盟會員後台管理共用CSS
+|--------------------------------------------------------------------------
+|
+*/
+.custom_row{
+	padding-left: 15px;
+	padding-right: 15px;
+	padding-top: 65px;
+}
+.box_btn_group{
+	position: absolute;
+	right: 10px;
+	top:10px;
+}
+.custom_form_control{
+	width: auto!important;
+}

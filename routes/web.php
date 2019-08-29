@@ -77,6 +77,16 @@ Route::group(['middleware' => ['CheckLogin']], function () {
 
     // 測試
     Route::get('/league_test','LeagueController@league_test');
+    
+    /*
+    |--------------------------------------------------------------------------
+    | 通用訊息相關
+    |--------------------------------------------------------------------------
+    |
+    */
+    Route::get('/league_message','LeagueMessageController@league_message');
+    
+
 
 
     /*
@@ -91,6 +101,14 @@ Route::group(['middleware' => ['CheckLogin']], function () {
     
     // 中央區塊排序功能
     Route::post('/league_sort_center_act','LeagueController@league_sort_center_act');
+
+    // banner 設定
+    Route::get('/league_module_banner','LeagueController@league_module_banner');
     
+    // banner 新增
+    Route::get('/league_module_banner_new','LeagueController@league_module_banner_new');
+
+    // banner 新增功能
+    Route::post('/league_module_banner_new_do','LeagueController@league_module_banner_new_do');
 
 });

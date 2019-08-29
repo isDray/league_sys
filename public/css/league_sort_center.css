@@ -16,13 +16,6 @@
     font-size: 1.2em;
     text-align: center;
     border-radius: 4px;
-  /*width: 120px;*/
-}
-.custom_row{
-	background-color: white;
-	padding-left: 15px;
-	padding-right: 15px;
-	padding-top: 65px;
 }
 
 #bloack_on , #block_off{
@@ -45,4 +38,8 @@
 	left: -1px;
 	border:1px solid #d4d4d4;
 	font-family: '微軟正黑體';
+}
+
+.custom_row{
+	padding-top: 105px!important;
 }
