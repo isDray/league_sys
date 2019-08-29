@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use DB;
+use Intervention\Image\ImageManagerStatic as Image;
+use Illuminate\Support\Facades\Validator;
+use File;
 
 class LeagueController extends Controller
 {
@@ -180,13 +183,83 @@ class LeagueController extends Controller
     */
     public function league_module_banner_new_do( Request $request ){
         
+        $validator = Validator::make($request->all(), 
+        [
+            'banner'     => 'required|mimes:jpeg,jpg,png',
 
-        $league_message = ['0',"BALA BALA BALA BALA BALA",[ ['operate_text'=>'回banner功能管理',
-                                                             'operate_path'=>'/league_module_banner']
-                                                          ] ,5];
 
-        $request->session()->put('league_message', $league_message);
+        ],
+        [   'banner.required'=> 'banner圖片尚未選取',
+            'banner.mimes'   => 'banner只接受 jpg 及 png 格式',
+
+
+        ])->validate();
+        
+        $NowTime =  time() - date('Z');
+
+
+
+        DB::beginTransaction();
+
+        try {
+
+            //File::makeDirectory("banner/{$request->session()->get('user_id')}");
+            
+            if( !file_exists( public_path('banner') ) ){
+
+                File::makeDirectory( public_path('banner') , 755 );
+            }
+
+            if( !file_exists( public_path("banner/{$request->session()->get('user_id')}") ) ){
+
+                File::makeDirectory( public_path("banner/{$request->session()->get('user_id')}") , 755 );
+
+            }
+
+            Image::make( $request->file('banner'))->resize(1280, 720)->save("banner/{$request->session()->get('user_id')}/$NowTime.{$request->banner->extension()}");
+
+            
+            DB::table('xyzs_league_banner')->insertGetId(
+                [ 
+                    'user_id' => $request->session()->get('user_id'),
+                    'banner'  => $NowTime.".".$request->banner->extension(),
+                    'sort'    => 0 ,
+                    'status'  => 0 ,
+                    'update_date'=>$NowTime
+                ]
+            );
+
+
+            DB::commit();
+
+            $league_message =   [ '1',
+                                  "新增banner成功",
+                                  [ ['operate_text'=>'回banner功能管理','operate_path'=>'/league_module_banner'] ],
+                                  5
+                                ];
+
+            $request->session()->put('league_message', $league_message);
+
+            
+        } catch (\Exception $e) {
+            
+            DB::rollback();
+            
+            //var_dump($e->getMessage());
+            $league_message =   [ '0',
+                                  "新增banner失敗",
+                                  [ ['operate_text'=>'回banner功能管理','operate_path'=>'/league_module_banner'] ],
+                                  5
+                                ];
+
+            $request->session()->put('league_message', $league_message);            
+
+            //return redirect('/register_result/0');
+            // something went wrong
+        }
 
         return redirect('/league_message');
+
+
     }
 }

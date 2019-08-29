@@ -15,15 +15,17 @@
             </div>
             
             <!-- form start -->
-            <form role="form" action="{{url('/league_module_banner_new_do')}}" method="post" >
+            <form role="form" action="{{url('/league_module_banner_new_do')}}" method="post"  enctype="multipart/form-data" >
 
                 <div class="box-body">
 
                     {{ csrf_field() }}
-
                     <div class="form-group">                        
                         <label for="banner">banner圖檔(1280*720)</label>
                         <input type="file" id="banner" name="banner" onchange="readURL(this);">
+                        @if ($errors->has('banner'))
+                        <label id="banner-error" class="form_invalid" for="banner">{{ $errors->first('banner') }}</label>
+                        @endif                        
                     </div>
 
                     <div class="form-group">                        

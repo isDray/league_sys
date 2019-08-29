@@ -17,3 +17,6 @@
 .custom_form_control{
 	width: auto!important;
 }
+label[class="form_invalid"]{
+    color: #ff6464;
+}
