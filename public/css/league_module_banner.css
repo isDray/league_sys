@@ -1,0 +1,45 @@
+/*
+|--------------------------------------------------------------------------
+| banner 列表 css
+|--------------------------------------------------------------------------
+|
+*/
+#banner_sortable{
+	list-style: none;
+	padding-left:0px;
+}
+
+.banner_itm {
+
+    padding:10px;
+    
+}
+
+.banner_itm img{
+
+    height: 60px;
+
+}
+
+.banner_div{
+	position: relative;
+	border-radius: 6px;
+    padding:10px;
+	background-color: #4c4c4c;
+}
+.btn_grp{
+
+	position: absolute;
+	right: 10px;
+	top:10px;
+
+}
+
+@media(max-width: 768px){
+    
+    .banner_itm img{
+
+        max-height: 40px;
+
+    }
+}

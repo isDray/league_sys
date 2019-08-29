@@ -15,7 +15,7 @@
             </div>
             
             <!-- form start -->
-            <form role="form" action="{{url('/league_module_banner_new_do')}}" method="post"  enctype="multipart/form-data" >
+            <form role="form" action="{{url('/league_module_banner_new_act')}}" method="post"  enctype="multipart/form-data" >
 
                 <div class="box-body">
 

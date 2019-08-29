@@ -152,7 +152,23 @@ class LeagueController extends Controller
         
         $PageTitle = 'banner功能管理'; 
         
-        return view('league_module_banner',['PageTitle'=>$PageTitle]);
+        $LeagueId = $request->session()->get('user_id');
+
+        // 依照排序從資料庫中取出加盟會員的banner圖
+        $TmpBanners = DB::table('xyzs_league_banner')->where('user_id',$LeagueId.'')->where('status',1)->orderBy('sort', 'DESC')->orderBy('update_date', 'ASC')->get();
+
+        if( count($TmpBanners) > 0 ){
+
+            $TmpBanners = json_decode($TmpBanners,true);
+
+        }else{
+
+            $TmpBanners = [];
+        }
+        
+        $banners = $TmpBanners;
+
+        return view('league_module_banner',['PageTitle'=>$PageTitle , 'banners'=>$banners]);
     }
 
 
@@ -181,7 +197,7 @@ class LeagueController extends Controller
     |--------------------------------------------------------------------------
     |
     */
-    public function league_module_banner_new_do( Request $request ){
+    public function league_module_banner_new_act( Request $request ){
         
         $validator = Validator::make($request->all(), 
         [
@@ -224,7 +240,7 @@ class LeagueController extends Controller
                     'user_id' => $request->session()->get('user_id'),
                     'banner'  => $NowTime.".".$request->banner->extension(),
                     'sort'    => 0 ,
-                    'status'  => 0 ,
+                    'status'  => 1 ,
                     'update_date'=>$NowTime
                 ]
             );
@@ -235,7 +251,7 @@ class LeagueController extends Controller
             $league_message =   [ '1',
                                   "新增banner成功",
                                   [ ['operate_text'=>'回banner功能管理','operate_path'=>'/league_module_banner'] ],
-                                  5
+                                  3
                                 ];
 
             $request->session()->put('league_message', $league_message);
@@ -249,7 +265,7 @@ class LeagueController extends Controller
             $league_message =   [ '0',
                                   "新增banner失敗",
                                   [ ['operate_text'=>'回banner功能管理','operate_path'=>'/league_module_banner'] ],
-                                  5
+                                  3
                                 ];
 
             $request->session()->put('league_message', $league_message);            
@@ -261,5 +277,87 @@ class LeagueController extends Controller
         return redirect('/league_message');
 
 
+    }
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | banner 管理 - 排序調整
+    |--------------------------------------------------------------------------
+    |
+    */
+    public function league_module_banner_sort_act( Request $request ){
+        
+        // 目前時間
+        $NowTime =  time() - date('Z');
+
+        $LeagueId = $request->session()->get('user_id');
+
+        // 確認資料庫總數量根要排序的數量相同
+        $DBBanner = DB::table('xyzs_league_banner')->where('user_id',$LeagueId)->where('status',1)->get();
+
+        if( count( $request->blocksort ) != count($DBBanner) ){
+            
+            $league_message =   [ '0',
+                                  "banner 排序失敗 , 排序數量不符 , 請重新整理後再嘗試",
+                                  [ ['operate_text'=>'回banner功能管理','operate_path'=>'/league_module_banner'] ],
+                                  3
+                                ];
+
+            $request->session()->put('league_message', $league_message);             
+
+            return redirect('/league_message');
+        }
+
+        // 整理排序資料
+
+
+        DB::beginTransaction();
+
+        try {
+            
+            foreach ( $request->blocksort  as $blocksortk => $blocksorv ) {
+                
+                $TmpSort = count($request->blocksort) - $blocksortk;
+
+                DB::table('xyzs_league_banner')
+                ->where('id', $blocksorv)
+                ->where('user_id', $LeagueId)
+                ->where('status',1)
+                ->update(['sort'        =>  $TmpSort ,
+                          'update_date' =>  $NowTime
+                         ]);        
+            }
+
+            DB::commit();
+
+            $league_message =   [ '1',
+                                  "banner 排序成功",
+                                  [ ['operate_text'=>'回banner功能管理','operate_path'=>'/league_module_banner'] ],
+                                  3
+                                ];
+
+            $request->session()->put('league_message', $league_message);            
+
+        }catch (\Exception $e) {
+            
+            DB::rollback();
+            
+            //var_dump($e->getMessage());
+            $league_message =   [ '0',
+                                  "banner 排序失敗 , 請稍後再試",
+                                  [ ['operate_text'=>'回banner功能管理','operate_path'=>'/league_module_banner'] ],
+                                  3
+                                ];
+
+            $request->session()->put('league_message', $league_message);            
+
+            //return redirect('/register_result/0');
+            // something went wrong
+        }            
+
+        return redirect('/league_message');
     }
 }

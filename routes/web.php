@@ -109,6 +109,9 @@ Route::group(['middleware' => ['CheckLogin']], function () {
     Route::get('/league_module_banner_new','LeagueController@league_module_banner_new');
 
     // banner 新增功能
-    Route::post('/league_module_banner_new_do','LeagueController@league_module_banner_new_do');
+    Route::post('/league_module_banner_new_act','LeagueController@league_module_banner_new_act');
+
+    // banner 排序功能
+    Route::post('league_module_banner_sort_act','LeagueController@league_module_banner_sort_act');
 
 });
