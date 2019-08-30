@@ -129,6 +129,9 @@ Route::group(['middleware' => ['CheckLogin']], function () {
     
     // 熱銷模組
     Route::get('/league_module_recommend_hot','RecommendController@league_module_recommend_hot');
+
+    // 熱銷模組功能
+    Route::post('/league_module_recommend_hot_act','RecommendController@league_module_recommend_hot_act');    
     
     // 推薦模組
     Route::get('/league_module_recommend_recommend','RecommendController@index');

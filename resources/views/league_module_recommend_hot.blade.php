@@ -15,11 +15,23 @@
             </div>
             <!-- /.box-header -->
             <!-- form start -->
-            <form role="form">
+
+  
+            <form role="form" action="{{url('/league_module_recommend_hot_act')}}" method="post">
+
+                {{ csrf_field() }}
+
                 <div class="box-body ">
                     <div class="form-group ">
-                        <label for="custom_hot">自訂入銷商品</label>
+                        <label for="custom_hot">自訂熱銷商品</label>
                         <textarea class="form-control" rows="5" placeholder="如果想要自訂熱銷商品,請在此輸入商品貨號,一個貨號一行" id='custom_hot' name='custom_hot' ></textarea>
+                        @if ($errors->has('custom_hot'))
+                            @foreach( $errors->get('custom_hot') as $aa => $bb)
+                            <label id="custom_hot-error" class="form_invalid" for="custom_hot">{{ $bb }}</label><br>
+                            @endforeach
+
+                        @endif  
+
                     </div>
 
                     <div class="form-group">
@@ -29,14 +41,18 @@
                         @foreach ($Categorys as $Categoryk => $Category )
                         <div class="col-md-12 col-sm-12 col-xs-12 CategoryGrp" >
 
-                            <input type="checkbox" class="CustomCheckbox1 RootCategory" child="pcat_{{$Category['rcat']}}" name="cats[]" id="cat_{{$Category['rcat']}}" >
+                            <input type="checkbox" class="CustomCheckbox1 RootCategory" child="pcat_{{$Category['rcat']}}" name="cats[]" id="cat_{{$Category['rcat']}}" value="{{$Category['rcat']}}"
+                            @if( in_array($Category['rcat'] , $HotSet['avoid_cat']) )
+                            checked
+                            @endif
+                            >
                             <label for="cat_{{$Category['rcat']}}" >{{$Category['rcat_name']}}</label>
 
                         </div>
                             @foreach ($Category['child'] as $childk => $child )
 
                             <div class="col-md-2 col-sm-6 col-xs-6">                        
-                                <input type="checkbox" class="CustomCheckbox1 pcat_{{$Category['rcat']}} ChildChk" parent_id="pcat_{{$Category['rcat']}}" name="cats[]" id="cat_{{$child['ccat']}}">
+                                <input type="checkbox" class="CustomCheckbox1 pcat_{{$Category['rcat']}} ChildChk" parent_id="pcat_{{$Category['rcat']}}" name="cats[]" id="cat_{{$child['ccat']}}" value="{{$child['ccat']}}">
                                 <label for="cat_{{$child['ccat']}}">{{$child['ccat_name']}}</label>
                             </div>
 
