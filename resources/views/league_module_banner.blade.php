@@ -28,7 +28,7 @@
                             
                             <div class='btn_grp'>
                                 <a class="btn btn-social-icon btn-primary" href="{{url('/league_module_banner_edit/'.$banner['id'])}}"><i class="fa fa-fw fa-edit"></i></a>
-                                <a class="btn btn-social-icon btn-danger"><i class="fa fa-fw fa-remove"></i></a>
+                                <a class="btn btn-social-icon btn-primary" href="{{url('/league_module_banner_del_act/'.$banner['id'])}}" onclick="return confirm('即將刪除此banner , 確定要刪除嗎?')" ><i class="fa fa-fw fa-remove"></i></a>
                             </div>
                         </div>
                     </li>

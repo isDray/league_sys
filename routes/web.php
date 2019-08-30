@@ -115,7 +115,10 @@ Route::group(['middleware' => ['CheckLogin']], function () {
     Route::get('/league_module_banner_edit/{id}','LeagueController@league_module_banner_edit');
 
     // banner 編輯功能
-    Route::post('/league_module_banner_edit_act/','LeagueController@league_module_banner_edit_act');
+    Route::post('/league_module_banner_edit_act','LeagueController@league_module_banner_edit_act');
+
+    // banner 刪除功能
+    Route::get('/league_module_banner_del_act/{banner_id}','LeagueController@league_module_banner_del_act');
     
     // banner 排序功能
     Route::post('league_module_banner_sort_act','LeagueController@league_module_banner_sort_act');

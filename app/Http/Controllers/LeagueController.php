@@ -202,11 +202,14 @@ class LeagueController extends Controller
         $validator = Validator::make($request->all(), 
         [
             'banner'     => 'required|mimes:jpeg,jpg,png',
+            'sort'       => 'required|integer',
 
 
         ],
         [   'banner.required'=> 'banner圖片尚未選取',
             'banner.mimes'   => 'banner只接受 jpg 及 png 格式',
+            'sort.integer'   => '排序只接受數字',
+            'sort.required'  => '排序為必填',            
 
 
         ])->validate();
@@ -239,7 +242,7 @@ class LeagueController extends Controller
                 [ 
                     'user_id' => $request->session()->get('user_id'),
                     'banner'  => $NowTime.".".$request->banner->extension(),
-                    'sort'    => 0 ,
+                    'sort'    => $request->sort ,
                     'status'  => 1 ,
                     'update_date'=>$NowTime
                 ]
@@ -328,10 +331,13 @@ class LeagueController extends Controller
     */
     public function league_module_banner_edit_act( Request $request ){
         
+        // 當下加盟會員的代碼
+        $LeagueId = $request->session()->get('user_id');
+
         $validator = Validator::make($request->all(), 
         [
-            'banner'     => 'required|mimes:jpeg,jpg,png',
-            'sort'       => 'nullable|integer',
+            'banner'     => 'nullable|mimes:jpeg,jpg,png',
+            'sort'       => 'required|integer',
             'banner_id'  => 'required|exists:xyzs_league_banner,id',
 
 
@@ -339,13 +345,149 @@ class LeagueController extends Controller
         [   'banner.required'=> 'banner圖片尚未選取',
             'banner.mimes'   => 'banner只接受 jpg 及 png 格式',
             'sort.integer'   => '排序只接受數字',
+            'sort.required'  => '排序為必填',
+            'banner_id.required' => 'banner編號缺少',
+            'banner_id.exists' => 'banner編號不存在',
 
         ]); 
+        
+        // 檢查banner 是否屬於加盟會員
+        $BannerBelong = DB::table('xyzs_league_banner')->where('user_id',$LeagueId)->where('id',$request->banner_id)->first();
 
-        if ( $validator->fails() ) {
+        if ( $validator->fails() || $BannerBelong === NULL ) {
 
-            return back()->withErrors( $validator->errors() )->with('success', 'your message,here');
+            if( $BannerBelong === NULL ){
+
+                $validator->errors()->add('banner_id','此banner不屬於您,請勿嘗試非法操作');
+            }
+
+            return back()->withErrors( $validator->errors() );
         }
+
+        DB::beginTransaction();
+
+        try {
+
+            $NowTime =  time() - date('Z');
+
+            $UpdateArr = [ 
+                    'user_id' => $request->session()->get('user_id'),
+                    'sort'    => $request->sort ,
+                    'update_date'=>$NowTime
+            ];
+
+            // 先判斷是否有接收到新圖片
+            if( isset( $request->banner ) ){
+                
+                Image::make( $request->file('banner'))->resize(1280, 720)->save("banner/{$request->session()->get('user_id')}/$NowTime.{$request->banner->extension()}");
+                
+                $UpdateArr['banner'] = $NowTime.".".$request->banner->extension();
+            }
+            
+            DB::table('xyzs_league_banner')
+                ->where('id', $request->banner_id)
+                ->update($UpdateArr);    
+
+            DB::commit();
+
+            $league_message =   [ '1',
+                                  "編輯banner成功",
+                                  [ ['operate_text'=>'回banner功能管理','operate_path'=>'/league_module_banner'] ],
+                                  3
+                                ];
+
+            $request->session()->put('league_message', $league_message);                   
+
+        } catch (\Exception $e) {
+            
+            DB::rollback();
+            
+            //var_dump($e->getMessage());
+            $league_message =   [ '0',
+                                  "編輯banner失敗",
+                                  [ ['operate_text'=>'回banner功能管理','operate_path'=>'/league_module_banner'] ],
+                                  3
+                                ];
+
+            $request->session()->put('league_message', $league_message);            
+
+            //return redirect('/register_result/0');
+            // something went wrong
+        }
+
+        return redirect('/league_message');
+    }
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | banner 管理 - 刪除
+    |--------------------------------------------------------------------------
+    |
+    */
+    public function league_module_banner_del_act( Request $request ){
+
+        // 當下加盟會員的代碼
+        $LeagueId = $request->session()->get('user_id');
+
+        // 檢查加盟商是否有此banner控制權限
+        $BannerBelong = DB::table('xyzs_league_banner')->where('user_id',$LeagueId)->where('id',$request->banner_id)->first();
+        
+        if( $BannerBelong  === NULL){
+
+            $league_message =   [ '0',
+                                  "刪除banner失敗 , 此banner不屬於您 , 請勿嘗試非法操作。",
+                                  [ ['operate_text'=>'回banner功能管理','operate_path'=>'/league_module_banner'] ],
+                                  3
+                                ];    
+
+            $request->session()->put('league_message', $league_message);                                         
+
+        }else{
+            
+            DB::beginTransaction();
+
+            try {
+
+
+
+                if( file_exists( public_path("/banner/$LeagueId/$BannerBelong->banner") ) ){
+
+                    unlink( public_path("/banner/$LeagueId/$BannerBelong->banner") );
+                }
+
+                DB::table('xyzs_league_banner')->where('user_id',$LeagueId)->where('id',$request->banner_id)->delete();
+
+                DB::commit();
+
+                $league_message =   [ '1',
+                                      "刪除banner成功",
+                                      [ ['operate_text'=>'回banner功能管理','operate_path'=>'/league_module_banner'] ],
+                                      3
+                                    ];
+
+                $request->session()->put('league_message', $league_message);  
+
+            }catch (\Exception $e) {
+            
+                DB::rollback();
+            
+                //var_dump($e->getMessage());
+                $league_message =   [ '0',
+                                      "刪除banner失敗 , 請稍後再試",
+                                      [ ['operate_text'=>'回banner功能管理','operate_path'=>'/league_module_banner'] ],
+                                      3
+                                    ];
+
+                $request->session()->put('league_message', $league_message);            
+
+            }
+
+        }
+
+        return redirect('/league_message');
 
     }
 

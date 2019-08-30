@@ -16,20 +16,22 @@
             
             <!-- form start -->
 
-            @if (\Session::has('success'))
-    <div class="alert alert-success">
-        <ul>
-            <li>{!! \Session::get('success') !!}</li>
-        </ul>
-    </div>
-@endif
             <form role="form" action="{{url('/league_module_banner_edit_act')}}" method="post"  enctype="multipart/form-data" >
 
                 <div class="box-body">
 
                     <input type='hidden' name='banner_id' value="{{$Banner['id']}}" >
-
+                    
                     {{ csrf_field() }}
+                    
+                    <div class="form-group">                        
+                        <label for="banner">banner編號</label>
+                        <input type="text" class="form-control custom_form_control" disabled value="{{$Banner['id']}}">  
+                        @if ($errors->has('banner_id'))
+                        <label id="banner_id-error" class="form_invalid" for="banner_id">{{ $errors->first('banner_id') }}</label>
+                        @endif                           
+                    </div>
+
                     <div class="form-group">                        
                         <label for="banner">banner圖檔(1280*720)</label>
                         <input type="file" id="banner" name="banner" onchange="readURL(this);">
@@ -41,14 +43,17 @@
 
                     <div class="form-group">                        
                         <label for="sort">排序</label>
-                        <input class="form-control custom_form_control" type="number" name='sort' id='sort' min="0" value='0' />
+                        <input class="form-control custom_form_control" type="number" name='sort' id='sort' min="0" value="{{$Banner['sort']}}" />
+                        @if ($errors->has('sort'))
+                        <label id="sort-error" class="form_invalid" for="sort">{{ $errors->first('sort') }}</label>
+                        @endif                         
                     </div>                    
 
                 </div>
               
 
                 <div class="box-footer">
-                    <button type="submit" class="btn btn-primary">新增</button>
+                    <button type="submit" class="btn btn-primary">確定</button>
                 </div>
 
             </form>

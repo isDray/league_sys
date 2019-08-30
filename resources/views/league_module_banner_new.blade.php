@@ -31,6 +31,9 @@
                     <div class="form-group">                        
                         <label for="sort">排序</label>
                         <input class="form-control custom_form_control" type="number" name='sort' id='sort' min="0" value='0' />
+                        @if ($errors->has('sort'))
+                        <label id="sort-error" class="form_invalid" for="sort">{{ $errors->first('sort') }}</label>
+                        @endif                         
                     </div>                    
 
                 </div>
@@ -52,6 +55,8 @@
 @section('selfjs')
 <script>
 function readURL(input) {
+    
+    $("#blah").remove();
 
     if (input.files && input.files[0]) {
         
