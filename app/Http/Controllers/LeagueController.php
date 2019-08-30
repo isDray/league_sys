@@ -24,21 +24,6 @@ class LeagueController extends Controller
 
         return view('league_dashboard');
     }
-
-
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | 測試畫面
-    |--------------------------------------------------------------------------
-    |
-    |
-    */
-    public function league_test( Request $request ){
-        
-        echo 'OMGGGG';
-    }
     
     
 

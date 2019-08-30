@@ -35,7 +35,7 @@
                     <div class="form-group">                        
                         <label for="banner">banner圖檔(1280*720)</label>
                         <input type="file" id="banner" name="banner" onchange="readURL(this);">
-                        <img src="{{url('/banner/'.Session::get('user_id').'/'.$Banner['banner'])}}" id='blah' style='width:640px;height:360px;'>    
+                        <img src="{{url('/banner/'.Session::get('user_id').'/'.$Banner['banner'])}}" id='blah' style='width:640px;max-width:100%'>    
                         @if ($errors->has('banner'))
                         <label id="banner-error" class="form_invalid" for="banner">{{ $errors->first('banner') }}</label>
                         @endif       

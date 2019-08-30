@@ -102,6 +102,8 @@ Route::group(['middleware' => ['CheckLogin']], function () {
     // 中央區塊排序功能
     Route::post('/league_sort_center_act','LeagueController@league_sort_center_act');
 
+    
+
     // banner 設定
     Route::get('/league_module_banner','LeagueController@league_module_banner');
     
@@ -122,5 +124,16 @@ Route::group(['middleware' => ['CheckLogin']], function () {
     
     // banner 排序功能
     Route::post('league_module_banner_sort_act','LeagueController@league_module_banner_sort_act');
+
+
+    
+    // 熱銷模組
+    Route::get('/league_module_recommend_hot','RecommendController@league_module_recommend_hot');
+    
+    // 推薦模組
+    Route::get('/league_module_recommend_recommend','RecommendController@index');
+    
+    // 新品模組
+    Route::get('/league_module_recommend_new','RecommendController@index');
 
 });

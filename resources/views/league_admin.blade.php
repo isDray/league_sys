@@ -143,9 +143,9 @@
             </a>
             <ul class="treeview-menu">
                 <li><a href="/league_module_banner"><i class="fa fa-fw fa-angle-right"></i>banner功能管理</a></li>
-                <li><a href="/league_sort_center"><i class="fa fa-fw fa-angle-right"></i>熱銷商品功能管理</a></li>
-                <li><a href="/league_sort_center"><i class="fa fa-fw fa-angle-right"></i>推薦商品功能管理</a></li>
-                <li><a href="/league_sort_center"><i class="fa fa-fw fa-angle-right"></i>新品上市功能管理</a></li>
+                <li><a href="/league_module_recommend_hot"><i class="fa fa-fw fa-angle-right"></i>熱銷商品功能管理</a></li>
+                <li><a href="/league_module_recommend_recommend"><i class="fa fa-fw fa-angle-right"></i>推薦商品功能管理</a></li>
+                <li><a href="/league_module_recommend_new"><i class="fa fa-fw fa-angle-right"></i>新品上市功能管理</a></li>
             </ul>                
         </li>
         <!-- /模組管理 -->
@@ -213,7 +213,7 @@
 <!-- AdminLTE App -->
 <script src="{{url('/AdminLTE/dist/js/adminlte.min.js')}}"></script>
 <!-- AdminLTE fmo purposes -->
-<script src="{{url('/AdminLTE//dist/js/demo.js')}}"></script>
+<script src="{{url('/AdminLTE/dist/js/demo.js')}}"></script>
 
 
 

@@ -1,0 +1,15 @@
+#recommend_hot_box{
+	border:0.5px dashed #4cceff;
+	min-height: 50px;
+}
+#able_label{
+
+    display: block;
+    padding: 0px;
+}
+.CategoryGrp{
+    margin-top: 20px;
+    border-top: 2px solid #3c8dbc;
+    background-color: #c4c4c4;
+    padding-top: 2px;
+}
