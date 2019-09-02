@@ -11,18 +11,18 @@
         
         <div class="box box-primary">
             <div class="box-header with-border">
-              <h3 class="box-title">熱銷商品表單</h3>
+              <h3 class="box-title">新品上市表單</h3>
             </div>
             <!-- /.box-header -->
             <!-- form start -->
 
   
-            <form role="form" action="{{url('/league_module_recommend_hot_act')}}" method="post">
+            <form role="form" action="{{url('/league_module_recommend_new_act')}}" method="post">
 
                 {{ csrf_field() }}
 
                 <div class="box-body ">
-                    <div class="form-group ">
+  <!--                   <div class="form-group ">
                         <label for="custom_hot">自訂熱銷商品</label>
                         <textarea class="form-control" rows="5" placeholder="自訂熱銷商品,請在此輸入商品貨號,一個貨號一行" id='custom_hot' name='custom_hot' >@foreach( $HotSet['custom_sets'] as $custom_setk => $custom_set ){!!$custom_set."\n"!!}@endforeach</textarea>
                         @if ($errors->has('custom_hot'))
@@ -30,7 +30,7 @@
                             <label id="custom_hot-error" class="form_invalid" for="custom_hot">{{ $custom_hot_error }}</label><br>
                             @endforeach
                         @endif  
-                    </div>
+                    </div> -->
 
                     <div class="form-group">
                         

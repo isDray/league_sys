@@ -134,9 +134,14 @@ Route::group(['middleware' => ['CheckLogin']], function () {
     Route::post('/league_module_recommend_hot_act','RecommendController@league_module_recommend_hot_act');    
     
     // 推薦模組
-    Route::get('/league_module_recommend_recommend','RecommendController@index');
+    Route::get('/league_module_recommend_recommend','RecommendController@league_module_recommend_recommend');
+
+    // 推薦模組功能
+    Route::post('/league_module_recommend_recommend_act','RecommendController@league_module_recommend_recommend_act');
     
     // 新品模組
-    Route::get('/league_module_recommend_new','RecommendController@index');
+    Route::get('/league_module_recommend_new','RecommendController@league_module_recommend_new');
 
+    // 新品模組功能
+    Route::post('/league_module_recommend_new_act','RecommendController@league_module_recommend_new_act');
 });

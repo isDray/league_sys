@@ -30,7 +30,6 @@ label[class="form_invalid"]{
 	overflow:visible;
 }
 .CustomCheckbox1+label:after{
-    
     content: "";
     display: block;
     height: 20px;
@@ -38,43 +37,50 @@ label[class="form_invalid"]{
     position: absolute;
     left: -25px;
     top:0px;
-    border:2px solid #3c8dbc;
+    border:2px solid #f56954;
     border-radius: 6px;
 }
-
-.CustomCheckbox1:checked+label:before{
-    /*background-color: #3c8dbc;  */
-
-    content: "";
+.CustomCheckbox1:checked+label>span:before{
+    content: '';
+    width: 0px;
+    height: 16px;
     position: absolute;
-    z-index: 5;
-    border-left:4px solid #3c8dbc;
-    border-bottom:4px solid #3c8dbc;
-    left:-22px;
-    top:8px;
+    border-left: 5px solid #f56954;
+    left: -19px;
+    top:-2px;
     -moz-transform:rotate(-45deg);
     -webkit-transform:rotate(-45deg);
     -o-transform:rotate(-45deg);
     -ms-transform:rotate(-45deg);
-    transform:rotate(-45deg);
-    animation-name:checkanimation;
-    animation-duration:0.4s;
+    transform:rotate(-45deg); 
+    z-index: 5;   
+    animation-name:error_chk1;
+    animation-duration:0.1s;
     -webkit-animation-fill-mode: forwards;        
 }
-
-@keyframes checkanimation{
-    0%{ top:8px;
-        height: 0px;
+.CustomCheckbox1:checked+label>span:after{
+    content: '';
+    width: 16px;
+    height: 16px;
+    position: absolute;
+    border-left: 5px solid #f56954;
+    left: -19px;
+    top:6px;
+    -moz-transform:rotate(45deg);
+    -webkit-transform:rotate(45deg);
+    -o-transform:rotate(45deg);
+    -ms-transform:rotate(45deg);
+    transform:rotate(45deg);    
+    z-index: 6;
+    animation-name:error_chk1;
+    animation-duration:0.1s;
+    -webkit-animation-fill-mode: forwards;      
+}
+@keyframes error_chk1{
+    0%{ 
         width: 0px;
     }
-    50%{
-    	top:8px;
-        height: 8px;
-        width: 0px
-    }
     100%{
-    	top:4px;
-    	height: 8px;
-    	width: 16px;
+        width: 16px;
     }
 }
