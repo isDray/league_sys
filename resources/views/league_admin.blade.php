@@ -117,7 +117,7 @@
         
         <li class="header">網站</li>
         <!-- 功能排序 -->
-        <li class="treeview" >
+        <li class="treeview  @if( isset($tree) && $tree=='sort' ) active @endif" >
             
             <a href="#">
                 <i class="fa fa-fw fa-sort text-green"></i> <span>功能排序</span>
@@ -126,15 +126,15 @@
                 </span>                
             </a>
             <ul class="treeview-menu">
-                <li><a href="/league_sort_center"><i class="fa fa-fw fa-angle-right"></i>中央區塊排序</a></li>
-                <li><a href="/league_sort_center"><i class="fa fa-fw fa-angle-right"></i>左側區塊排序</a></li>
+                <li><a href="{{url('/league_sort_center')}}"><i class="fa fa-fw fa-angle-right"></i>中央區塊排序</a></li>
+                <li><a href="{{url('/league_sort_center')}}"><i class="fa fa-fw fa-angle-right"></i>左側區塊排序</a></li>
             </ul>        
             
         </li>
         <!--  /功能排序 -->
         
         <!-- 模組管理 -->
-        <li class="treeview" >
+        <li class="treeview  @if( isset($tree) && $tree=='modul' ) active @endif" >
             <a href="#">
                 <i class="fa fa-fw fa-cubes text-green"></i> <span>功能管理</span>
                 <span class="pull-right-container">
@@ -155,7 +155,7 @@
         
         <li class="header">加盟會員</li>
         <!-- <li><a href="{{url('/league_user')}}"><i class="fa fa-fw fa-user text-green"></i> <span>個人資料設定</span></a></li> -->
-        <li class="treeview" >
+        <li class="treeview @if( isset($tree) && $tree=='info' ) active @endif" >
             <a href="#">
                 <i class="fa fa-fw fa-user text-green"></i> <span>帳號管理</span>
                 <span class="pull-right-container">

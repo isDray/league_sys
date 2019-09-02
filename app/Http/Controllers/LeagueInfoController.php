@@ -35,6 +35,7 @@ class LeagueInfoController extends Controller
         
         return view('league_profile_basic',[ 'PageTitle'  => $PageTitle ,
                                              'LeagueData' => $LeagueData ,
+                                             'tree'       => 'info'
         	                               ]);
     }
 
@@ -142,7 +143,9 @@ class LeagueInfoController extends Controller
 
         $PageTitle = '密碼設定';     
 
-        return view('league_profile_password',[ 'PageTitle'  => $PageTitle ]);        
+        return view('league_profile_password',[ 'PageTitle'  => $PageTitle ,
+                                                'tree'       => 'info'
+        	                                  ]);        
 
     }
 

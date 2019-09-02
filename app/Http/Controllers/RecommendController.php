@@ -51,7 +51,8 @@ class RecommendController extends Controller
 
         return view('/league_module_recommend_hot',[ 'PageTitle' => $PageTitle ,
                                                      'Categorys' => $Categorys ,
-                                                     'HotSet'    => $HotSet]);
+                                                     'HotSet'    => $HotSet , 
+                                                     'tree' => 'modul']);
     }
 
 
@@ -213,7 +214,8 @@ class RecommendController extends Controller
         // var_dump($Categorys);
         return view('/league_module_recommend_recommend',[ 'PageTitle' => $PageTitle ,
                                                            'Categorys' => $Categorys ,
-                                                           'HotSet'    => $HotSet]);
+                                                           'HotSet'    => $HotSet , 
+                                                           'tree' => 'modul']);
     }
     
 
@@ -368,7 +370,8 @@ class RecommendController extends Controller
 
         return view('/league_module_recommend_new',[ 'PageTitle' => $PageTitle ,
                                                      'Categorys' => $Categorys ,
-                                                     'HotSet'    => $HotSet]);
+                                                     'HotSet'    => $HotSet , 
+                                                     'tree' => 'modul']);
     }
 
 

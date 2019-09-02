@@ -37,7 +37,7 @@ class LeagueController extends Controller
     |
     */
     public function league_sort_center( Request $request ){
-        
+
         // 取出所有區塊
         $TmpModules = DB::table('xyzs_block')->get();
         
@@ -79,7 +79,7 @@ class LeagueController extends Controller
         
         $PageTitle = "中央區塊排序";
 
-        return view('/league_sort_center',['OnModules' => $OnModules , 'OffModules' => $OffModules ,'PageTitle'=>$PageTitle ]);
+        return view('/league_sort_center',['OnModules' => $OnModules , 'OffModules' => $OffModules ,'PageTitle'=>$PageTitle , 'tree' => 'sort' ]);
     }
 
 
@@ -153,7 +153,7 @@ class LeagueController extends Controller
         
         $banners = $TmpBanners;
 
-        return view('league_module_banner',['PageTitle'=>$PageTitle , 'banners'=>$banners]);
+        return view('league_module_banner',['PageTitle'=>$PageTitle , 'banners'=>$banners , 'tree' => 'modul' ]);
     }
 
 
@@ -170,7 +170,7 @@ class LeagueController extends Controller
         
         $PageTitle = '新增banner'; 
         
-        return view('league_module_banner_new',['PageTitle'=>$PageTitle]);
+        return view('league_module_banner_new',['PageTitle'=>$PageTitle , 'tree' => 'modul']);
     }
 
 
@@ -302,7 +302,7 @@ class LeagueController extends Controller
 
         $PageTitle = '編輯banner'; 
         
-        return view('league_module_banner_edit',['PageTitle'=>$PageTitle , 'Banner' => $Banner ]);
+        return view('league_module_banner_edit',['PageTitle'=>$PageTitle , 'Banner' => $Banner , 'tree' => 'modul']);
     }
     
 
