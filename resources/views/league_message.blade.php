@@ -12,7 +12,7 @@
             
             <div class="box-header with-border">
                 
-                <h3 class="box-title">@if( $MessageType ) 執行成功 @else 執行失敗 @endif</h3>
+                <h3 class="box-title">@if( $MessageType ) 成功 @else 失敗 @endif</h3>
                 
 
             <!-- /.box-tools -->

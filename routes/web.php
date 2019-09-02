@@ -144,4 +144,22 @@ Route::group(['middleware' => ['CheckLogin']], function () {
 
     // 新品模組功能
     Route::post('/league_module_recommend_new_act','RecommendController@league_module_recommend_new_act');
+
+    
+    /*
+    |--------------------------------------------------------------------------
+    | 加盟會員相關
+    |--------------------------------------------------------------------------
+    |
+    */
+    Route::group(['middleware' => ['CheckProfile']], function () {
+        
+        // 個人資料設定
+        Route::get('/league_profile_basic/{user_id}','LeagueInfoController@league_profile_basic');
+        
+        // 個人資料設定功能 
+        Route::post('league_profile_basic_act','LeagueInfoController@league_profile_basic_act');
+
+    });
+    
 });

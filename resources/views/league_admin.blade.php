@@ -100,7 +100,7 @@
       <!-- Sidebar user panel -->
       <!-- sidebar menu: : style can be found in sidebar.less -->
       <ul class="sidebar-menu" data-widget="tree">
-        <li class="header">報表查詢</li>
+        <li class="header">報表</li>
         <li class="treeview">
           <a href="#">
             <i class="fa fa-dashboard text-red"></i> <span>後台管理首頁</span>
@@ -114,8 +114,8 @@
           </ul>
         </li>
 
-        <li><a href="https://adminlte.io/docs"><i class="fa fa-book"></i> <span>Documentation</span></a></li>
-        <li class="header">網站設定</li>
+        
+        <li class="header">網站</li>
         <!-- 功能排序 -->
         <li class="treeview" >
             
@@ -142,17 +142,32 @@
                 </span>                
             </a>
             <ul class="treeview-menu">
-                <li><a href="/league_module_banner"><i class="fa fa-fw fa-angle-right"></i>banner功能管理</a></li>
-                <li><a href="/league_module_recommend_hot"><i class="fa fa-fw fa-angle-right"></i>熱銷商品功能管理</a></li>
-                <li><a href="/league_module_recommend_recommend"><i class="fa fa-fw fa-angle-right"></i>推薦商品功能管理</a></li>
-                <li><a href="/league_module_recommend_new"><i class="fa fa-fw fa-angle-right"></i>新品上市功能管理</a></li>
+                <li><a href="{{url('/league_module_banner')}}"><i class="fa fa-fw fa-angle-right"></i>banner功能管理</a></li>
+                <li><a href="{{url('/league_module_recommend_hot')}}"><i class="fa fa-fw fa-angle-right"></i>熱銷商品功能管理</a></li>
+                <li><a href="{{url('/league_module_recommend_recommend')}}"><i class="fa fa-fw fa-angle-right"></i>推薦商品功能管理</a></li>
+                <li><a href="{{url('/league_module_recommend_new')}}"><i class="fa fa-fw fa-angle-right"></i>新品上市功能管理</a></li>
             </ul>                
         </li>
         <!-- /模組管理 -->
 
         <li><a href="#"><i class="fa fa-circle-o text-yellow"></i> <span>Warning</span></a></li>
         <li><a href="#"><i class="fa fa-circle-o text-aqua"></i> <span>Information</span></a></li>
-        <li class="header">個人資料設定</li>
+        
+        <li class="header">加盟會員</li>
+        <!-- <li><a href="{{url('/league_user')}}"><i class="fa fa-fw fa-user text-green"></i> <span>個人資料設定</span></a></li> -->
+        <li class="treeview" >
+            <a href="#">
+                <i class="fa fa-fw fa-user text-green"></i> <span>帳號管理</span>
+                <span class="pull-right-container">
+                    <i class="fa fa-angle-left pull-right"></i>
+                </span>                
+            </a>
+            <ul class="treeview-menu">
+                <li><a href="{{url('/league_profile_basic/'.Session::get('user_id'))}}"><i class="fa fa-fw fa-angle-right"></i>基本資料設定</a></li>
+                <li><a href="{{url('/league_module_banner')}}"><i class="fa fa-fw fa-angle-right"></i>帳號密碼設定</a></li>
+            </ul>                
+        </li>
+
       </ul>
     </section>
     <!-- /.sidebar -->

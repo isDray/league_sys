@@ -51,6 +51,156 @@ class Lib_common{
         return $ReturnArr;
 
     }
+
+    public static function mobileEncode( $_key , $_num ){
+    
+      $_key = '8610';
+    
+      $idNums  = preg_split('//', $_key, -1, PREG_SPLIT_NO_EMPTY);
+    
+      $idSum   = 0;
+      
+      foreach ($idNums as $idNumk => $idNum) {
+       
+        $idSum += $idNum;
+    
+    
+      }
+    
+      $position = $idSum % mb_strlen( $_num , "utf-8");
+    
+      if( $position == 0 ){
+    
+        $mergeNum = $_num.$_key;
+    
+        $iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_128, MCRYPT_MODE_CBC);
+        $iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);  
+        //return base64_encode(trim(mcrypt_encrypt(MCRYPT_RIJNDAEL_128, md5($_key),$mergeNum, MCRYPT_MODE_ECB, $iv)));
+        return base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_128, md5($_key),$mergeNum, MCRYPT_MODE_ECB, $iv));
+        
+      }else{
+       
+        $mergeNum[0] = substr($_num, 0, $position);
+        $mergeNum[1] = $_key;
+        $mergeNum[2] = substr($_num, $position);
+        $iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_128, MCRYPT_MODE_CBC);
+        $iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);  
+       
+        //return base64_encode(trim(mcrypt_encrypt(MCRYPT_RIJNDAEL_128, md5($_key),implode("",$mergeNum), MCRYPT_MODE_ECB, $iv)));
+        return base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_128, md5($_key),implode("",$mergeNum), MCRYPT_MODE_ECB, $iv));
+    
+      }
+    }
+
+    // 手機解密
+    public  static function mobileDecode( $_key , $_ciphertext ){
+    
+      //$_ciphertext;
+      $_key = '8610';  
+      $iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_128, MCRYPT_MODE_CBC);
+      $iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
+      $encodeNum = trim(mcrypt_decrypt(MCRYPT_RIJNDAEL_128, md5($_key), base64_decode($_ciphertext), MCRYPT_MODE_ECB, $iv));
+    
+      $idNums  = preg_split('//', $_key, -1, PREG_SPLIT_NO_EMPTY);
+    
+      $idSum   = 0;
+    
+      foreach ($idNums as $idNumk => $idNum) {
+       
+        $idSum += $idNum;
+    
+      }
+      
+      $position = $idSum % (mb_strlen( $encodeNum , "utf-8") - 4);
+    
+    
+      if( $position == 0 ){
+    
+        return  substr($encodeNum, 0, -4);
+    
+      }else{
+    
+        $keylen = strlen($_key);
+    
+        $mergeNum[0] = substr($encodeNum, 0, $position);
+        $mergeNum[1] = substr($encodeNum, ($position+$keylen) );
+        
+        return implode("",$mergeNum);
+      }
+    }
+
+    // 家電加密
+    public static function telEncode( $_key , $_num ){
+    
+      $_key = '8610';
+      $idNums  = preg_split('//', $_key, -1, PREG_SPLIT_NO_EMPTY);
+    
+      $idSum   = 0;
+      
+      foreach ($idNums as $idNumk => $idNum) {
+       
+        $idSum += $idNum;
+    
+    
+      }
+      $position = $idSum % mb_strlen( $_num , "utf-8");
+    
+    
+      if( $position == 0 ){
+    
+        $mergeNum = $_num.$_key;
+    
+        
+        $iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_128, MCRYPT_MODE_CBC);
+        $iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);  
+        //return base64_encode(trim(mcrypt_encrypt(MCRYPT_RIJNDAEL_128, md5($_key),$mergeNum, MCRYPT_MODE_ECB, $iv)));
+        return base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_128, md5($_key),$mergeNum, MCRYPT_MODE_ECB, $iv));
+    
+      }else{
+    
+        $mergeNum[0] = substr($_num, 0, $position);
+        $mergeNum[1] = $_key;
+        $mergeNum[2] = substr($_num, $position);
+    
+        $iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_128, MCRYPT_MODE_CBC);
+        $iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
+    
+        //return base64_encode(trim(mcrypt_encrypt(MCRYPT_RIJNDAEL_128, md5($_key),implode("",$mergeNum), MCRYPT_MODE_ECB, $iv)));
+        return base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_128, md5($_key),implode("",$mergeNum), MCRYPT_MODE_ECB, $iv));
+      }
+    }
+    
+    // 家電解密
+    public static function telDecode( $_key , $_ciphertext ){
+    
+      $_key = '8610';
+      $iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_128, MCRYPT_MODE_CBC);
+      $iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
+      $encodeNum = trim(mcrypt_decrypt(MCRYPT_RIJNDAEL_128, md5($_key), base64_decode($_ciphertext), MCRYPT_MODE_ECB, $iv));
+    
+      $idNums  = preg_split('//', $_key, -1, PREG_SPLIT_NO_EMPTY);
+    
+      $idSum   = 0;
+      
+      foreach ($idNums as $idNumk => $idNum) {
+       
+        $idSum += $idNum;
+    
+      }
+    
+      $position = $idSum % (mb_strlen( $encodeNum , "utf-8") - 4);
+    
+      if( $position == 0 ){
+    
+        return  substr($encodeNum, 0, -4);
+    
+      }else{
+        $keylen = strlen($_key);
+        $mergeNum[0] = substr($encodeNum, 0, $position);
+        $mergeNum[1] = substr($encodeNum, ( $position+$keylen ) );
+        return implode("",$mergeNum);
+      }
+    }    
 }
 
 ?>
