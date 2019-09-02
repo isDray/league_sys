@@ -164,7 +164,7 @@
             </a>
             <ul class="treeview-menu">
                 <li><a href="{{url('/league_profile_basic/'.Session::get('user_id'))}}"><i class="fa fa-fw fa-angle-right"></i>基本資料設定</a></li>
-                <li><a href="{{url('/league_module_banner')}}"><i class="fa fa-fw fa-angle-right"></i>帳號密碼設定</a></li>
+                <li><a href="{{url('/league_profile_password/'.Session::get('user_id'))}}"><i class="fa fa-fw fa-angle-right"></i>密碼設定</a></li>
             </ul>                
         </li>
 

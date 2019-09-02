@@ -126,4 +126,96 @@ class LeagueInfoController extends Controller
         
         return redirect('/league_message');
     }
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | 加盟會員帳密設定
+    |--------------------------------------------------------------------------
+    |
+    */
+    public function league_profile_password( Request $request ){
+        
+        $LeagueId = $request->session()->get('user_id');
+
+        $PageTitle = '密碼設定';     
+
+        return view('league_profile_password',[ 'PageTitle'  => $PageTitle ]);        
+
+    }
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | 加盟會員帳密設定功能
+    |--------------------------------------------------------------------------
+    |
+    */
+    public function league_profile_password_act( Request $request ){
+        
+        $LeagueId = $request->session()->get('user_id');
+
+        $validator = Validator::make($request->all(), 
+        [ 
+            'oldpassword'         => 'required|',
+            'newpassword'         => 'required|min:6',
+            'newpasswordconfirm'  => 'required|same:newpassword',
+      
+
+
+        ],
+        [   'oldpassword.required'        => '原密碼為必填',
+            'newpassword.required'        => '新密碼為必填',
+            'newpassword.min'             => '新密碼需至少6字元',
+            'newpasswordconfirm.required' => '密碼確認為必填',
+            'newpasswordconfirm.same'     => '密碼驗證錯',
+
+        ]);
+         
+        // 檢查原密碼是否正確
+        $Original = DB::table('xyzs_users')->where('user_id',$LeagueId)->first();
+
+        if ( $validator->fails() || ( $Original->password != md5($request->oldpassword) ) ) {
+            
+            if( $Original->password != md5($request->oldpassword) ){
+                
+                $validator->errors()->add('oldpassword','原密碼輸入錯誤');
+            }
+
+        	return back()->withErrors( $validator->errors() );
+        }
+
+        DB::beginTransaction();
+
+        try { 
+            
+            DB::table('xyzs_users')
+                ->where('user_id', $LeagueId)
+                ->update(['password' => md5( trim( $request->newpassword ) ),
+         
+                	    ]);        	
+
+            DB::commit();
+
+            return redirect('logout_act');    
+
+        } catch (\Exception $e) {
+            
+            DB::rollback();
+            
+            $league_message =   [ '0',
+                                  "設定密碼失敗",
+                                  [ ['operate_text'=>'回密碼設定介面','operate_path'=>"/league_profile_password/{$LeagueId}"] ],
+                                  3
+                                ];
+
+            $request->session()->put('league_message', $league_message);            
+
+        }
+
+    }
 }

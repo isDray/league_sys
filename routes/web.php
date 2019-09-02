@@ -159,6 +159,12 @@ Route::group(['middleware' => ['CheckLogin']], function () {
         
         // 個人資料設定功能 
         Route::post('league_profile_basic_act','LeagueInfoController@league_profile_basic_act');
+        
+        // 加盟會員帳密設定
+        Route::get('/league_profile_password/{user_id}','LeagueInfoController@league_profile_password');   
+
+        // 加盟會員密碼設定功能
+        Route::post('/league_profile_password_act','LeagueInfoController@league_profile_password_act');
 
     });
     
