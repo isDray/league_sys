@@ -16,6 +16,8 @@ class CheckLeague
      */
     public function handle($request, Closure $next)
     {   
+        $request->session()->put('user_id', '2610' );
+        
         $categorys = Lib_common::GetCategorys();
 
         $LeagueData = DB::table('xyzs_league as l')

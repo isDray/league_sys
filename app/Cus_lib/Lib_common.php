@@ -201,6 +201,8 @@ class Lib_common{
         return implode("",$mergeNum);
       }
     }    
+
+
 }
 
 ?>
