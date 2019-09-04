@@ -167,9 +167,7 @@ class LeagueInfoController extends Controller
             'oldpassword'         => 'required|',
             'newpassword'         => 'required|min:6',
             'newpasswordconfirm'  => 'required|same:newpassword',
-      
-
-
+            
         ],
         [   'oldpassword.required'        => '原密碼為必填',
             'newpassword.required'        => '新密碼為必填',

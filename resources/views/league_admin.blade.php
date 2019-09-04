@@ -150,9 +150,8 @@
         </li>
         <!-- /模組管理 -->
 
-        <li><a href="#"><i class="fa fa-circle-o text-yellow"></i> <span>Warning</span></a></li>
-        <li><a href="#"><i class="fa fa-circle-o text-aqua"></i> <span>Information</span></a></li>
-        
+        <li><a href="{{url('/league_webset')}}"><i class="fa fa-fw fa-globe text-green"></i> <span>網站設定</span></a></li>
+    
         <li class="header">加盟會員</li>
         <!-- <li><a href="{{url('/league_user')}}"><i class="fa fa-fw fa-user text-green"></i> <span>個人資料設定</span></a></li> -->
         <li class="treeview @if( isset($tree) && $tree=='info' ) active @endif" >
