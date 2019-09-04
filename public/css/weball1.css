@@ -26,8 +26,14 @@
 	padding-right: 15px;
 }
 #content_left{
-	border:2px solid orange;
+	margin-top: 62px;
+	border:1px solid green;
 	height: 1500px;
+}
+#content_right{
+	margin-top: 62px;
+	border:1px dashed blue;
+	height: 1500px;	
 }
 .web_nav1 ul{
 	display: inline-block;
@@ -63,6 +69,7 @@
 	background-color: #D81B60;
 }
 .child_tree +ul{
+	white-space:nowrap;
 	position: absolute;
     top:10%;
     left:100%;
@@ -197,6 +204,13 @@
 }
 .child_tree{
 	background-color: #c4c4c4;
+	font-size: 20px;
+}
+.child_tree:hover+ul{
+	position: relative;
+	width: 100%;
+	top:0px;
+	left:0px;
 	font-size: 20px;
 }
 .menu_li{

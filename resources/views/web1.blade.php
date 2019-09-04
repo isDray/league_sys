@@ -34,7 +34,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
 </head>
 
-<body class="">
+<body class="" style="background-color:{{$LeagueData['back_color']}};">
 
 
 <div class='container-fluid'>
@@ -51,9 +51,18 @@
 
         <nav class='web_nav1'>
             <ul id='nav_main_ul'>
-                <li class='menu_root'><span class='web_nav_tree_name root_tree'>分類</span>
+                <li class='menu_root'><span class='web_nav_tree_name root_tree'>商品分類</span>
                     <ul>
-                        <li class='menu_li'><span class='web_nav_tree_name child_tree'>子分類</span>
+                        @foreach( $categorys as $categoryk => $category)
+                        <li class='menu_li'><span class='web_nav_tree_name child_tree'>{{ $category['rcat_name'] }}</span>
+                            <ul class="menu_ul">
+                                @foreach( $category['child'] as $childk => $childv )
+                                <li>{{ $childv['ccat_name'] }}</li>
+                                @endforeach
+                            </ul>
+                        </li>
+                        @endforeach
+<!--                         <li class='menu_li'><span class='web_nav_tree_name child_tree'>子分類</span>
                             <ul class="menu_ul">
                                 <li>99999</li>
                                 <li>88888</li>
@@ -66,26 +75,7 @@
                                 <li>88888</li>
                                 <li>77777</li>
                             </ul>
-                        </li>                        
-                    </ul>
-                </li>
-
-                <li class='menu_root'><span class='web_nav_tree_name root_tree'>分類</span>
-                    <ul>
-                        <li class='menu_li'><span class='web_nav_tree_name child_tree'>子分類</span>
-                            <ul class="menu_ul">
-                                <li>111111</li>
-                                <li>22222</li>
-                                <li>333333</li>
-                            </ul>
-                        </li>
-                        <li class='menu_li'><span class='web_nav_tree_name child_tree'>子分類2</span>
-                            <ul class="menu_ul">
-                                <li>44444</li>
-                                <li>55555</li>
-                                <li>66666</li>
-                            </ul>
-                        </li>                        
+                        </li> -->                        
                     </ul>
                 </li>
 
@@ -93,14 +83,7 @@
         </nav>  
     </div>
     <div class='col-md-2 col-md-offset-2 col-sm-2 col-sm-offset-2 col-xs-12' id='content_left'>
-        sssssss45455<br>
-        545465465464645<br>
-        sssssss45455<br>
-        545465465464645<br>
-        sssssss45455<br>
-        545465465464645<br>
-        sssssss45455<br>
-        545465465464645<br>                        
+                       
         @yield('content_left')
     </div>
     <div class='col-md-6 col-sm-6 col-xs-12' id="content_right">
