@@ -117,12 +117,6 @@ class RecommendController extends Controller
             
         }
 
-        if( $ErrorSwitch ){
-
-            return back()->withErrors( $CustomErrors );
-
-        }
-        
         if( isset( $request->cats) ){
             
             foreach( $request->cats as $catk => $catv) {
@@ -139,7 +133,18 @@ class RecommendController extends Controller
 
             }
         
+        }else{
+            
+            $request->cats = [];
         }
+
+        if( $ErrorSwitch ){
+
+            return back()->withErrors( $CustomErrors );
+
+        }
+        
+
 
         DB::beginTransaction();
 
@@ -293,11 +298,6 @@ class RecommendController extends Controller
             
         }
 
-        if( $ErrorSwitch ){
-
-            return back()->withErrors( $CustomErrors );
-
-        }
         if( isset( $request->cats) ){
             foreach( $request->cats as $catk => $catv) {
     
@@ -312,7 +312,17 @@ class RecommendController extends Controller
                 }            
     
             }
+        }else{
+
+            $request->cats = [];
         }
+
+        if( $ErrorSwitch ){
+
+            return back()->withErrors( $CustomErrors );
+
+        }
+
 
         DB::beginTransaction();
 
@@ -458,13 +468,8 @@ class RecommendController extends Controller
             
         }
 
-        if( $ErrorSwitch ){
-
-            return back()->withErrors( $CustomErrors );
-
-        }
-        
         if( isset( $request->cats) ){
+            
             foreach( $request->cats as $catk => $catv) {
     
                 $CategoryExist = DB::table('xyzs_category')->where('cat_id',$catv)->first();
@@ -478,7 +483,17 @@ class RecommendController extends Controller
                 }            
     
             }
+        }else{
+            $request->cats = [];
         }
+
+        if( $ErrorSwitch ){
+
+            return back()->withErrors( $CustomErrors );
+
+        }
+
+
         
 
         DB::beginTransaction();

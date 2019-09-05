@@ -9,9 +9,7 @@ $recommends = Lib_block::get_recommend('best');
     
     <div class="box-header with-border">
 
-        <i class="fa fa-text-width"></i>
-
-        <h3 class="box-title">熱銷商品</h3>
+        <h3 class="box-title recommend_title ">推薦商品</h3>
 
     </div>
     

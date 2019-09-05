@@ -97,6 +97,11 @@
     /*white-space: nowrap;*/
     text-overflow: ellipsis;
 }
+.recommend_title{
+
+	font-weight: 900;
+	
+}
 /* 手機板選單 */
 @media(max-width:992px){
 /* COLUMNS */
