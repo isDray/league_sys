@@ -21,14 +21,20 @@ class LeagueWebController extends Controller
         
         $CenterBlock = (array)$CenterBlock;
 
-        $CenterBlock = unserialize( $CenterBlock['sort'] );
+        $CenterBlocks = unserialize( $CenterBlock['sort'] );
+        
+        foreach ($CenterBlocks as $CenterBlockk => $CenterBlock) {
+            
+            $BlockName = DB::table('xyzs_league_block')->where('id',$CenterBlock)->first();
 
-        return view('web_index', [ 'CenterBlock' => $CenterBlock ]);
+            if( $BlockName != NULL ){
+
+                $CenterBlocks[$CenterBlockk] = $BlockName->name;
+
+            }
+        }
+        
+        return view('web_index', [ 'CenterBlocks' => $CenterBlocks ]);
     }
 
-    public static function mytest(){
-
-    	return "123456";
-
-    }
 }

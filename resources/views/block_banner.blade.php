@@ -5,7 +5,7 @@ use Illuminate\Http\Request;
 $bannsers = Lib_block::banner();
 
 @endphp
-<div class='block_banner'>
+<div class='block_banner box box-solid'>
     
     <!-- /.box-header -->
     <div class="box-body">

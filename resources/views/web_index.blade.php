@@ -32,8 +32,16 @@
 @endsection
 
 @section('content_right')
-    @include('block_banner')
+    
+    @foreach( $CenterBlocks as $CenterBlockk => $CenterBlock)
+        
+        @includeIf('block_'. $CenterBlock)
+
+    @endforeach
+
 @endsection
+
+
 @section('selfjs')
 
 @endsection

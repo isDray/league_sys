@@ -38,16 +38,27 @@ class RecommendController extends Controller
 
             $HotSet = (array) $HotSet ;
             
-            $HotSet['custom_sets'] = unserialize( $HotSet['custom_set']);
+            $HotSet['custom_sets'] = unserialize( $HotSet['custom_set'] );
 
-            $HotSet['avoid_cat']  = unserialize($HotSet['avoid_cat']);            
+            $HotSet['avoid_cat']  = unserialize( $HotSet['avoid_cat'] ); 
+            
+            if( !$HotSet['custom_sets'] ){
+
+                $HotSet['custom_sets'] = [];
+            }
+
+            if( !$HotSet['avoid_cat'] ){
+
+                $HotSet['avoid_cat'] = [];
+            }
 
         }else{
 
-            $HotSet = [ 'custom_sets' => [] ,
-                        'avoid_cat'   => [] ,
+            $HotSet = [ 'custom_sets' => [],
+                        'avoid_cat'   => [],
                       ];
         }
+
 
         return view('/league_module_recommend_hot',[ 'PageTitle' => $PageTitle ,
                                                      'Categorys' => $Categorys ,
@@ -111,21 +122,24 @@ class RecommendController extends Controller
             return back()->withErrors( $CustomErrors );
 
         }
-
-        foreach( $request->cats as $catk => $catv) {
-
-            $CategoryExist = DB::table('xyzs_category')->where('cat_id',$catv)->first();
-
-            if( $CategoryExist === NULL ){
-
-                $ErrorSwitch = 1;
-
-                array_push( $CustomErrors['category'] , "分類:".$catv."不存在");
-
-            }            
-
-        }
         
+        if( isset( $request->cats) ){
+            
+            foreach( $request->cats as $catk => $catv) {
+   
+                $CategoryExist = DB::table('xyzs_category')->where('cat_id',$catv)->first();
+
+                if( $CategoryExist === NULL ){
+
+                    $ErrorSwitch = 1;
+
+                    array_push( $CustomErrors['category'] , "分類:".$catv."不存在");
+
+                }            
+
+            }
+        
+        }
 
         DB::beginTransaction();
 
@@ -200,7 +214,17 @@ class RecommendController extends Controller
 
             $HotSet['custom_sets'] = unserialize( $HotSet['custom_set']);
 
-            $HotSet['avoid_cat']  = unserialize($HotSet['avoid_cat']);   
+            $HotSet['avoid_cat']  = unserialize($HotSet['avoid_cat']);
+
+            if( !$HotSet['custom_sets'] ){
+
+                $HotSet['custom_sets'] = [];
+            }
+            
+            if( !$HotSet['avoid_cat'] ){
+
+                $HotSet['avoid_cat'] = [];
+            }            
 
         }else{
 
@@ -274,21 +298,21 @@ class RecommendController extends Controller
             return back()->withErrors( $CustomErrors );
 
         }
-
-        foreach( $request->cats as $catk => $catv) {
-
-            $CategoryExist = DB::table('xyzs_category')->where('cat_id',$catv)->first();
-
-            if( $CategoryExist === NULL ){
-
-                $ErrorSwitch = 1;
-
-                array_push( $CustomErrors['category'] , "分類:".$catv."不存在");
-
-            }            
-
+        if( isset( $request->cats) ){
+            foreach( $request->cats as $catk => $catv) {
+    
+                $CategoryExist = DB::table('xyzs_category')->where('cat_id',$catv)->first();
+    
+                if( $CategoryExist === NULL ){
+    
+                    $ErrorSwitch = 1;
+    
+                    array_push( $CustomErrors['category'] , "分類:".$catv."不存在");
+    
+                }            
+    
+            }
         }
-        
 
         DB::beginTransaction();
 
@@ -361,6 +385,16 @@ class RecommendController extends Controller
 
             $HotSet['avoid_cat']  = unserialize($HotSet['avoid_cat']);            
 
+            if( !$HotSet['custom_sets'] ){
+
+                $HotSet['custom_sets'] = [];
+            }
+            
+            if( !$HotSet['avoid_cat'] ){
+
+                $HotSet['avoid_cat'] = [];
+            }
+
         }else{
 
             $HotSet = [ 'custom_sets' => [] ,
@@ -429,19 +463,21 @@ class RecommendController extends Controller
             return back()->withErrors( $CustomErrors );
 
         }
-
-        foreach( $request->cats as $catk => $catv) {
-
-            $CategoryExist = DB::table('xyzs_category')->where('cat_id',$catv)->first();
-
-            if( $CategoryExist === NULL ){
-
-                $ErrorSwitch = 1;
-
-                array_push( $CustomErrors['category'] , "分類:".$catv."不存在");
-
-            }            
-
+        
+        if( isset( $request->cats) ){
+            foreach( $request->cats as $catk => $catv) {
+    
+                $CategoryExist = DB::table('xyzs_category')->where('cat_id',$catv)->first();
+    
+                if( $CategoryExist === NULL ){
+    
+                    $ErrorSwitch = 1;
+    
+                    array_push( $CustomErrors['category'] , "分類:".$catv."不存在");
+    
+                }            
+    
+            }
         }
         
 
