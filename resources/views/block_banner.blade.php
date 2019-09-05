@@ -1,7 +1,9 @@
 @php
 use App\Cus_lib\Lib_block;
+use Illuminate\Http\Request;
 
-$mytt = Lib_block::banner();
+$bannsers = Lib_block::banner();
+
 @endphp
 <div class='block_banner'>
     
@@ -11,21 +13,22 @@ $mytt = Lib_block::banner();
         <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
             
             <ol class="carousel-indicators">
-                <li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
-                <li data-target="#carousel-example-generic" data-slide-to="1" class=""></li>
-                <li data-target="#carousel-example-generic" data-slide-to="2" class=""></li>
+                @foreach( $bannsers as $bannserk => $bannser)
+                <li data-target="#carousel-example-generic" data-slide-to="{$bannserk}}" class="@if( $bannserk == 0) active @endif"></li>              
+                @endforeach                
             </ol>
             
             <div class="carousel-inner">
                 
-                <div class="item active">
-                    <img src="http://placehold.it/900x500/39CCCC/ffffff&amp;text=I+Love+Bootstrap" alt="First slide">
+                @foreach( $bannsers as $bannserk => $bannser)
+                <div class="item @if( $bannserk == 0) active @endif">
+                    <img src="{{url('/banner/'.$bannser['user_id'].'/'.$bannser['banner'])}}" alt="">
 
                     <div class="carousel-caption">
-                      {{$mytt}}
+                    
                     </div>
-                </div>
-
+                </div>                
+                @endforeach
 
             </div>
             

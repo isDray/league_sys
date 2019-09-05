@@ -32,7 +32,7 @@
 @endsection
 
 @section('content_right')
-    @include('block_banner');
+    @include('block_banner')
 @endsection
 @section('selfjs')
 

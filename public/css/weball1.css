@@ -89,6 +89,9 @@
 .rwd_menu{
 	display: none;
 }
+#content_right , #content_left{
+
+}
 /* 手機板選單 */
 @media(max-width:992px){
 /* COLUMNS */
