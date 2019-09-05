@@ -99,6 +99,64 @@
 	font-weight: 900;
 	
 }
+/*
+|--------------------------------------------------------------------------
+| footer 區塊
+|--------------------------------------------------------------------------
+|
+*/
+#footer{
+
+	border-top: 1px solid #850e3a;
+    background-color: #ca195a;
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+#footer_left , #footer_right{
+
+}
+#footer_left_center , #footer_right_center{
+	background-color: rgba(0,0,0,0.2);
+    min-height: 300px;
+}
+.footer_list{
+	list-style: none;
+}
+.footer_list > h4 {
+    font-size: 20px;
+    font-weight: 900;
+    color:#d1d1d1;
+    font-family: '微軟正黑體';
+}
+.footer_list > li {
+	font-size: 16px;
+	font-weight: 900;
+    color:#ffafaf;
+    font-family: '微軟正黑體';	
+}
+#footer_des{
+	font-size: 16px;
+	font-weight: 900;
+	color: #d1d1d1;
+	font-family: '微軟正黑體';	
+}
+#contact_box > p {
+	font-size: 14px;
+	font-weight: 900;
+	color: #d1d1d1;
+	font-family: '微軟正黑體';	
+}
+#footer_bottom{
+	margin-top: 15px;
+}
+@media(max-width:992px){
+	.footer_list{
+		padding-left: 0px;
+	}
+    #footer_right_center{
+	    margin-top: 15px;
+    }	
+}
 /* 手機板選單 */
 @media(max-width:992px){
 /* COLUMNS */
