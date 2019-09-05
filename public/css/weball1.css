@@ -26,13 +26,10 @@
 	padding-right: 15px;
 }
 #content_left{
-	margin-top: 62px;
-	border:1px solid green;
-	height: 1500px;
+	margin-top: 82px;
 }
 #content_right{
-	margin-top: 62px;
-	border:1px dashed blue;
+	margin-top: 82px;
 }
 .web_nav1 ul{
 	display: inline-block;
