@@ -127,7 +127,7 @@
             </a>
             <ul class="treeview-menu">
                 <li><a href="{{url('/league_sort_center')}}"><i class="fa fa-fw fa-angle-right"></i>中央區塊排序</a></li>
-                <li><a href="{{url('/league_sort_center')}}"><i class="fa fa-fw fa-angle-right"></i>左側區塊排序</a></li>
+                <li><a href="{{url('/league_sort_left')}}"><i class="fa fa-fw fa-angle-right"></i>左側區塊排序</a></li>
             </ul>        
             
         </li>

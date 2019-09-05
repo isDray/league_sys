@@ -39,7 +39,7 @@ class LeagueController extends Controller
     public function league_sort_center( Request $request ){
 
         // 取出所有區塊
-        $TmpModules = DB::table('xyzs_block')->get();
+        $TmpModules = DB::table('xyzs_league_block')->where('block_area','center')->get();
         
         // 轉換為array
         $TmpModules = json_decode( $TmpModules , true );
@@ -51,8 +51,6 @@ class LeagueController extends Controller
             $ToolModules[ $TmpModule['id'] ] = $TmpModule['block_name'];
         }
 
-        //var_dump($ToolModules);
-        
 
         // 取出會員的裝央排序
         $TmpLeagueCenterSort = DB::table('xyzs_league_block_sort')->where('user_id',$request->session()->get('user_id'))->where('block_id',1)->first();
@@ -87,7 +85,7 @@ class LeagueController extends Controller
 
     /*
     |--------------------------------------------------------------------------
-    | 中央區塊排序實作
+    | 中央區塊排序功能
     |--------------------------------------------------------------------------
     |
     */
@@ -98,29 +96,194 @@ class LeagueController extends Controller
 
         	$request->blocksort = [];
         }
-        
-        $HaveSort = DB::table('xyzs_league_block_sort')->where('user_id',$request->session()->get('user_id'))->where('block_id',1)->first();
-        
-        // 用新增的
-        if( $HaveSort === NULL ){
+
+        foreach ( $request->blocksort as $blocksortk => $blocksort) {
             
-            DB::table('xyzs_league_block_sort')->insert(
-                ['user_id'  => $request->session()->get('user_id'),
-                 'block_id' => 1 ,
-                 'sort'     => serialize($request->blocksort)
-                 ]
-            );
+            $AreaValidate = DB::table('xyzs_league_block')->where('id',$blocksort)->where('block_area','center')->first();
 
-        }else{
-        // 更新
-            DB::table('xyzs_league_block_sort')
-            ->where('user_id', $request->session()->get('user_id'))
-            ->where('block_id',1)
-            ->update(['sort' => serialize($request->blocksort) ]);
-
+            if(  $AreaValidate === NULL ){
+                
+                $league_message =   [ '0',
+                                      "中央排序失敗",
+                                      [ ['operate_text'=>'回中央排序','operate_path'=>'/league_sort_center'] ],
+                                      3
+                                    ];
+ 
+                $request->session()->put('league_message', $league_message);                 
+               
+                return redirect('/league_message');
+            }
         }
 
-        return redirect('/league_sort_center');
+        DB::beginTransaction();
+
+        try {
+            
+            DB::table('xyzs_league_block_sort')
+                ->updateOrInsert(
+                ['user_id' => $request->session()->get('user_id') , 'block_id' => 1],
+                ['sort' => serialize($request->blocksort)]
+            );        
+        
+            DB::commit();
+
+            $league_message =   [ '1',
+                                  "中央排序成功",
+                                  [ ['operate_text'=>'回中央排序','operate_path'=>'/league_sort_center'] ],
+                                  3
+                                ];
+
+            $request->session()->put('league_message', $league_message);
+
+            
+        } catch (\Exception $e) {
+            
+            DB::rollback();
+            
+            //var_dump($e->getMessage());
+            $league_message =   [ '0',
+                                  "中央排序失敗",
+                                  [ ['operate_text'=>'回中央排序','operate_path'=>'/league_sort_center'] ],
+                                  3
+                                ];
+
+            $request->session()->put('league_message', $league_message);            
+
+        }
+        
+        return redirect('/league_message');
+        
+    }
+    
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | 左側排序
+    |--------------------------------------------------------------------------
+    |
+    */
+    public function league_sort_left( Request $request ){
+
+        // 取出所有區塊
+        $TmpModules = DB::table('xyzs_league_block')->where('block_area','left')->get();
+        
+        // 轉換為array
+        $TmpModules = json_decode( $TmpModules , true );
+
+        $ToolModules = [];
+
+        foreach ($TmpModules as $TmpModulek => $TmpModule ) {
+
+            $ToolModules[ $TmpModule['id'] ] = $TmpModule['block_name'];
+        }
+
+        //var_dump($ToolModules);
+        
+
+        // 取出會員的裝央排序
+        $TmpLeagueCenterSort = DB::table('xyzs_league_block_sort')->where('user_id',$request->session()->get('user_id'))->where('block_id',2)->first();
+        
+        if( $TmpLeagueCenterSort === NULL ){
+            
+            $TmpOnModules = [];
+
+        }else{
+
+            $TmpOnModules = unserialize( $TmpLeagueCenterSort->sort );
+        }
+        
+        $OnModules = [];
+
+        foreach( $TmpOnModules as $TmpOnModulek => $TmpOnModule ) {
+            
+            $OnModules[$TmpOnModule] = $ToolModules[$TmpOnModule] ;
+
+            unset($ToolModules[$TmpOnModule]);
+        }
+
+        $OffModules = $ToolModules;
+        
+        $PageTitle = "左側區塊排序";
+
+        return view('/league_sort_left',['OnModules' => $OnModules , 'OffModules' => $OffModules ,'PageTitle'=>$PageTitle , 'tree' => 'sort' ]);
+
+    }
+    
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | 左側排序功能
+    |--------------------------------------------------------------------------
+    |
+    */
+    public function league_sort_left_act( Request $request ){
+    
+
+        // 先確認資料庫是否已經有資料 , 再決定是要新增還是更新
+        if( !isset($request->blocksort) || empty($request->blocksort) ){
+
+            $request->blocksort = [];
+        }
+
+        foreach ( $request->blocksort as $blocksortk => $blocksort) {
+            
+            $AreaValidate = DB::table('xyzs_league_block')->where('id',$blocksort)->where('block_area','left')->first();
+
+            if(  $AreaValidate === NULL ){
+                
+                $league_message =   [ '0',
+                                      "左側排序失敗",
+                                      [ ['operate_text'=>'回左側排序','operate_path'=>'/league_sort_left'] ],
+                                      3
+                                    ];
+ 
+                $request->session()->put('league_message', $league_message);                 
+               
+                return redirect('/league_message');
+            }
+        }
+
+        DB::beginTransaction();
+
+        try {
+            
+            DB::table('xyzs_league_block_sort')
+                ->updateOrInsert(
+                ['user_id' => $request->session()->get('user_id') , 'block_id' => 2],
+                ['sort' => serialize($request->blocksort)]
+            );        
+        
+            DB::commit();
+
+            $league_message =   [ '1',
+                                  "左側排序成功",
+                                  [ ['operate_text'=>'回左側排序','operate_path'=>'/league_sort_left'] ],
+                                  3
+                                ];
+
+            $request->session()->put('league_message', $league_message);
+
+            
+        } catch (\Exception $e) {
+            
+            DB::rollback();
+            
+            //var_dump($e->getMessage());
+            $league_message =   [ '0',
+                                  "左側排序失敗",
+                                  [ ['operate_text'=>'回左側排序','operate_path'=>'/league_sort_left'] ],
+                                  3
+                                ];
+
+            $request->session()->put('league_message', $league_message);            
+
+        }
+        
+        return redirect('/league_message');
     }
 
 

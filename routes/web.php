@@ -102,7 +102,13 @@ Route::group(['middleware' => ['CheckLogin']], function () {
     // 中央區塊排序功能
     Route::post('/league_sort_center_act','LeagueController@league_sort_center_act');
 
-    
+    // 左側排序
+    Route::get('/league_sort_left','LeagueController@league_sort_left'); 
+
+    // 左側排序功能
+    Route::post('/league_sort_left_act','LeagueController@league_sort_left_act'); 
+
+
 
     // banner 設定
     Route::get('/league_module_banner','LeagueController@league_module_banner');
