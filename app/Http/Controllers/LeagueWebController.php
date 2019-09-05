@@ -35,24 +35,8 @@ class LeagueWebController extends Controller
             }
         }
         
-        // 左側區塊
-        $LeftBlock = DB::table('xyzs_league_block_sort')->where('user_id', $LeagueId)->where('block_id',2)->first();
         
-        $LeftBlock = (array)$LeftBlock;
-
-        $LeftBlocks = unserialize( $LeftBlock['sort'] );
-        
-        foreach ($LeftBlocks as $LeftBlockk => $LeftBlock) {
-            
-            $BlockName = DB::table('xyzs_league_block')->where('id',$LeftBlock)->first();
-
-            if( $BlockName != NULL ){
-
-                $LeftBlocks[$LeftBlockk] = $BlockName->name;
-
-            }
-        }        
-        return view('web_index', [ 'CenterBlocks' => $CenterBlocks , 'LeftBlocks' => $LeftBlocks ]);
+        return view('web_index', [ 'CenterBlocks' => $CenterBlocks ]);
     }
 
 }

@@ -188,6 +188,11 @@ Route::group(['middleware' => ['CheckLogin']], function () {
 */
 Route::group(['middleware' => ['CheckLeague']], function () {
     
+    // 首頁
     Route::get('/','LeagueWebController@index');
+    
+    // 商品內頁
+    Route::get('/show_goods/{goods_id}','GoodsController@show_goods');
 
+    //
 });

@@ -29,7 +29,29 @@ class CheckLeague
 
         //var_dump( $LeagueData );
         View::share('categorys', $categorys); 
+
         View::share('LeagueData' , $LeagueData);
+        
+        $LeagueId = $request->session()->get('user_id');
+        // 左側區塊
+        $LeftBlock = DB::table('xyzs_league_block_sort')->where('user_id', $LeagueId)->where('block_id',2)->first();
+        
+        $LeftBlock = (array)$LeftBlock;
+
+        $LeftBlocks = unserialize( $LeftBlock['sort'] );
+        
+        foreach ($LeftBlocks as $LeftBlockk => $LeftBlock) {
+            
+            $BlockName = DB::table('xyzs_league_block')->where('id',$LeftBlock)->first();
+
+            if( $BlockName != NULL ){
+
+                $LeftBlocks[$LeftBlockk] = $BlockName->name;
+
+            }
+        }   
+
+        View::share('LeftBlocks' , $LeftBlocks);     
 
         return $next($request);
     }
