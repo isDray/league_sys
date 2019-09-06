@@ -37,6 +37,14 @@
                     @endif                     
                 </div>
 
+                <div class="form-group">
+                    <label for="webback">網站主色系</label>
+                    <input type="color" class="form-control" id="webback" name="webback" placeholder="請選擇網站主色系" value="{{$WebData['back_color']}}">
+                    @if ($errors->has('webback'))
+                    <label id="webback-error" class="form_invalid" for="webback">{{ $errors->first('webback') }}</label>
+                    @endif                     
+                </div>                
+
             </div>
             
             <div class="box-footer">
