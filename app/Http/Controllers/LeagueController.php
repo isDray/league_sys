@@ -173,16 +173,13 @@ class LeagueController extends Controller
         $TmpModules = json_decode( $TmpModules , true );
 
         $ToolModules = [];
-
+        
         foreach ($TmpModules as $TmpModulek => $TmpModule ) {
 
             $ToolModules[ $TmpModule['id'] ] = $TmpModule['block_name'];
         }
 
-        //var_dump($ToolModules);
-        
-
-        // 取出會員的裝央排序
+        // 取出會員的左側排序
         $TmpLeagueCenterSort = DB::table('xyzs_league_block_sort')->where('user_id',$request->session()->get('user_id'))->where('block_id',2)->first();
         
         if( $TmpLeagueCenterSort === NULL ){
@@ -198,7 +195,11 @@ class LeagueController extends Controller
 
         foreach( $TmpOnModules as $TmpOnModulek => $TmpOnModule ) {
             
-            $OnModules[$TmpOnModule] = $ToolModules[$TmpOnModule] ;
+            if( array_key_exists($TmpOnModule, $ToolModules) ){
+            
+                $OnModules[$TmpOnModule] = $ToolModules[$TmpOnModule] ;
+
+            }
 
             unset($ToolModules[$TmpOnModule]);
         }
