@@ -37,6 +37,7 @@
     padding-left: 0px;
 }
 #nav_main_ul{
+	margin-bottom: 0px;
 	position: relative;
 }
 .menu_ul{
@@ -120,6 +121,31 @@
 	font-size: 16px;
 	font-weight: 900;
 	color: black;
+}
+
+/* 購物車按鈕 */
+#cart_btn{
+	display: inline-block;
+	float:right;
+	height:60px;
+	line-height: 46px;
+	text-align: center;
+	color: white;
+	font-size: 24px;
+	font-weight: 900;
+}
+.cart_list{
+    max-height: 60vh;
+    overflow-y: auto;
+    width: 300px;
+    background-color: #eeeeee;
+    position: absolute;
+    z-index: 20;
+    top:60px;
+    right: 0px;
+    display: none;
+}
+.cart_goods{
 }
 /*
 |--------------------------------------------------------------------------

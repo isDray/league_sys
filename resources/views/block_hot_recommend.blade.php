@@ -17,6 +17,7 @@ $hots = Lib_block::get_recommend('hot');
     <div class="box-body">
         
         @foreach( $hots as $hotk => $hot)
+        <a href="{{url('/show_goods/'.$hot['goods_id'])}}">
         <div class='col-md-3 col-sm-4 col-xs-6'>
 
             <div class="thumbnail">
@@ -25,12 +26,13 @@ $hots = Lib_block::get_recommend('hot');
                 
                 <div class="caption">
                     <h4 class="goods_title">{{ $hot['goods_name'] }}</h4>
-                    <p>...</p>
-                    <p><a href="#" class="btn btn-primary" role="button">立即購買</a></p>
+                    <p>{{ $hot['shop_price'] }}</p>
+                    <p><a  class="btn btn-primary add_to_cart" role="button" goods_id="{{$hot['goods_id']}}">立即購買</a></p>
                 </div>
             </div>                
             
         </div>
+        </a>
         @endforeach
 
     </div>

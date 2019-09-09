@@ -38,10 +38,30 @@
 
 
 <div class='container-fluid'>
+
+<div class="cart_list">
+    <div class="cart_goods">
+        <table width='100%'>
+            <tr>
+                <td colspan=4 >66666666</td>
+            </tr>
+            <tr>
+                <td>1</td>
+                <td>2</td>
+                <td>3</td>
+                <td>4</td>
+            </tr>
+        </table>
+    </div>
+    <div class="cart_operate">
+        <a  class="btn btn-block btn-primary" href="">去結帳</a>
+    </div>
+</div>
+
 <div class='row'>
     <div class='col-md-12 col-sm-12 col-xs-12' id='menu_box'>
 
-        <div class=" col rwd_menu">
+        <div class="col rwd_menu">
             <div class="hamburger" id="hamburger-1">
                 <span class="line"></span>
                 <span class="line"></span>
@@ -80,7 +100,14 @@
                 </li>
 
             </ul>
+
+            <div id="cart_btn" class='btn bg-maroon '>
+                <i class='fa fa-fw fa-shopping-cart'></i>
+            </div>            
+
         </nav>  
+
+
     </div>
     <div class='col-md-2 col-md-offset-2 col-sm-2 col-sm-offset-2 col-xs-12' id='content_left'>
                        
@@ -170,17 +197,78 @@
 @yield('selfjs')
 
 <script type="text/javascript">
+
 $(document).ready(function(){
     $(".hamburger").click(function(){
         $(this).toggleClass("is-active");
         
-        /*if( $(".hamburger").hasClass('is-active') ){
-
-        }*/
         $(".web_nav1").toggle("slide");
 
     });
 });
+
+
+$(document).ready(function(){
+    $("#cart_btn").click(function(){
+        //$(".cart_list").slideToggle();
+        $(".cart_list").animate({width:'toggle'},350);
+    });
+});
+
+/*
+|--------------------------------------------------------------------------
+| 加入購物車
+|--------------------------------------------------------------------------
+|
+*/
+$(function(){
+
+    $(".add_to_cart").click(function(){
+
+        var goods_id = $(this).attr('goods_id');
+
+        var request = $.ajax({
+            url: "{{url('/add_to_cart')}}",
+            method: "POST",
+            data: { goods_id : goods_id ,
+                    _token: "{{ csrf_token() }}",
+                    number: 1,
+                  },
+            dataType: "json"
+        });
+ 
+        request.done(function( res ) {
+            
+            console.log(res);
+
+            if( res['res'] == false ){
+
+                var alert_text = '';
+                
+                $.each(res['data'] , function( errork, errorv){
+
+                    $.each(errorv , function( errork2, errorv2){
+                        alert_text += errorv2;
+                    });
+
+                });
+                
+                alert( alert_text );
+            
+            }else{
+
+                console.log( res['data']  );
+            }
+
+        });
+ 
+        request.fail(function( jqXHR, textStatus ) {
+            //alert( "Request failed: " + textStatus );
+        });
+
+    })
+    
+})
 
 </script>
 </body>

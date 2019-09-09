@@ -197,6 +197,7 @@ Route::group(['middleware' => ['CheckLeague']], function () {
     // 分類頁面
     Route::get('/category/{cat_id}/{cat_sort_item?}/{cat_sort_way?}/{now_page?}/{per_page?}','CategoryController@category');
 
-    // 分類頁面
-    //Route::get('/category_sort/{cat_id}/{cat_sort_item?}/{cat_sort_way?}/{now_page?}/{per_page?}','CategoryController@category_sort');
+    // 加入購物車
+    Route::post('/add_to_cart','CartController@add_to_cart');
+
 });

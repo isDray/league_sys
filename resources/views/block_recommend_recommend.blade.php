@@ -26,8 +26,8 @@ $recommends = Lib_block::get_recommend('best');
                 
                 <div class="caption">
                     <h4 class="goods_title">{{ $recommend['goods_name'] }}</h4>
-                    <p>...</p>
-                    <p><span class="btn btn-primary" role="button">立即購買</span></p>
+                    <p>{{ $recommend['shop_price'] }}</p>
+                    <p><a  class="btn btn-primary add_to_cart" role="button" goods_id="{{$recommend['goods_id']}}">立即購買</a></p>
                 </div>
             </div>                
             
