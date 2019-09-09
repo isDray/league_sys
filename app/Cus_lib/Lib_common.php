@@ -201,7 +201,54 @@ class Lib_common{
         return implode("",$mergeNum);
       }
     }    
+    
 
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | 製作分頁
+    |--------------------------------------------------------------------------
+    | 1. total = 總資料量
+    | 
+    | 2. now_page = 當前頁面
+    |
+    | 3. per_page = 每頁要多少筆資料
+    |
+    | 4. control_num = 呈現可跳頁的數量
+    |
+    |
+    |
+    */
+    public static function create_page( $target , $total , $now_page = 1, $per_page = 20 , $control_num = 3 ){
+        
+        $AllPage = ceil( $total / $per_page );
+        //$Pages .= "<li class='paginate_button active'><a href='#''>«</a></li>";
+        $Pages  = "<ul class='pagination pagination-sm no-margin pull-right'>";
+        
+
+        for ($i = $control_num ; $i > 0; $i--) { 
+            
+            if( $now_page - $i > 0 ){
+
+                $Pages .= "<li class='paginate_button'><a href='".url("$target".($now_page - $i)."/$per_page")."'>".($now_page - $i)."</a></li>";
+            }
+        }
+        
+        $Pages .= "<li class='paginate_button active '><a href='".url("$target"."$now_page/$per_page")."'>".$now_page."</a></li>";
+        
+        for ($j = 1; $j <= $control_num ; $j++) { 
+            
+            if( $now_page + $j <= $AllPage ){
+
+                $Pages .= "<li class='paginate_button'><a href='".url("$target".($now_page + $j)."/$per_page")."'>".($now_page + $j)."</a></li>";
+            }
+        }
+
+        $Pages .= "</ul>";
+
+        return $Pages;
+    }
 
 }
 

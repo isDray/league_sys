@@ -195,5 +195,5 @@ Route::group(['middleware' => ['CheckLeague']], function () {
     Route::get('/show_goods/{goods_id}','GoodsController@show_goods');
 
     // 分類頁面
-    Route::get('/category/{cat_id}','CategoryController@category');
+    Route::get('/category/{cat_id}/{now_page?}/{per_page?}','CategoryController@category');
 });
