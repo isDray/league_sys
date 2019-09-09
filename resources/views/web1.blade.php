@@ -41,7 +41,7 @@
 
 <div class="cart_list">
     <div class="cart_goods">
-        <table width='100%'>
+        <table width='100%' >
             <tr>
                 <td colspan=4 >66666666</td>
             </tr>
@@ -51,6 +51,7 @@
                 <td>3</td>
                 <td>4</td>
             </tr>
+  
         </table>
     </div>
     <div class="cart_operate">
@@ -209,9 +210,12 @@ $(document).ready(function(){
 
 
 $(document).ready(function(){
+
     $("#cart_btn").click(function(){
         //$(".cart_list").slideToggle();
         $(".cart_list").animate({width:'toggle'},350);
+
+
     });
 });
 
@@ -244,7 +248,7 @@ $(function(){
             if( res['res'] == false ){
 
                 var alert_text = '';
-                
+
                 $.each(res['data'] , function( errork, errorv){
 
                     $.each(errorv , function( errork2, errorv2){
@@ -257,7 +261,18 @@ $(function(){
             
             }else{
 
-                console.log( res['data']  );
+                // 如果順利加入購物車 , 就重整購物車內容
+                $(".cart_goods").empty();
+
+                $.each( res['data'] , function( listk , listv ){
+                    
+                    var tmp_goods = "<table width='100%'>";
+                    tmp_goods += "<tr><td colspan='4' class='cart_item_title'>"+listv['name']+"</td></tr>";
+                    tmp_goods += "<tr><td colspan='2' class='tableimg'><img src='https://***REMOVED***.com/***REMOVED***/"+listv['thumbnail']+"'></td><td><span class='btn'>移除</span></td></tr>";
+                    tmp_goods += "</table>";
+                    
+                    $(".cart_goods").append( tmp_goods );
+                });
             }
 
         });

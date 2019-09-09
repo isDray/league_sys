@@ -135,18 +135,32 @@
 	font-weight: 900;
 }
 .cart_list{
+	
     max-height: 60vh;
     overflow-y: auto;
     width: 300px;
     background-color: #eeeeee;
-    position: absolute;
+    position: fixed;
     z-index: 20;
     top:60px;
     right: 0px;
     display: none;
+    overflow:hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;	
 }
-.cart_goods{
+.cart_item_title{
+	background-color: #cdcdcd;
+	font-weight: 900;
+    overflow:hidden;
+    white-space: nowrap;
+text-overflow: ellipsis;	
 }
+.tableimg > img{
+	border-radius: 6px;
+    width: 120px;
+}
+
 /*
 |--------------------------------------------------------------------------
 | footer 區塊

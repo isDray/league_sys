@@ -34,7 +34,7 @@ class LeagueWebController extends Controller
 
             }
         }
-        
+        $request->session()->forget('cart');
         
         return view('web_index', [ 'CenterBlocks' => $CenterBlocks ]);
     }
