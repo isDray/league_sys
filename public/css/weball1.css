@@ -93,11 +93,33 @@
     -webkit-box-orient: vertical;
     /*white-space: nowrap;*/
     text-overflow: ellipsis;
+    height: 40px;
 }
 .recommend_title{
 
 	font-weight: 900;
 	
+}
+/* 排序按鈕 */
+.sortup::after{
+	font-family: 'FontAwesome';
+	position: absolute;
+	content:'\f0aa';
+	top:-4px;
+	right: 0px;
+	font-size: 16px;
+	font-weight: 900;
+	color: black;
+}
+.sortdown::after{
+	font-family: 'FontAwesome';
+	position: absolute;
+	content:'\f0ab';
+	top:-4px;
+	right: 0px;
+	font-size: 16px;
+	font-weight: 900;
+	color: black;
 }
 /*
 |--------------------------------------------------------------------------

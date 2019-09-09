@@ -20,14 +20,26 @@
     
     <div class="box-header with-border">
         
-        <i class="fa fa-text-width"></i>
+        <i class="fa fa-fw fa-sort-amount-asc"></i>
 
-        <h3 class="box-title">Text Emphasis</h3>
+        <h3 class="box-title">排序</h3>
     </div>
     
     <!-- /.box-header -->
     <div class="box-body">
-        進階
+        
+        <a class="btn btn-app @if( $CatSortItem == 'add_time')bg-yellow  @if( $CatSortWay == 'asc')sortup @else sortdown @endif @endif" 
+            href="{{url($AddTimeURL)}}"
+        >
+            <i class="fa fa-calendar-times-o"></i> 上架時間 
+        </a>
+
+        <a class="btn btn-app @if( $CatSortItem == 'shop_price')bg-yellow  @if( $CatSortWay == 'asc')sortup @else sortdown @endif @endif" 
+            href="{{url($PriceUrl)}}"
+        >
+            <i class="fa fa-dollar"></i> 價格
+        </a>
+
     </div>
     <!-- /.box-body -->
 
@@ -37,16 +49,35 @@
 <!-- 呈現區塊 -->
 <div class="box box-solid">
     
-    <div class="box-header with-border">
+<!--     <div class="box-header with-border">
         
         <i class="fa fa-text-width"></i>
 
         <h3 class="box-title">Text Emphasis</h3>
-    </div>
+    </div> -->
     
     <!-- /.box-header -->
     <div class="box-body">
-        {!! $Pages !!}
+        @foreach( $Goods as $Goodk => $Good)
+        <div class='col-md-3 col-sm-4 col-xs-6'>
+
+            <div class="thumbnail">
+                
+                <img src="https://***REMOVED***.com/***REMOVED***/{{$Good['goods_thumb']}}">
+                
+                <div class="caption">
+                    <h4 class="goods_title">{{ $Good['goods_name'] }}</h4>
+                    <p>{{ $Good['shop_price'] }}</p>
+                    <p><a href="#" class="btn btn-primary" role="button">立即購買</a></p>
+                </div>
+            </div>                
+            
+        </div>
+        @endforeach
+        <div class="col-md-12 col-sm-12 col-xs-12">
+        	{!! $Pages !!}
+        </div>    	
+        
     </div>
     <!-- /.box-body -->
 
