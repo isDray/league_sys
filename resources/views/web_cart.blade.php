@@ -32,7 +32,15 @@
                     <td class='img_in_cart'><img src="https://***REMOVED***.com/***REMOVED***/{{$Cart['thumbnail']}}"></td>
                     <td>{{$Cart['name']}}</td>
                     <td>{{$Cart['goodsPrice']}}</td>
-                    <td>{{$Cart['num']}}</td>
+                    <td>
+                        <select class="cart_goods_num" goods_id="{{$Cart['id']}}">
+                            @for( $i=0 ; $i <= $GoodsNums[$Cart['id']] ; $i++)
+                            <option value="{{$i}}" @if( $Cart['num'] == $i) selected @endif>{{$i}}</option>
+                            @endfor
+                        </select>
+  
+
+                    </td>
                     <td>{{$Cart['subTotal']}}</td>
                     <td> <span class='btn bg-maroon btn-flat margin rmbtn' goods_id="{{$Cart['id']}}"><i class='fa fa-fw fa-remove'></i></span> </td>
                 </tr>
@@ -46,5 +54,47 @@
 @endsection
 
 @section('selfjs')
+<script type="text/javascript">
 
+/*
+|--------------------------------------------------------------------------
+| 修改商品數量
+|--------------------------------------------------------------------------
+|
+*/
+$(function(){
+    
+    $('body').on('change', '.cart_goods_num', function() {
+        
+        var change_id  = $(this).attr('goods_id');
+
+        var change_num = $(this).val();
+        
+        var changerequest = $.ajax({
+            
+            url: "{{url('/change_goods_num')}}",
+            method: "POST",
+            data: { goods_id : change_id ,
+                    _token: "{{ csrf_token() }}",
+                    wantNum  :change_num
+            },
+            dataType: "json"
+        
+        });
+ 
+        changerequest.done(function( res ) {
+        
+        toastr.success('成功修改數量');
+
+        // 如果順利加入購物車 , 就重整購物車內容
+         location.reload();
+    });
+ 
+    changerequest.fail(function( jqXHR, textStatus ) {
+        //alert( "Request failed: " + textStatus );
+    });
+    });
+
+});
+</script>
 @endsection

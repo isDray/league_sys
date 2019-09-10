@@ -142,6 +142,57 @@ class CartController extends Controller
 
     /*
     |--------------------------------------------------------------------------
+    | 調整購物車內數量
+    |--------------------------------------------------------------------------
+    |
+    |
+    */
+    public function change_goods_num( Request $request ){
+        
+        if( $request->session()->has('cart') ){
+
+            $tmpcart = $request->session()->get('cart');
+            
+            // 如果已經有購物車了 , 則判斷此商品是否已經存在購物車內
+            if( array_key_exists("$request->goods_id", $tmpcart) ) {
+
+                $goodsDetail = DB::table('xyzs_goods')->where('goods_id', $request->goods_id)->first();
+
+                $totalNum = $request->wantNum;
+
+                if( ($goodsDetail->goods_number - $totalNum ) < 0 ){
+                
+                    return json_encode( ['res' =>false , 'data'=>[['目前此商品庫存只剩'.$goodsDetail->goods_number.'個 , 請調整訂購數量' ]]] );
+
+                }else{
+
+                    $tmpcart[$request->goods_id]['num'] = $totalNum;
+                    $tmpcart[$request->goods_id]['goodsPrice'] = round($goodsDetail->shop_price);
+                    $tmpcart[$request->goods_id]['subTotal'] = round($goodsDetail->shop_price * $totalNum);   
+
+                    ksort($tmpcart);
+                    $request->session()->put('cart', $tmpcart);    
+
+                    return json_encode( ['res' =>true , 'data'=>[['修改數量成功']]] );             
+                }                  
+
+            }else{
+
+                return json_encode( ['res' =>false, 'data'=>[['無法進行此操作']]]);
+            }            
+
+        }else{
+
+            return json_encode( ['res' =>false, 'data'=>[['無法進行此操作']]]);
+        }
+
+    }
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
     | 購物車頁面
     |--------------------------------------------------------------------------
     |
@@ -154,6 +205,22 @@ class CartController extends Controller
 
         }
         
-        return view("web_cart");
+        $GoodsNums = [];
+
+        foreach( $request->session()->get('cart') as $cartk => $cart ){
+
+            $TmpGoods = DB::table('xyzs_goods')->where('goods_id',$cart['id'])->first();
+
+            if( $TmpGoods !== NULL ){
+                
+                $GoodsNums[ $cart['id'] ] = $TmpGoods->goods_number;
+
+            }else{
+
+                $GoodsNums[ $cart['id'] ] = 0;
+            }
+        }
+
+        return view("web_cart" , ['GoodsNums'=>$GoodsNums]);
     } 
 }
