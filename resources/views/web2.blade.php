@@ -114,11 +114,7 @@
         </div>
         <!-- /購物車 -->
     </div>
-    <div class='col-md-2 col-md-offset-2 col-sm-2 col-sm-offset-2 col-xs-12' id='content_left'>
-                       
-        @yield('content_left')
-    </div>
-    <div class='col-md-6 col-sm-6 col-xs-12' id="content_right">
+    <div class='col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2 col-xs-12' id="content_right">
         @yield('content_right')
     </div>   
 </div>
