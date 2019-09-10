@@ -209,4 +209,12 @@ Route::group(['middleware' => ['CheckLeague']], function () {
     // 購物車頁面
     Route::get('/cart','CartController@cart');
 
+    // 結帳頁面
+    Route::get('/checkout','CartController@checkout');
+
+
+    Route::post('/areaChange','CartController@areaChange');
+
+    Route::post('/shipChange','CartController@shipChange');
+
 });

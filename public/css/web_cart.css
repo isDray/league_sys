@@ -8,3 +8,16 @@
     width: 110px;
     border-radius: 6px;
 }
+#cart_content{
+	overflow-x:auto;
+}
+@media(max-width:768px){
+	
+	.img_in_cart > img {
+        width: 60px;
+        border-radius: 6px;
+    }
+    .nameth,.nametd{
+    	width: 100;
+    }
+}

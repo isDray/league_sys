@@ -122,6 +122,10 @@
 	font-weight: 900;
 	color: black;
 }
+.custom_form_control{
+	width: auto!important;
+	display: inline-block!important;
+}
 /*
 |--------------------------------------------------------------------------
 | 購物車按鈕

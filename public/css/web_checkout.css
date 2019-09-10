@@ -1,0 +1,162 @@
+#fillBox{
+	padding-top: 40px;
+}
+#fillBox select{
+    display: inline-block;
+    width: auto;
+    border:1px solid #a0a0a0;
+}
+#shipArea{
+	margin-top: 40px;
+}
+.shipBox{
+	text-align: center;
+	margin-top: 10px;
+}
+.shipLabel{
+    cursor: pointer;
+    width: 80%;
+    border:1px solid #a0a0a0;
+    display: inline-block;
+	padding-top: 10px;
+	padding-bottom: 10px;    
+    transition-duration: 0.2s;
+}
+input[name=shipping]{
+	opacity: 0;
+}
+input:checked+.shipLabel{
+	position: relative;
+    border:1px solid #ff80ab;
+}
+input:checked+.shipLabel:after{
+	display: inline-block;
+	font-family: 'FontAwesome';
+	content: "\f058";
+	position: absolute;
+	top: -5px;
+	right: -5px;
+	font-size: 18px;
+	font-weight: 900;
+	color:#ff80ab;
+	/*color: white;
+	background-color: #ff80ab;*/
+	line-height: 20px;
+	text-align: center;
+	border-radius: 50%;
+	height: 20px;
+	width: 20px;
+}
+.hideInput{
+	display: none;
+}
+#consigneeArea{
+	margin-top: 40px;
+}
+#payArea{
+	margin-top: 40px;
+}
+.payBox{
+	text-align: center;
+}
+.payIntro{
+	display: none;
+}
+.payBox{
+	text-align: center;
+	margin-top: 10px;
+}
+.paymentLabel{
+    cursor: pointer;
+    width: 80%;
+    border:1px solid #a0a0a0;
+    display: inline-block;
+	padding-top: 10px;
+	padding-bottom: 10px;    
+    transition-duration: 0.2s;
+}
+input:checked+.paymentLabel{
+	position: relative;
+    border:1px solid #ff80ab;
+}
+input:checked+.paymentLabel:after{
+	display: inline-block;
+	font-family: 'Material Icons';
+	content: "check";
+	position: absolute;
+	top: -5px;
+	right: -5px;
+	font-size: 18px;
+	font-weight: 900;
+	color: white;
+	background-color: #ff80ab;
+	line-height: 20px;
+	text-align: center;
+	border-radius: 50%;
+	height: 20px;
+	width: 20px;
+}
+#payDesArea{
+	margin-top: 10px;
+}
+#invArea{
+	margin-top: 40px;
+}
+#companyArea{
+	margin-top: 40px;
+}
+#noteArea{
+	margin-top: 40px;
+}
+#submitArea{
+	margin-top: 40px;
+	text-align: center;
+	margin-bottom: 40px;
+}
+#submitArea input[type='submit']{
+	color: white;
+	font-weight: 900;
+}
+span#super_get_btn {
+  padding: 10px;
+  display: block;
+  color: #fff;
+  background: #333;
+  margin-top: 15px;
+  /*max-width: 50%;*/
+  cursor: pointer;
+}
+.consignee.option_inner.clearfix {
+  padding-left: 0;
+}
+
+#super_get_btn{
+  margin-left: 10px;
+  display: inline!important;
+  /*display:inline!important;*/
+  font-weight: 900;
+  border-radius: 6px;
+  font-family: '微軟正黑體';
+  background-color: #4CAF50!important; 
+  color: white; 
+  -webkit-transition-duration: 0.1s; /* Safari */
+  transition-duration: 0.1s;
+  cursor: pointer; 
+  width: auto!important;
+}
+#super_get_btn:hover{
+  -webkit-box-shadow: 2px 2px 1px 1px #316b33 inset;
+  -moz-box-shadow: 2px 2px 1px 1px #316b33 inset;
+  box-shadow: 2px 2px 1px 1px #316b33 inset;  
+}
+/*input[type="radio"]{
+
+}*/
+@media( max-width: 600px){
+	.shipLabel{
+	    width: 98%;
+	}
+}
+@media( min-width: 601px ) and ( max-width: 992px){
+
+}
