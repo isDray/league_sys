@@ -106,4 +106,34 @@ class CartController extends Controller
         return json_encode( ['res' => true, 'data' => $tmpcart ] );
 
     }
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | 由購物超中移除商品
+    |--------------------------------------------------------------------------
+    |
+    */
+    public function rm_from_cart( Request $request ){
+        
+        if( $request->session()->has('cart') ){
+            
+            $tmpcart = $request->session()->get('cart');
+            
+            // 如果要刪除的商品有在購物車內 , 就直接執行刪除動作
+            if( array_key_exists( $request->goods_id , $tmpcart ) ){
+                
+                unset( $tmpcart[ $request->goods_id ] );
+                ksort($tmpcart);
+
+            }
+
+            $request->session()->put('cart', $tmpcart);
+            
+            return json_encode( ['res'=>true , 'data' => $tmpcart ] );
+        }  
+
+    }
 }

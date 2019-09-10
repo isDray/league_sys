@@ -192,7 +192,12 @@
 @yield('selfjs')
 
 <script type="text/javascript">
-
+/*
+|--------------------------------------------------------------------------
+| 手機板menu按鍵
+|--------------------------------------------------------------------------
+|
+*/
 $(document).ready(function(){
     $(".hamburger").click(function(){
         $(this).toggleClass("is-active");
@@ -203,15 +208,7 @@ $(document).ready(function(){
 });
 
 
-$(document).ready(function(){
 
-    $("#cart_btn").click(function(){
-        //$(".cart_list").slideToggle();
-        $(".cart_list").animate({width:'toggle'},350);
-
-
-    });
-});
 
 /*
 |--------------------------------------------------------------------------
@@ -255,6 +252,8 @@ $(function(){
             
             }else{
 
+                alert( '成功加入購物車' );
+
                 // 如果順利加入購物車 , 就重整購物車內容
                 $(".cart_list_area").empty();
 
@@ -264,8 +263,8 @@ $(function(){
                     /*tmp_goods += "<tr><td colspan='4' class='cart_item_title'>"+listv['name']+"</td></tr>";*/
 
                     tmp_goods += "<tr><td class='tableimg'><img src='https://***REMOVED***.com/***REMOVED***/"+listv['thumbnail']+"'></td>"+
-                                      "<td>×"+listv['num']+"="+listv['subTotal']+"</td>"+
-                                      "<td><span class='btn bg-maroon btn-flat margin'><i class='fa fa-fw fa-remove'></i></span></td></tr>";
+                                      "<td width='30%'>×"+listv['num']+"="+listv['subTotal']+"</td>"+
+                                      "<td width='30%'><span class='btn bg-maroon btn-flat margin rmbtn' goods_id='"+listv['id']+"'><i class='fa fa-fw fa-remove'></i></span></td></tr>";
                     tmp_goods += "</table>";
                     
                     $(".cart_list_area").append( tmp_goods );
@@ -280,8 +279,69 @@ $(function(){
 
     })
     
-})
+});
 
+
+
+
+/*
+|--------------------------------------------------------------------------
+| 自購物車移除
+|--------------------------------------------------------------------------
+|
+*/
+$('body').on('click', '.rmbtn', function() {
+    
+    var rm_id = $(this).attr('goods_id');
+    
+    var rmrequest = $.ajax({
+        url: "{{url('/rm_from_cart')}}",
+        method: "POST",
+        data: { goods_id : rm_id ,
+                _token: "{{ csrf_token() }}",
+        },
+        dataType: "json"
+    });
+ 
+    rmrequest.done(function( res ) {
+        
+        alert( '成功移除商品' );
+
+        // 如果順利加入購物車 , 就重整購物車內容
+        $(".cart_list_area").empty();
+
+        $.each( res['data'] , function( listk , listv ){
+                    
+            var tmp_goods = "<table class='cart_table' width='100%'>";
+            /*tmp_goods += "<tr><td colspan='4' class='cart_item_title'>"+listv['name']+"</td></tr>";*/
+
+            tmp_goods += "<tr><td class='tableimg'><img src='https://***REMOVED***.com/***REMOVED***/"+listv['thumbnail']+"'></td>"+
+                             "<td width='30%'>×"+listv['num']+"="+listv['subTotal']+"</td>"+
+                             "<td width='30%'><span class='btn bg-maroon btn-flat margin rmbtn' goods_id='"+listv['id']+"'><i class='fa fa-fw fa-remove'></i></span></td></tr>";
+            tmp_goods += "</table>";
+                    
+            $(".cart_list_area").append( tmp_goods );
+        });
+    });
+ 
+    rmrequest.fail(function( jqXHR, textStatus ) {
+        //alert( "Request failed: " + textStatus );
+    });
+
+});
+
+
+
+
+/*
+|--------------------------------------------------------------------------
+| 避免移除商品時dropdown消失
+|--------------------------------------------------------------------------
+|
+*/
+$(document).on('click', '.dropdown-menu', function (e) {
+    e.stopPropagation();
+});
 </script>
 </body>
 </html>

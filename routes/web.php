@@ -200,4 +200,7 @@ Route::group(['middleware' => ['CheckLeague']], function () {
     // 加入購物車
     Route::post('/add_to_cart','CartController@add_to_cart');
 
+    // 移除購物車商品
+    Route::post('/rm_from_cart','CartController@rm_from_cart');
+
 });
