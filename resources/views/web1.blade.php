@@ -39,26 +39,6 @@
 
 <div class='container-fluid'>
 
-<div class="cart_list">
-    <div class="cart_goods">
-        <table width='100%' >
-            <tr>
-                <td colspan=4 >66666666</td>
-            </tr>
-            <tr>
-                <td>1</td>
-                <td>2</td>
-                <td>3</td>
-                <td>4</td>
-            </tr>
-  
-        </table>
-    </div>
-    <div class="cart_operate">
-        <a  class="btn btn-block btn-primary" href="">去結帳</a>
-    </div>
-</div>
-
 <div class='row'>
     <div class='col-md-12 col-sm-12 col-xs-12' id='menu_box'>
 
@@ -101,14 +81,26 @@
                 </li>
 
             </ul>
-
-            <div id="cart_btn" class='btn bg-maroon '>
-                <i class='fa fa-fw fa-shopping-cart'></i>
-            </div>            
-
+           
         </nav>  
 
+        <!-- 購物車 -->
+        <div class="dropdown cart_btn">
+                
+            <a id="dLabel" data-target="#" href="http://example.com/" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                <li class='fa fa-fw fa-shopping-cart'></li>
+            </a>
 
+            <ul id='cart_list' class="dropdown-menu" aria-labelledby="dLabel">                    
+                <li class="cart_list_area">
+
+                </li>
+                <li class="cart_btn_area">
+                    <a href="" class='btn bg-maroon btn-flat margin'>去結帳</a>
+                </li>
+            </ul>
+        </div>
+        <!-- /購物車 -->
     </div>
     <div class='col-md-2 col-md-offset-2 col-sm-2 col-sm-offset-2 col-xs-12' id='content_left'>
                        
@@ -174,6 +166,8 @@
         <div class='col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-12 text-center' id='footer_bottom' >
             <img src="https://***REMOVED***.com/***REMOVED***/ecs_static/img/165_1160.png" style="max-width:100%;">
         </div>
+
+
 
 </div>
 
@@ -262,16 +256,19 @@ $(function(){
             }else{
 
                 // 如果順利加入購物車 , 就重整購物車內容
-                $(".cart_goods").empty();
+                $(".cart_list_area").empty();
 
                 $.each( res['data'] , function( listk , listv ){
                     
-                    var tmp_goods = "<table width='100%'>";
-                    tmp_goods += "<tr><td colspan='4' class='cart_item_title'>"+listv['name']+"</td></tr>";
-                    tmp_goods += "<tr><td colspan='2' class='tableimg'><img src='https://***REMOVED***.com/***REMOVED***/"+listv['thumbnail']+"'></td><td><span class='btn'>移除</span></td></tr>";
+                    var tmp_goods = "<table class='cart_table' width='100%'>";
+                    /*tmp_goods += "<tr><td colspan='4' class='cart_item_title'>"+listv['name']+"</td></tr>";*/
+
+                    tmp_goods += "<tr><td class='tableimg'><img src='https://***REMOVED***.com/***REMOVED***/"+listv['thumbnail']+"'></td>"+
+                                      "<td>×"+listv['num']+"="+listv['subTotal']+"</td>"+
+                                      "<td><span class='btn bg-maroon btn-flat margin'><i class='fa fa-fw fa-remove'></i></span></td></tr>";
                     tmp_goods += "</table>";
                     
-                    $(".cart_goods").append( tmp_goods );
+                    $(".cart_list_area").append( tmp_goods );
                 });
             }
 
