@@ -7,7 +7,7 @@
 @section('content_right')
 <div class="box box-solid">
     
-    <div class="box-header with-border bg-yellow">
+    <div class="box-header with-border">
         <i class="fa fa-fw fa-shopping-cart"></i>
         <h3 class="box-title">購物車</h3>
     </div>
@@ -27,6 +27,10 @@
 
             
             @if( isset( $Carts ) )
+                @php 
+                    $cart_total = 0;
+                @endphp
+
                 @foreach( $Carts as $Cartk => $Cart )
                 <tr>
                     <td class='img_in_cart'><img src="https://***REMOVED***.com/***REMOVED***/{{$Cart['thumbnail']}}"></td>
@@ -42,10 +46,26 @@
 
                     </td>
                     <td>{{$Cart['subTotal']}}</td>
-                    <td> <span class='btn bg-maroon btn-flat margin rmbtn' goods_id="{{$Cart['id']}}"><i class='fa fa-fw fa-remove'></i></span> </td>
+                    <td> <span class='btn bg-maroon btn-flat margin rmbtn_cart' goods_id="{{$Cart['id']}}"><i class='fa fa-fw fa-remove'></i></span> </td>
                 </tr>
+                @php 
+                    $cart_total += $Cart['subTotal'];
+                @endphp
+
                 @endforeach
             @endif
+
+               
+                <tr>
+                    <td colspan='4' class='text-right'>總金額</td>
+                    <td colspan='2'>{{$cart_total}}</td>
+                </tr>
+
+                <tr>
+                    <td colspan='6' class='text-center' >
+                        <a class='btn bg-maroon btn-flat margin'>前往結帳</a>
+                    </td>
+                </tr>
             </tbody>
         </table>
     </div>
@@ -87,12 +107,47 @@ $(function(){
         toastr.success('成功修改數量');
 
         // 如果順利加入購物車 , 就重整購物車內容
-         location.reload();
+        location.reload();
     });
  
     changerequest.fail(function( jqXHR, textStatus ) {
         //alert( "Request failed: " + textStatus );
     });
+    });
+
+});
+
+
+
+
+/*
+|--------------------------------------------------------------------------
+| 自購物車移除( 由於需要重整頁面所以故意分開)
+|--------------------------------------------------------------------------
+|
+*/
+$('body').on('click', '.rmbtn_cart', function() {
+    
+    var rm_id = $(this).attr('goods_id');
+    
+    var rmrequest = $.ajax({
+        url: "{{url('/rm_from_cart')}}",
+        method: "POST",
+        data: { goods_id : rm_id ,
+                _token: "{{ csrf_token() }}",
+        },
+        dataType: "json"
+    });
+ 
+    rmrequest.done(function( res ) {
+        
+        toastr.success('成功移除商品');
+
+        location.reload();
+    });
+ 
+    rmrequest.fail(function( jqXHR, textStatus ) {
+        //alert( "Request failed: " + textStatus );
     });
 
 });
