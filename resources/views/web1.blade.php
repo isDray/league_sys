@@ -21,6 +21,8 @@
          folder instead of downloading all of them to reduce the load. -->
     <link rel="stylesheet" href="{{url('/AdminLTE/dist/css/skins/_all-skins.min.css')}}">
 
+    <link href="{{url('/toastr-master/build/toastr.min.css')}}" rel="stylesheet"/>
+
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -196,6 +198,8 @@
 <script src="{{url('/AdminLTE/bower_components/fastclick/lib/fastclick.js')}}"></script>
 <!-- AdminLTE App -->
 <script src="{{url('/AdminLTE/dist/js/adminlte.min.js')}}"></script>
+<script src="{{url('/toastr-master/build/toastr.min.js')}}"></script>
+
 
 @yield('selfcss')
 
@@ -209,6 +213,25 @@
 |
 */
 $(document).ready(function(){
+
+    toastr.options = {
+      "closeButton": true,
+      "debug": false,
+      "newestOnTop": false,
+      "progressBar": false,
+      "positionClass": "toast-bottom-right",
+      "preventDuplicates": false,
+      "onclick": null,
+      "showDuration": "200",
+      "hideDuration": "200",
+      "timeOut": "1000",
+      "extendedTimeOut": "1000",
+      "showEasing": "swing",
+      "hideEasing": "linear",
+      "showMethod": "fadeIn",
+      "hideMethod": "fadeOut"
+    }  
+
     $(".hamburger").click(function(){
         $(this).toggleClass("is-active");
         
@@ -258,12 +281,10 @@ $(function(){
 
                 });
                 
-                alert( alert_text );
-            
+                toastr.warning(alert_text);
             }else{
 
-                alert( '成功加入購物車' );
-
+                toastr.success('成功加入購物車');
                 // 如果順利加入購物車 , 就重整購物車內容
                 $(".cart_list_area").empty();
 
@@ -315,7 +336,7 @@ $('body').on('click', '.rmbtn', function() {
  
     rmrequest.done(function( res ) {
         
-        alert( '成功移除商品' );
+        toastr.success('成功移除商品');
 
         // 如果順利加入購物車 , 就重整購物車內容
         $(".cart_list_area").empty();
