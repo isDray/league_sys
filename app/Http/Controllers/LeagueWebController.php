@@ -33,8 +33,8 @@ class LeagueWebController extends Controller
                 $CenterBlocks[$CenterBlockk] = $BlockName->name;
 
             }
-        }
-        $request->session()->forget('cart');
+        }  
+        //$request->session()->forget('cart');
         
         return view('web_index', [ 'CenterBlocks' => $CenterBlocks ]);
     }

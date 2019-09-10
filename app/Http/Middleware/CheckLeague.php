@@ -52,7 +52,13 @@ class CheckLeague
         }   
 
         View::share('LeftBlocks' , $LeftBlocks);     
+        
+        if( $request->session()->has('cart') ){
 
+            View::share('Carts' , $request->session()->get('cart') );  
+
+        }
+        
         return $next($request);
     }
 }

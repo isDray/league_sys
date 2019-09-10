@@ -93,7 +93,17 @@
 
             <ul id='cart_list' class="dropdown-menu" aria-labelledby="dLabel">                    
                 <li class="cart_list_area">
+                    @if( isset( $Carts) )
 
+                        @foreach( $Carts as $Cartk => $Cart)
+                        <table class='cart_table' width='100%'>
+                            <tr><td class='tableimg'><img src="https://***REMOVED***.com/***REMOVED***/{{$Cart['thumbnail']}}"></td>
+                                <td width='30%'>×{{$Cart['num']}}={{$Cart['subTotal']}}</td>
+                                <td width='30%'><span class='btn bg-maroon btn-flat margin rmbtn' goods_id="{{$Cart['id']}}"><i class='fa fa-fw fa-remove'></i></span></td></tr>
+                        </table>
+                        @endforeach
+
+                    @endif
                 </li>
                 <li class="cart_btn_area">
                     <a href="" class='btn bg-maroon btn-flat margin'>去結帳</a>
