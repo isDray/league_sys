@@ -215,5 +215,8 @@ Route::group(['middleware' => ['CheckLeague']], function () {
     Route::post('/areaChange','CartController@areaChange');
 
     Route::post('/shipChange','CartController@shipChange');
+    
+    Route::any('/storeMap/{device}/{type}','CartController@storeMap');
+    
 
 });

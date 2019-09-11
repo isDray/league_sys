@@ -156,6 +156,15 @@ span#super_get_btn {
 /*input[type="radio"]{
 
 }*/
+@media( max-width: 768px){
+    span#super_get_btn {
+    	display: block!important;
+    	margin:0px;
+    	margin-top: 5px;
+    	width: 200px!important;
+    	text-align: center;
+    }
+}
 @media( max-width: 600px){
 	.shipLabel{
 	    width: 98%;

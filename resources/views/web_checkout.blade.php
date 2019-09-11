@@ -76,7 +76,7 @@
                 <span>配送方式:</span><br>
 
                 @foreach( $shipping_list as $shipping_listk => $shipping_listv)
-                <div class='col-md-3 col-sm-3 col-xs-4 shipBox'>
+                <div class='col-md-3 col-sm-3 col-xs-6 shipBox'>
                     <input type="radio" name="shipping" id="shipbox{{$shipping_listk}}" value="{{$shipping_listv['shipping_id']}}" @if( session()->has('chsShip') && session()->get('chsShip') == $shipping_listv['shipping_id']) checked @endif>
                     <label class='shipLabel' for="shipbox{{$shipping_listk}}" >
                         {{$shipping_listv['shipping_name']}}
@@ -358,9 +358,35 @@
     </div>
 
 </div>
+
+
+
+
+<div class="modal modal-danger fade " tabindex="-1" role="dialog">
+    
+    <div class="modal-dialog " role="document">
+        
+        <div class="modal-content">
+            
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">檢查失敗</h4>
+            </div>
+      
+            <div class="modal-body">
+                <p id='formErrTxt'></p>
+            </div>
+        
+        </div><!-- /.modal-content -->
+     
+    </div><!-- /.modal-dialog -->
+
+</div><!-- /.modal -->
+
 @endsection
 
 @section('selfjs')
+
 <script type="text/javascript">
 $(document).ready(function(){
     
@@ -571,7 +597,7 @@ $(document).ready(function(){
     });
     
 
- $('.modal').modal();
+
 
     /*----------------------------------------------------------------
      | 表單檢查
@@ -579,8 +605,7 @@ $(document).ready(function(){
      |
      */
     $('#checkout_form').submit(function(){ 
-        return true;
-        
+
         // 立即封鎖提交按鈕 , 避免重複提交
         $("#checkOutBtn").prop('disabled', true);
 
@@ -594,7 +619,7 @@ $(document).ready(function(){
 
             $("#formErrTxt").empty();
             $("#formErrTxt").append('請確認配送區域確實填寫。');
-            $('.modal').modal('open');
+            $('.modal').modal();
             $("#checkOutBtn").prop('disabled', false);
 
             return false;
@@ -607,7 +632,7 @@ $(document).ready(function(){
 
                 $("#formErrTxt").empty();
                 $("#formErrTxt").append('請確認配送區域確實填寫。');
-                $('.modal').modal('open');
+                $('.modal').modal();
                 $("#checkOutBtn").prop('disabled', false);                
                 return false;
             }
@@ -616,7 +641,7 @@ $(document).ready(function(){
 
                 $("#formErrTxt").empty();
                 $("#formErrTxt").append('請確認配送區域確實填寫。');
-                $('.modal').modal('open');
+                $('.modal').modal();
                 $("#checkOutBtn").prop('disabled', false);                
                 return false;
             }
@@ -626,7 +651,7 @@ $(document).ready(function(){
         if (form.find('input[name="shipping"][type!="hidden"]').length > 0 && form.find('input[name="shipping"]:checked').length < 1) {
             $("#formErrTxt").empty();
             $("#formErrTxt").append('尚未選取配送方式');
-            $('.modal').modal('open');
+            $('.modal').modal();
             $("#checkOutBtn").prop('disabled', false);      
             return false;
         }        
@@ -641,12 +666,13 @@ $(document).ready(function(){
         if( nowShip == '17' || nowShip == '18' || nowShip == '19' ){
         
 
+
             if( !$("input[name='super_name2']").last().val().length  ){
     
 
                 $("#formErrTxt").empty();
                 $("#formErrTxt").append('超商店名欄位為必填。');
-                $('.modal').modal('open');                
+                $('.modal').modal();                
                 $("#checkOutBtn").prop('disabled', false);          
                 return false;
             }   
@@ -656,7 +682,7 @@ $(document).ready(function(){
 
                 $("#formErrTxt").empty();
                 $("#formErrTxt").append('超商地址欄位為必填。');
-                $('.modal').modal('open');                 
+                $('.modal').modal();                 
                 $("#checkOutBtn").prop('disabled', false);          
                 return false;
             }
@@ -665,7 +691,7 @@ $(document).ready(function(){
 
                 $("#formErrTxt").empty();
                 $("#formErrTxt").append('收貨人欄位為必填。');
-                $('.modal').modal('open');                            
+                $('.modal').modal();                            
                 $("#checkOutBtn").prop('disabled', false);          
                 return false;
             }     
@@ -674,7 +700,7 @@ $(document).ready(function(){
 
                 $("#formErrTxt").empty();
                 $("#formErrTxt").append('手機欄位為必填。');
-                $('.modal').modal('open');                
+                $('.modal').modal();                
                 $("#checkOutBtn").prop('disabled', false);          
                 return false;
             }   
@@ -684,7 +710,7 @@ $(document).ready(function(){
     
                 $("#formErrTxt").empty();
                 $("#formErrTxt").append('手機格式錯誤,請再次確認。');
-                $('.modal').modal('open');                       
+                $('.modal').modal();                       
                 $("#checkOutBtn").prop('disabled', false);          
                 return false;  
             }
@@ -697,7 +723,7 @@ $(document).ready(function(){
     
                     $("#formErrTxt").empty();
                     $("#formErrTxt").append('自然人憑證格式錯誤,請再次確認。<br> 自然人憑證格式為:<br> 2碼大寫英文 + 14碼由0 ~ 9數字所組成 <br>範例:AW12556987322213');
-                    $('.modal').modal('open');                         
+                    $('.modal').modal();                         
                     $("#checkOutBtn").prop('disabled', false);          
                     return false;               
                 }
@@ -711,12 +737,14 @@ $(document).ready(function(){
     
                     $("#formErrTxt").empty();
                     $("#formErrTxt").append('手機載具格式錯誤,請再次確認。 <br> 手機載具格式為:<br> 以 / 開頭 + 7碼由 0~9、A~Z(大寫)、符號: . + - 所組成<br>範例:/94168A+');
-                    $('.modal').modal('open');                    
+                    $('.modal').modal();                    
                     $("#checkOutBtn").prop('disabled', false);          
                     return false;               
                 }       
     
             }        
+
+
             /*
             if( !$("input[name='super_email']").last().val().length  ){
     
@@ -737,7 +765,7 @@ $(document).ready(function(){
 
                 $("#formErrTxt").empty();
                 $("#formErrTxt").append('收件人欄位為必填。');
-                $('.modal').modal('open');                 
+                $('.modal').modal();                 
                 $("#checkOutBtn").prop('disabled', false);          
                 return false;
             }
@@ -746,7 +774,7 @@ $(document).ready(function(){
             
                 $("#formErrTxt").empty();
                 $("#formErrTxt").append('收件地址欄位為必填。');
-                $('.modal').modal('open');                      
+                $('.modal').modal();                      
                 $("#checkOutBtn").prop('disabled', false);          
                 return false;           
             }
@@ -768,7 +796,7 @@ $(document).ready(function(){
             
                 $("#formErrTxt").empty();
                 $("#formErrTxt").append('手機欄位為必填。');
-                $('.modal').modal('open');                   
+                $('.modal').modal();                   
                 $("#checkOutBtn").prop('disabled', false);          
                 return false;           
             }
@@ -780,7 +808,7 @@ $(document).ready(function(){
 
                 $("#formErrTxt").empty();
                 $("#formErrTxt").append('手機格式錯誤,請再次確認。');
-                $('.modal').modal('open');                  
+                $('.modal').modal();                  
                 $("#checkOutBtn").prop('disabled', false);          
                 return false;  
             }
@@ -793,7 +821,7 @@ $(document).ready(function(){
 
                     $("#formErrTxt").empty();
                     $("#formErrTxt").append('自然人憑證格式錯誤,請再次確認。<br> 自然人憑證格式為:<br> 2碼大寫英文 + 14碼由0 ~ 9數字所組成 <br>範例:AW12556987322213');
-                    $('.modal').modal('open');                    
+                    $('.modal').modal();                    
                     $("#checkOutBtn").prop('disabled', false);          
                     return false;               
                 }
@@ -808,7 +836,7 @@ $(document).ready(function(){
 
                     $("#formErrTxt").empty();
                     $("#formErrTxt").append('手機載具格式錯誤,請再次確認。 <br> 手機載具格式為:<br> 以 / 開頭 + 7碼由 0~9、A~Z(大寫)、符號: . + - 所組成<br>範例:/94168A+');
-                    $('.modal').modal('open');                      
+                    $('.modal').modal();                      
                     $("#checkOutBtn").prop('disabled', false);          
                     return false;               
                 }       
@@ -820,7 +848,7 @@ $(document).ready(function(){
             
             $("#formErrTxt").empty();
             $("#formErrTxt").append('尚未選取付款方式');
-            $('.modal').modal('open');   
+            $('.modal').modal();   
             $("#checkOutBtn").prop('disabled', false);      
             return false;
         }

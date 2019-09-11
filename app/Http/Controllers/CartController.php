@@ -603,4 +603,54 @@ class CartController extends Controller
 
         
     }    
+
+
+
+
+    /*----------------------------------------------------------------
+     | 開啟超商選擇
+     |----------------------------------------------------------------
+     |
+     */
+    public function storeMap( Request $request ){
+        
+        // 要執行的動作
+        $status = 'get_store_map';
+        
+        // 如果是綠界回傳 , 則直接存進session即可
+        if( isset($request->CVSStoreID) && isset($request->CVSStoreName) ){
+
+            $status = 'store_call_back';
+            //LogisticsSubType
+            $CVSArr = [];
+            
+            $CVSArr['CVSStoreID']   = $request->CVSStoreID;
+            $CVSArr['CVSStoreName'] = $request->CVSStoreName;
+            $CVSArr['CVSAddress']   = $request->CVSAddress;
+
+            $request->session()->put("{$request->LogisticsSubType}", $CVSArr );
+        }        
+
+        // 超商代碼
+        $type   = $request->type;
+
+        //裝置代碼
+        $device = $request->device;
+
+        
+        // 如果不是要選取超商 , 則直接轉跳至收貨人訊息葉面即可
+        if( $status == 'get_store_map' ){
+
+            return view("storeMap")->with([
+                                           'status' => $status,
+                                           'type'   => $type,
+                                           'device' => $device
+                                         ]);
+
+        }else{
+
+            return redirect("/checkout");
+        }
+
+    }    
 }
