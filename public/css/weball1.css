@@ -126,6 +126,10 @@
 	width: auto!important;
 	display: inline-block!important;
 }
+.custom_form_title{
+    padding-top: 0px!important;
+    padding-bottom: 0px!important;
+}
 /*
 |--------------------------------------------------------------------------
 | 購物車按鈕
