@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Validator;
 use DB;
+use App\Cus_lib\Lib_common;
 
 class CartController extends Controller
 {
@@ -411,7 +412,7 @@ class CartController extends Controller
     |--------------------------------------------------------------------------
     | 訂單寫入資料庫
     |--------------------------------------------------------------------------
-    |
+    | 
     |
     */
 
@@ -562,7 +563,185 @@ class CartController extends Controller
             
             return redirect()->back()->withErrors($validator);
             //return redirect()->back(); 
-        }         
+        } 
+
+        if( $request->inv_payee != '' ||  $request->inv_content != ''  ) $request->carruer_type = '0' ;
+
+        $inv_type = ( $request->inv_payee != '' ||  $request->inv_content != ''  ) ? '三聯式發票' : '一般發票開立' ;
+        
+        $consignee = [];
+        // 初始最後要寫入的訂單資訊 
+        $order = array(
+        'shipping_id'     => intval( $request->shipping ),
+        'pay_id'          => intval( $request->payment ),
+        'pack_id'         => 0,//isset($_POST['pack']) ? intval($_POST['pack']) : 0,
+        'card_id'         => 0,//isset($_POST['card']) ? intval($_POST['card']) : 0,
+        'card_message'    => '',//trim($_POST['card_message']),
+        'surplus'         => 0.00,//isset($_POST['surplus']) ? floatval($_POST['surplus']) : 0.00,
+        'integral'        => 0,//isset($_POST['integral']) ? intval($_POST['integral']) : 0,
+        'bonus_id'        => 0,//isset($_POST['bonus']) ? intval($_POST['bonus']) : 0,
+        'need_inv'        => 0,//empty($_POST['need_inv']) ? 0 : 1,
+        'inv_type'        => $inv_type,
+        'inv_payee'       => trim($request->inv_payee),
+        'inv_content'     => trim($request->inv_content),
+        'postscript'      => trim($request->postscript),
+        'how_oos'         => '',//isset($_LANG['oos'][$_POST['how_oos']]) ? addslashes($_LANG['oos'][$_POST['how_oos']]) : '',
+        'need_insure'     => 0,//isset($_POST['need_insure']) ? intval($_POST['need_insure']) : 0,
+        'user_id'         => 0,//$_SESSION['user_id'],
+        'add_time'        => (time() - date('Z')),
+        'order_status'    => 0,
+        'shipping_status' => 0,
+        'pay_status'      => 0,
+        'agency_id'       => 0,//get_agency_by_regions(array($consignee['country'], $consignee['province'], $consignee['city'], $consignee['district'])),
+        'carruer_type'    => trim($request->carruer_type),
+        'ei_code'         => trim($request->ei_code),
+        'from_ad_od_sn'   => '',
+        'from_ip'         => $this->real_ip(),
+        'country'         => $request->country,
+        'province'        => $request->province,
+        'city'            => $request->city 
+        );
+
+        $order['from_ad'] = '0';
+        $order['referer'] = '本站';
+
+        $order['bonus'] = 0;
+        $order['goods_amount'] = $total['goods_price'];
+        $order['discount'] = 0;
+        $order['surplus']  = 0;
+        $order['tax']      = 0;
+        $order['rent_total'] = 0;
+        $order['bonus_id'] = 0;
+
+        $shipcode = DB::table('xyzs_shipping')
+                 ->select('shipping_code','shipping_name')
+                 ->where('shipping_id','=',$request->shipping)
+                 ->where('enabled','=',1)
+                 ->first();
+
+        $order['shipping_code'] = $shipcode->shipping_code;
+
+        $super_name      =  trim($request->super_name2);
+        $super_addr      =  trim($request->super_addr2);
+        $super_no        =  trim($request->super_no2);
+        $super_consignee =  trim($request->super_consignee);
+        $super_mobile    =  trim($request->super_mobile);
+        $super_email     =  trim($request->super_email); 
+
+        if( $order['shipping_code']  == 'super_get' ){
+
+        }elseif( $order['shipping_code']  == 'super_get2' ){
+
+        }elseif( $order['shipping_code']  == 'super_get3' ){
+
+        }
+
+        $showDoneString = False ; 
+
+        if( $order['shipping_code']  == 'super_get' || $order['shipping_code']  == 'super_get2' || $order['shipping_code']  == 'super_get3' ){
+            
+            $showDoneString = True;
+        }
+
+        // 除了超商配送外  , 其他物流
+        if( $order['shipping_code']  == 'ecan'  || $order['shipping_code']  == 'postoffice' || $order['shipping_code']  == 'flat'
+         || $order['shipping_code']  == 'flat_lan' || $order['shipping_code']  == 'hct' || $order['shipping_code']  == 'hct_shun'
+         || $order['shipping_code']  == 'kerry_tj' || $order['shipping_code']  == 'tjoin' || $order['shipping_code']  == 'acac'
+         ){ 
+
+            // 整理收貨人資料
+            $consignee['address']   = isset($request->address) ? trim($request->address) : '' ;
+            $consignee['consignee'] = isset($request->consignee) ? trim($request->consignee) : '' ;
+            $consignee['email']     = isset($request->email) ? trim($request->email) : '' ;
+            $consignee['zipcode']   = isset($request->zipcode) ? trim($request->zipcode) : '' ;
+            $consignee['tel']       = isset($request->tel) ? trim($request->tel) : '' ; 
+            $consignee['best_time'] = isset($request->best_time) ? trim($request->best_time) : '' ;
+            $consignee['mobile']    = isset($request->mobile) ? trim($request->mobile) : '' ;
+            $consignee['sign_building'] = isset($request->sign_building) ? trim($request->sign_building) : '' ;
+
+        }   
+        
+        $order['shipping_name'] = $shipcode->shipping_name;
+
+        if( $order['shipping_code']  == 'super_get' || $order['shipping_code']  == 'super_get2' || $order['shipping_code']  == 'super_get3' ){
+            
+            $order['shipping_type'] = addslashes( $request->super_type );
+            $order['shipping_super_name'] = addslashes( $request->super_name2 );
+            $order['shipping_super_no'] = addslashes( $request->super_no2);
+            $order['shipping_super_addr'] = addslashes( $request->super_addr2 );
+            $order['address'] = addslashes( $request->super_name2 ).'_'.addslashes( $request->super_addr2 );
+
+        }     
+        
+        // 收貨人訊息轉換
+        foreach ($consignee as $key => $value){
+            
+            $order[$key] = addslashes($value);
+        }
+
+        /*超商寫入*/
+        if( $order['shipping_code']  == 'super_get' || $order['shipping_code']  == 'super_get2' || $order['shipping_code']  == 'super_get3' ){
+
+            $order['mobile']    = addslashes( trim( $request->super_mobile ));
+            $order['consignee'] = addslashes( trim( $request->super_consignee));
+            $order['email']     = addslashes( trim( $request->super_email));
+            $order['tel']   = '';
+
+        }           
+
+        $order['scode'] = 9453;
+        
+        // 運費
+        $allFee = $this->available_shipping_list( [$request->country , $request->province ] );
+        
+        $allFee = json_decode( $allFee , true );
+        
+        // var_dump($allFee);
+        foreach ($allFee as $allFeek => $allFeev) {
+            
+            if( $allFeev['shipping_id'] == $request->shipping ){
+
+                $shipping_cfg = $this->unserialize_config($allFeev['configure']);
+
+                $tmpfee = $this->shipping_fee( $request->session()->get('cart') ,$shipping_cfg );
+                
+                break;
+            }
+        }
+        
+        $order['shipping_fee'] = ($order['goods_amount'] >= $tmpfee['free'])?0:$tmpfee['fee'];
+
+        $order['insure_fee'] = 0;
+
+        if ($order['pay_id'] > 0){
+            
+            $payment = DB::table('payment')->where('pay_id','=',$order['pay_id'])->first();
+            
+            $order['pay_name'] = addslashes( $payment->pay_name );
+        }    
+
+        $order['order_amount'] = $order['goods_amount'] + $order['shipping_fee'] + $order['tax'];
+
+        // 保留原始手機及家電
+        $mobileForMail   = $order['mobile'];
+        $telForMail      = $order['tel'];
+    
+        // 採用訂單編號執行加密後,再對該筆訂單進行更新動作
+        $order['mobile'] = empty($order['mobile']) ? '' : $this->mobileEncode( '' , $order['mobile'] );
+        $order['tel']    = empty($order['tel']) ?    '' : $this->telEncode   ( '' , $order['tel']);
+
+        // 開始寫入訂單
+        $error_no = 0;
+        
+        // $this->get_order_sn();
+        unset($order['need_inv']);
+        unset($order['need_insure']);
+        unset($order['shipping_code']);
+
+
+
+
+        $inSwitch = 1;                                   
     }
 
 
@@ -813,5 +992,47 @@ class CartController extends Controller
             return redirect("/checkout");
         }
 
+    }    
+
+
+
+
+    /*----------------------------------------------------------------
+     | 計算費用相關
+     |----------------------------------------------------------------
+     |
+     */
+    public function order_fee( $carts ){
+        
+        $total  = array('real_goods_count' => 0,
+                        'gift_amount'      => 0,
+                        'goods_price'      => 0,
+                        'market_price'     => 0,
+                        'discount'         => 0,
+                        'pack_fee'         => 0,
+                        'card_fee'         => 0,
+                        'shipping_fee'     => 0,
+                        'shipping_insure'  => 0,
+                        'integral_money'   => 0,
+                        'bonus'            => 0,
+                        'surplus'          => 0,
+                        'cod_fee'          => 0,
+                        'pay_fee'          => 0,
+                        'tax'              => 0
+                  );  
+
+        // 計算商品總價
+        $tmpTotal = 0;
+        
+       // var_dump($carts);
+
+        foreach ( $carts as $cartk => $cart ) {
+            
+            $tmpTotal += $cart['subTotal'] ;
+        }
+        
+        $total['goods_price'] = $tmpTotal;
+
+        return $total;
     }    
 }
