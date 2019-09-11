@@ -5,6 +5,21 @@
 @endsection
 
 @section('content_right')
+
+@if ($errors->any())
+<div class="alert alert-danger alert-dismissible">
+    
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+    
+    <h4><i class="icon fa fa-ban"></i> 錯誤 </h4>
+    
+        
+        @foreach ($errors->all() as $error)
+            <li>{{$error}}</li>
+        @endforeach
+</div>
+@endif
+
 <div class="box box-solid">
     
     <div class="box-header with-border">
@@ -158,13 +173,13 @@
                                    
                             @if( $shipping_listv['shipping_code'] == 'super_get' || $shipping_listv['shipping_code'] == 'super_get2' || $shipping_listv['shipping_code'] == 'super_get3')
                             <div class="form-group">
-                                <label for="">收貨人：</label>
+                                <label for=""><font color="red">*</font>收貨人：</label>
                                 <input type="text" class="super_consignee form-control " name="super_consignee" value=""  disabled="disabled" />
 
                             </div> 
 
                             <div class="form-group">
-                                <label for="">手機：</label>
+                                <label for=""><font color="red">*</font>手機：</label>
                                 <input type="text" class="super_mobile form-control" name="super_mobile" value=""  placeholder="格式:0912345678" disabled="disabled" />
 
                             </div> 
@@ -187,12 +202,12 @@
                             </div>                            
                                  
                             <div class="form-group">
-                                <label for=""><font color="red">*</font>郵遞區號：</label>
+                                <label for=""><font color="red"></font>郵遞區號：</label>
                                 <input type="text" name="zipcode" value="" class="form-control"/>
                             </div>
 
                             <div class="form-group">
-                                <label for=""><font color="red">*</font>電子郵件：</label>
+                                <label for=""><font color="red"></font>電子郵件：</label>
                                 <input name="email" type="text" value="" class="form-control"/>(訂單收信用)
                             </div>                            
 
@@ -251,7 +266,7 @@
 
             <!-- 付款方式 -->
             <div class="col-md-12 col-sm-12 col-xs-12" id='payArea'>
-                <span>付款方式:</span><br>
+                <span><font color="red">*</font>付款方式:</span><br>
 
                 @foreach( $payment_list as $paymentk => $payment)
                 <div class="col-md-3 col-sm-3 col-xs-12 payBox">
@@ -388,8 +403,9 @@
 @section('selfjs')
 
 <script type="text/javascript">
+
 $(document).ready(function(){
-    
+    $('.taskTooltip').tooltip({trigger: 'manual'}).tooltip('show');
 
     /*----------------------------------------------------------------
      | 選取國家動態轉換州的內容
@@ -605,6 +621,8 @@ $(document).ready(function(){
      |
      */
     $('#checkout_form').submit(function(){ 
+        
+        return true;
 
         // 立即封鎖提交按鈕 , 避免重複提交
         $("#checkOutBtn").prop('disabled', true);

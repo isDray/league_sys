@@ -403,6 +403,167 @@ class CartController extends Controller
 
         }
     }
+    
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | 訂單寫入資料庫
+    |--------------------------------------------------------------------------
+    |
+    |
+    */
+
+    public function done( Request $request ){
+        
+        // 檢查購物車有商品 , 如果沒有購物車或者沒有商品就視為違法操作直接導回首頁
+        if( !$request->session()->has('cart') || count( $request->session()->get('cart') ) < 1 ){
+            
+            return redirect('/');
+        }  
+
+
+        // 驗證機制 , 根據配送方式不同需要驗證的欄位也不同
+        if( !isset( $request->shipping ) || empty( $request->shipping ) ){
+
+            return redirect()->back()->withErrors(['shipping'=>['尚未選取付費方式']]);
+        }
+
+        // 根據不同配送配送方式採取不同檢驗
+        if( in_array( $request->shipping , ['17','18','19'] )){
+            
+            $validationCond = [
+                'shipping'    => 'required', 
+                'super_name2' => 'required',
+                'super_addr2' => 'required',
+                'super_type'  => 'required',
+                'super_no2'   => 'required',
+                'super_consignee' => 'required',
+                'super_mobile'    => 'required|regex:/^09[0-9]{8}$/',
+                'super_email'     => 'nullable|email',
+                'payment'      => 'required', 
+                'carruer_type' => 'required',
+            ];
+            
+            $validationMsg = [   'shipping.required' => '配送方式尚未選取',
+                'super_name2.required' => '超商尚未選取',
+                'super_addr2.required' => '超商地址尚未選取',
+                'super_type.required'  => '超商地址尚未選取',
+                'super_no2.required'   => '超商地址尚未選取',
+                'super_consignee.required' => '收貨人姓名為必填',
+                'super_mobile.required' => '手機欄位為必填',
+                'super_mobile.regex'=> '手機格式錯誤',
+                'super_email.email' => '電子郵件格式錯誤',
+                'payment.required'  => '付款方式為必選',
+                'carruer_type.required' => '電子發票需選取'
+            ];
+
+            // 自然人憑證
+            if(  $request->carruer_type == 2 ){
+
+                $validationCond['ei_code'] = 'required|regex:/^[A-Z]{2}[0-9]{14}$/';
+
+                $validationMsg['ei_code.required'] = '自然人憑證需填寫';
+
+                $validationMsg['ei_code.regex'] = '自然人憑證格式錯誤';
+            }
+
+            // 手機載具
+            if(  $request->carruer_type == 3 ){
+
+                $validationCond['ei_code'] = 'required|regex:/^\/{1}[0-9A-Z\.\-\+]{7}$/';
+
+                $validationMsg['ei_code.required'] = '手機載具需填寫';
+
+                $validationMsg['ei_code.regex'] = '手機載具格式錯誤';                
+            }            
+            
+            if( !empty($request->inv_payee) || !empty($request->inv_content) ){
+
+                $validationCond['inv_payee']   = 'required';
+
+                $validationCond['inv_content'] = 'required';
+
+                $validationMsg['inv_payee.required']   = '如果需開立統編 , 統編為必填';
+
+                $validationMsg['inv_content.required'] = '如果需開立統編 , 公司抬頭為必填';
+
+            }
+            $validator = Validator::make($request->all(), $validationCond , $validationMsg );
+
+            if ($validator->fails()) {
+                
+                //var_dump($validator->errors());
+                
+            }
+        }else{
+            $validationCond = [
+                'shipping'    => 'required', 
+                'consignee'   => 'required',
+                'address'     => 'required',
+                'mobile'    => 'required|regex:/^09[0-9]{8}$/',
+                'email'     => 'nullable|email',
+                'payment'      => 'required', 
+                'carruer_type' => 'required',
+            ];
+            
+            $validationMsg = [   
+                'shipping.required' => '配送方式尚未選取',
+                'consignee.required' => '收貨人姓名為必填',
+                'address.required' => '收貨人地址為必填',
+                'mobile.required' => '手機欄位為必填',
+                'mobile.regex'=> '手機格式錯誤',
+                'email.email' => '電子郵件格式錯誤',
+                'payment.required'  => '付款方式為必選',
+                'carruer_type.required' => '電子發票需選取'
+            ];
+            // 自然人憑證
+            if(  $request->carruer_type == 2 ){
+
+                $validationCond['ei_code'] = 'required|regex:/^[A-Z]{2}[0-9]{14}$/';
+
+                $validationMsg['ei_code.required'] = '自然人憑證需填寫';
+
+                $validationMsg['ei_code.regex'] = '自然人憑證格式錯誤';
+            }
+
+            // 手機載具
+            if(  $request->carruer_type == 3 ){
+
+                $validationCond['ei_code'] = 'required|regex:/^\/{1}[0-9A-Z\.\-\+]{7}$/';
+
+                $validationMsg['ei_code.required'] = '手機載具需填寫';
+
+                $validationMsg['ei_code.regex'] = '手機載具格式錯誤';                
+            }            
+            
+            if( !empty($request->inv_payee) || !empty($request->inv_content) ){
+
+                $validationCond['inv_payee']   = 'required';
+
+                $validationCond['inv_content'] = 'required';
+
+                $validationMsg['inv_payee.required']   = '如果需開立統編 , 統編為必填';
+
+                $validationMsg['inv_content.required'] = '如果需開立統編 , 公司抬頭為必填';
+
+            }
+            $validator = Validator::make($request->all(), $validationCond , $validationMsg );       
+
+            if ($validator->fails()) {
+                
+                //var_dump($validator->errors());
+                
+            }     
+        } 
+
+        if ($validator->fails()) {
+            
+            return redirect()->back()->withErrors($validator);
+            //return redirect()->back(); 
+        }         
+    }
 
 
 
