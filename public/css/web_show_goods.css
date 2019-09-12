@@ -1,0 +1,32 @@
+/*
+|--------------------------------------------------------------------------
+| 商品內頁css
+|--------------------------------------------------------------------------
+*/
+.show_goods_title{
+	font-weight: 900;
+	font-family: '微軟正黑體';
+}
+
+#wavebox{
+	width: 120px;
+	height: 200px;
+	border:1px solid black;
+	position: relative;
+	overflow: hidden
+}
+
+.in_goods_info , .in_goods_info > h4{
+    font-weight: 900;
+	font-family: '微軟正黑體'!important;
+}
+.in_goods_info > .btn {
+	margin-left: 0px;
+	margin-right: 0px;
+}
+.in_goods_des{
+	overflow: hidden;
+}
+.in_goods_des > img{
+	max-width: 100%;
+}

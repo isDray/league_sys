@@ -1,7 +1,7 @@
 @extends("web1")
 
 @section('selfcss')
-<link rel="stylesheet" href="{{url('/css/login.css')}}">
+<link rel="stylesheet" href="{{url('/css/web_show_goods.css')}}">
 @endsection
 
 @section('content_left')
@@ -19,7 +19,7 @@
     
     <div class="box-header with-border">
 
-        <h2 class="box-title">{{$GoodsData['goods_name']}}</h2>
+        <h2 class="box-title show_goods_title">{{$GoodsData['goods_name']}}</h2>
     </div>
     
     <!-- /.box-header -->
@@ -33,16 +33,16 @@
 
     	</div>
         
-        <div class="col-md-5 col-sm-5 col-xs-12">    	
+        <div class="col-md-5 col-sm-5 col-xs-12 in_goods_info">    	
             
-            <h2>商品售價:{{ round($GoodsData['shop_price']) }}</h2>
+            <h4>商品售價:{{ round($GoodsData['shop_price']) }}</h4>
 
-            <h2>商品編號:{{ $GoodsData['goods_sn'] }}</h2>
+            <h4>商品編號:{{ $GoodsData['goods_sn'] }}</h4>
            
-            <p><label for="num">數量:</label>
+            <p><label for="in_goods_num">數量:</label>
                  
                 @if( $GoodsData['goods_number'] > 0)
-                <select name='num' id='num'> 
+                <select name='in_goods_num' id='in_goods_num' class='form-control'> 
                     @for( $num = 1 ; $num <= $GoodsData['goods_number'] ; $num ++ )
                     <option value="{{$num}}" >{{$num}}</option>
                     @endfor
@@ -52,7 +52,7 @@
                 @endif
 
             </p>
-            <span class="waves-effect waves-light btn pink accent-1  @if( $GoodsData['goods_number'] < 1) disabled @endif inner_add_to_cart" value="{{ $GoodsData['goods_id'] }}">加入購物車</span>        	
+            <span class="btn bg-maroon btn-flat margin  @if( $GoodsData['goods_number'] < 1) disabled @endif inner_add_to_cart" goods_id="{{ $GoodsData['goods_id'] }}">加入購物車</span>        	
         </div>
     </div>
     <!-- /.box-body -->
@@ -66,7 +66,7 @@
     </div>
     
     <!-- /.box-header -->
-    <div class="box-body">
+    <div class="box-body in_goods_des">
         @foreach( $goodsImgs as $goodsImgk => $goodsImg )
 
             
@@ -83,5 +83,83 @@
 @endsection
 
 @section('selfjs')
+<script type="text/javascript">
 
+/*
+|--------------------------------------------------------------------------
+| 商品內頁加入購物車
+|--------------------------------------------------------------------------
+| 由於商品詳細頁中 , 可以選擇數量 , 所以要另外區別
+|
+*/
+$(function(){
+
+    $(".inner_add_to_cart").click(function(){
+
+        var in_goods_id  = $(this).attr('goods_id');
+        var in_goods_num = $("#in_goods_num").val();
+        
+        if (typeof in_goods_num === "undefined") {
+            
+            toastr.warning('本商品目前無庫存');
+            return;
+
+        }
+
+        var request = $.ajax({
+            url: "{{url('/add_to_cart')}}",
+            method: "POST",
+            data: { goods_id : in_goods_id ,
+                    _token: "{{ csrf_token() }}",
+                    number: in_goods_num,
+                  },
+            dataType: "json"
+        });
+ 
+        request.done(function( res ) {
+
+            if( res['res'] == false ){
+
+                var alert_text = '';
+
+                $.each(res['data'] , function( errork, errorv){
+
+                    $.each(errorv , function( errork2, errorv2){
+                        alert_text += errorv2;
+                    });
+
+                });
+                
+                toastr.warning(alert_text);
+            }else{
+
+                toastr.success('成功加入購物車');
+                // 如果順利加入購物車 , 就重整購物車內容
+                $(".cart_list_area").empty();
+
+                $.each( res['data'] , function( listk , listv ){
+                    
+                    var tmp_goods = "<table class='cart_table' width='100%'>";
+                    /*tmp_goods += "<tr><td colspan='4' class='cart_item_title'>"+listv['name']+"</td></tr>";*/
+
+                    tmp_goods += "<tr><td class='tableimg'><img src='https://***REMOVED***.com/***REMOVED***/"+listv['thumbnail']+"'></td>"+
+                                      "<td width='30%'>×"+listv['num']+"="+listv['subTotal']+"</td>"+
+                                      "<td width='30%'><span class='btn bg-maroon btn-flat margin rmbtn' goods_id='"+listv['id']+"'><i class='fa fa-fw fa-remove'></i></span></td></tr>";
+                    tmp_goods += "</table>";
+                    
+                    $(".cart_list_area").append( tmp_goods );
+                });
+            }
+
+        });
+ 
+        request.fail(function( jqXHR, textStatus ) {
+            //alert( "Request failed: " + textStatus );
+        });
+
+    })
+    
+});
+
+</script>
 @endsection
