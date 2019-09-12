@@ -100,10 +100,13 @@
       <!-- Sidebar user panel -->
       <!-- sidebar menu: : style can be found in sidebar.less -->
       <ul class="sidebar-menu" data-widget="tree">
+
+        <li><a href="{{url('/league_dashboard')}}"><i class="fa fa-fw fa-dashboard text-green"></i> <span>管理後台首頁</span></a></li>
+
         <li class="header">報表</li>
         <li class="treeview">
-          <a href="#">
-            <i class="fa fa-dashboard text-red"></i> <span>後台管理首頁</span>
+          <a href="{{url('/league_dashboard')}}">
+            <i class="fa fa-dashboard text-green"></i> <span>訂單報表</span>
             <span class="pull-right-container">
               <i class="fa fa-angle-left pull-right"></i>
             </span>

@@ -19,10 +19,38 @@ class LeagueController extends Controller
     |
     */
     public function index( Request $request ){
+        
+        $LeagueId = $request->session()->get('user_id');
+     
+        $MonthStart = strtotime( date('Y-m-01') ) -  date('Z');
 
-        //$request->session()->forget('user_id');
+        $MonthEnd   =  strtotime( date('Y-m-t 23:59:59', strtotime('now')) ) - date('Z');
+        
+        // 取出訂單數
+        $Orders = DB::table('xyzs_order_info')
+        ->where('league',$LeagueId)
+        ->where('add_time','>=',$MonthStart)
+        ->where('add_time','<=',$MonthEnd)
+        ->get();
+        
+        $OrderNum = count( $Orders );
+        
+        
+        // 取出完成訂單數
+        /*
+        $Orders = DB::table('xyzs_order_info')
+        ->where('league',$LeagueId)
+        ->where('add_time','>=',$MonthStart)
+        ->where('add_time','<=',$MonthEnd)
+        ->where(function( $query ){
+            $query->where('')
+            ->where('')
+        })
+        ->get();
+        */
+         
 
-        return view('league_dashboard');
+        return view('league_dashboard' , ['OrderNum'=>$OrderNum]);
     }
     
     
