@@ -59,6 +59,7 @@
     <!-- /.box-header -->
     <div class="box-body">
         @foreach( $Goods as $Goodk => $Good)
+        <a href="{{url('/show_goods/'.$Good['goods_id'])}}">
         <div class='col-md-3 col-sm-4 col-xs-6'>
 
             <div class="thumbnail">
@@ -73,6 +74,7 @@
             </div>                
             
         </div>
+        </a>
         @endforeach
         <div class="col-md-12 col-sm-12 col-xs-12">
         	{!! $Pages !!}

@@ -20,6 +20,22 @@ class CategoryController extends Controller
         // 分類ID
         $CatId = $request->cat_id;
 
+        // 確認是否為母分類
+        $IfRoot = DB::table('xyzs_category')->where('cat_id',$CatId)->first();
+        
+        $CatArr = [ $CatId ];
+
+        if( $IfRoot->parent_id == 0 ){
+
+            $AllChildCates = DB::table('xyzs_category')->where('parent_id',$CatId)->get();
+            
+            foreach ($AllChildCates as $AllChildCatek => $AllChildCate ) {
+                
+                array_push( $CatArr , $AllChildCate->cat_id );
+            }
+
+        }
+
         $CatSortItem = !empty( $request->cat_sort_item )? $request->cat_sort_item : $cat_sort_item;
 
         $CatSortWay  = !empty( $request->cat_sort_way )? $request->cat_sort_way : $cat_sort_way;
@@ -66,11 +82,12 @@ class CategoryController extends Controller
 
         // 撈出符合分類之商品
         $CondQuery = DB::table('xyzs_goods AS g')
+                   ->select("g.*")
                    ->leftJoin('xyzs_goods_cat AS c', 'g.goods_id', '=', 'c.goods_id')
                    ->where('g.is_on_sale','1')
-                   ->where(function( $query  )use ($CatId){
-                       $query->where('g.cat_id',$CatId)
-                             ->orWhere('c.cat_id',$CatId);
+                   ->where(function( $query  )use ($CatArr){
+                       $query->whereIn('g.cat_id',$CatArr)
+                             ->orWhereIn('c.cat_id',$CatArr);
                    });
             
         $CondQuery->orderBy($CatSortItem,$CatSortWay);
