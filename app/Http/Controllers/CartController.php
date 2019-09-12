@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Validator;
 use DB;
 use App\Cus_lib\Lib_common;
+use App\Cus_lib\allpay_card;
 
 class CartController extends Controller
 {
@@ -604,6 +605,16 @@ class CartController extends Controller
 
         $order['from_ad'] = '0';
         $order['referer'] = '本站';
+        
+        $order['extension_code'] = '';
+        $order['extension_id'] = 0;
+        
+        // 由於沒有會員 , 固定不會有積分相關資料
+        $order['surplus']  = 0;
+        $order['integral'] = 0;
+
+        // 費用計算
+        $total = $this->order_fee( $request->session()->get('cart') );
 
         $order['bonus'] = 0;
         $order['goods_amount'] = $total['goods_price'];
@@ -708,14 +719,16 @@ class CartController extends Controller
                 break;
             }
         }
-        
+
+        $order['o_weight']  = 0;
+
         $order['shipping_fee'] = ($order['goods_amount'] >= $tmpfee['free'])?0:$tmpfee['fee'];
 
         $order['insure_fee'] = 0;
 
         if ($order['pay_id'] > 0){
             
-            $payment = DB::table('payment')->where('pay_id','=',$order['pay_id'])->first();
+            $payment = DB::table('xyzs_payment')->where('pay_id','=',$order['pay_id'])->first();
             
             $order['pay_name'] = addslashes( $payment->pay_name );
         }    
@@ -727,8 +740,8 @@ class CartController extends Controller
         $telForMail      = $order['tel'];
     
         // 採用訂單編號執行加密後,再對該筆訂單進行更新動作
-        $order['mobile'] = empty($order['mobile']) ? '' : $this->mobileEncode( '' , $order['mobile'] );
-        $order['tel']    = empty($order['tel']) ?    '' : $this->telEncode   ( '' , $order['tel']);
+        $order['mobile'] = empty($order['mobile']) ? '' : Lib_common::mobileEncode( '' , $order['mobile'] );
+        $order['tel']    = empty($order['tel']) ?    '' : Lib_common::telEncode   ( '' , $order['tel']);
 
         // 開始寫入訂單
         $error_no = 0;
@@ -737,11 +750,177 @@ class CartController extends Controller
         unset($order['need_inv']);
         unset($order['need_insure']);
         unset($order['shipping_code']);
+        
+        $order['BankCode'] = '';
 
+        $order['atmAC'] = '';
 
+        $order['upload_select'] = 0;
 
+        $order['cardno'] = '';
 
-        $inSwitch = 1;                                   
+        $order['device_info'] = '';
+        
+        $order['dealer_id'] = 0;
+        
+        $order['league'] = $request->session()->get('user_id');
+        
+        $order['league_pay'] = 0;
+        
+        
+        
+        
+
+        $inSwitch = 1;
+
+        do{
+            
+            $order['order_sn'] = $this->get_order_sn();
+
+            try {
+                
+                $res = DB::table('xyzs_order_info')->insertGetId( $order );
+                
+                $lastID = $res;
+
+                $inSwitch = 0;
+
+            } catch (\Exception $e) {
+                
+                var_dump($e->getMessage());
+                if (strpos( $e->getMessage() ,'1062 Duplicate entry') == false) {
+
+                    $inSwitch = 0;
+
+                }
+    
+            }
+
+        }while ( $inSwitch == 1 );
+
+        
+        $order['log_id'] = $this->insert_pay_log( $lastID , $order['order_amount'] , 0);
+
+        $cartArr  = $request->session()->get('cart');
+
+        $goodList = array_keys( $request->session()->get('cart') );
+
+        $goods = DB::table('xyzs_goods')
+                    ->select('goods_id','goods_name','goods_sn','market_price','shop_price','is_real','extension_code','rent_price','upon_stock','in_stock')
+                    ->whereIn('goods_id',$goodList)
+                    ->get();
+        
+        // 轉換為陣列
+        $goods = json_decode( $goods , true );
+
+        foreach ($goods as $goodk => $good) {
+            // 訂單編號
+            $goods[$goodk]['order_id']     = $lastID;
+
+            $goods[$goodk]['product_id']   = 0;
+
+            // 商品選購數量
+            $goods[$goodk]['goods_number'] = $cartArr[ $good['goods_id'] ]['num'];
+            
+            // 商品價格 , 一律用原價
+            $goods[$goodk]['goods_price']  = $good['shop_price'];
+            
+            unset( $goods[$goodk]['shop_price'] );
+
+            $goods[$goodk]['goods_attr']  = '';
+            
+            $goods[$goodk]['parent_id']  = 0;
+
+            $goods[$goodk]['is_gift']  = 0;
+            
+            $goods[$goodk]['start_date']  = ' ';
+
+            $goods[$goodk]['end_date']  = ' ';
+            
+
+        }
+
+        // 將商品細項寫入訂單
+        foreach ( $goods as $goodk => $good) {
+
+            DB::table('xyzs_order_goods')->insertGetId( $good );
+        }
+        
+        // 判斷是否要使用綠界付款 
+        if ($order['order_amount'] > 0){
+
+            if( trim( $payment->pay_code ) == 'allpay_card' ){
+                
+                $ecData = DB::table('xyzs_ecset')->where('first',1)->first();
+
+                // 此段正是測試時要直接抓可用的帳號
+                if( $ecData->mid == '2000132' ){
+                     
+                    $tmpPayCfg["allpay_card_test_mode"] = "Yes";
+
+                }else{
+
+                    $tmpPayCfg["allpay_card_test_mode"] = "No";
+                }
+                
+                $tmpPayCfg["allpay_card_account"] = trim($ecData->mid);
+                $tmpPayCfg["allpay_card_iv"]  = Lib_common::ecEncryptDecrypt( trim($ecData->mid) , trim($ecData->ec_iv) , 1);
+                $tmpPayCfg["allpay_card_key"] = Lib_common::ecEncryptDecrypt( trim($ecData->mid) , trim($ecData->ec_key) , 1);        
+        
+                $_LANG['allpay_card'] = '<font color=blue>歐付寶 ALLPAY 信用卡</font>';
+                $_LANG['allpay_card_desc'] = ' 歐付寶 ALLPAY - <font color=red> 信用卡支付</font>';
+                $_LANG['allpay_card_test_mode'] = '測試模式？';
+                $_LANG['allpay_card_test_mode_range']['Yes'] = '是';
+                $_LANG['allpay_card_test_mode_range']['No'] = '否';
+                $_LANG['allpay_card_account'] = '商店代號(必填)';
+                $_LANG['allpay_card_iv'] = '歐付寶 ALLPAY IV(必填)';
+                $_LANG['allpay_card_key'] = '歐付寶 ALLPAY KEY(必填)';
+                $_LANG['pay_button'] = '歐付寶 ALLPAY 信用卡付款';
+                $_LANG['text_goods'] = '網路商品一批';
+                $_LANG['text_currency'] = '元';
+                $_LANG['text_paid'] = '付款完成';
+        
+                $GLOBALS['_LANG'] = $_LANG;
+        
+                $pay_obj = new allpay_card;
+
+                // 付款成功的按鈕
+                $pay_online = $pay_obj->get_code($order, $tmpPayCfg );
+
+            }else{
+
+                $pay_online = false;
+            }
+        
+        }
+
+        $shipTip = $payment->pay_desc;
+        
+        // 清除session 
+        $request->session()->forget(['cart', 'chsCountry' , 'chsShip' , 'chsCity' ,'UNIMART' ]);
+
+        // 扣除庫存
+        foreach ( $goods as $goodk => $good) {
+
+            $good['goods_number'] = intval( $good['goods_number'] );
+
+            DB::table('xyzs_goods')->where('goods_id','=',$good['goods_id'] )->update(['goods_number' => DB::raw("GREATEST(goods_number - {$good['goods_number']}, 0)")]);
+
+            
+        }
+
+        echo "下單成功";
+        /* 訂購成功
+        return view('finish')->with([ 'title' => '訂購完成' ,
+                                      'order_sn' => $order['order_sn'],
+                                      'ship_way' => $order['shipping_name'],
+                                      'pay_way'  => $order['pay_name'],
+                                      'order_amount'   => $order['order_amount'],
+                                      'showDoneString' => $showDoneString,
+                                      'shipTip'        => $shipTip,
+                                      'pay_online'     => $pay_online
+                                    ]);
+        */
     }
 
 
@@ -1034,5 +1213,124 @@ class CartController extends Controller
         $total['goods_price'] = $tmpTotal;
 
         return $total;
+    }    
+
+
+
+
+    /*----------------------------------------------------------------
+     | 產生訂單編號
+     |----------------------------------------------------------------
+     |
+     */
+    public function get_order_sn(){
+        
+        /* 选择一个随机的方案 */
+        mt_srand((double) microtime() * 1000000);
+
+        return date('Ymd') . str_pad(mt_rand(1, 99999), 5, '0', STR_PAD_LEFT);
+    }
+
+
+
+
+    /*----------------------------------------------------------------
+     | 付款log
+     |----------------------------------------------------------------
+     |
+     */
+    function insert_pay_log($id, $amount, $type = PAY_SURPLUS, $is_paid = 0){
+        
+        $log = [];
+        
+        $log['order_id']     = $id;
+        $log['order_amount'] = $amount;
+        $log['order_type']   = $type;
+        $log['is_paid']      = $is_paid;
+        
+        $logId =  DB::table('xyzs_pay_log')->insertGetId($log);
+
+        return $logId;
+
+    }    
+
+
+
+
+    /*----------------------------------------------------------------
+     | 取出購買者ip
+     |----------------------------------------------------------------
+     |
+     |
+     */
+    function real_ip(){
+
+        static $realip = NULL;
+    
+        if ($realip !== NULL)
+        {
+            return $realip;
+        }
+    
+        if(isset($_COOKIE['real_ipd']) && !empty($_COOKIE['real_ipd'])){
+            $realip = $_COOKIE['real_ipd'];  
+            return $realip;
+        }
+        
+        if (isset($_SERVER))
+        {
+            if (isset($_SERVER['HTTP_X_FORWARDED_FOR']))
+            {
+                $arr = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
+    
+                /* 取X-Forwarded-For中第一个非unknown的有效IP字符串 */
+                foreach ($arr AS $ip)
+                {
+                    $ip = trim($ip);
+    
+                    if ($ip != 'unknown')
+                    {
+                        $realip = $ip;
+    
+                        break;
+                    }
+                }
+            }
+            elseif (isset($_SERVER['HTTP_CLIENT_IP']))
+            {
+                $realip = $_SERVER['HTTP_CLIENT_IP'];
+            }
+            else
+            {
+                if (isset($_SERVER['REMOTE_ADDR']))
+                {
+                    $realip = $_SERVER['REMOTE_ADDR'];
+                }
+                else
+                {
+                    $realip = '0.0.0.0';
+                }
+            }
+        }
+        else
+        {
+            if (getenv('HTTP_X_FORWARDED_FOR'))
+            {
+                $realip = getenv('HTTP_X_FORWARDED_FOR');
+            }
+            elseif (getenv('HTTP_CLIENT_IP'))
+            {
+                $realip = getenv('HTTP_CLIENT_IP');
+            }
+            else
+            {
+                $realip = getenv('REMOTE_ADDR');
+            }
+        }
+    
+        preg_match("/[\d\.]{7,15}/", $realip, $onlineip);
+        $realip = !empty($onlineip[0]) ? $onlineip[0] : '0.0.0.0';
+        setcookie("real_ipd", $realip, time()+36000, "/");  /*添加*/
+        return $realip;
     }    
 }

@@ -205,6 +205,62 @@ class Lib_common{
 
 
 
+    /*----------------------------------------------------------------
+     | 綠界解密
+     |----------------------------------------------------------------
+     |
+     */
+    public static function ecEncryptDecrypt($_mid, $_code, $decrypt){ 
+    
+        if($decrypt){ 
+    
+            $decrypted = rtrim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, md5($_mid), base64_decode($_code), MCRYPT_MODE_CBC, md5(md5($_mid))), "12");
+            $idNums  = preg_split('//', $_mid, -1, PREG_SPLIT_NO_EMPTY);
+    
+            $idSum   = 0;
+      
+            foreach ($idNums as $idNumk => $idNum) {
+       
+                $idSum += $idNum;
+    
+            }
+    
+            $position = $idSum % 16;
+    
+            $keylen = strlen($_mid);
+            $mergeNum[0] = substr($decrypted, 0, $position);
+            $mergeNum[1] = substr($decrypted, ( $position+$keylen ) );
+            
+            $decrypted=implode("",$mergeNum);
+            
+            return $decrypted;
+    
+        }else{ 
+            $idNums  = preg_split('//', $_mid, -1, PREG_SPLIT_NO_EMPTY);
+    
+            $idSum   = 0;
+      
+            foreach ($idNums as $idNumk => $idNum) {
+        
+                $idSum += $idNum;
+    
+            }
+    
+            $position = $idSum % 16;
+    
+    
+            $mergeNum[0] = substr($_code, 0, $position);
+            $mergeNum[1] = $_mid;
+            $mergeNum[2] = substr($_code, $position);
+            
+            $encrypted = base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, md5($_mid), implode("", $mergeNum), MCRYPT_MODE_CBC, md5(md5($_mid)))); 
+            return $encrypted; 
+        } 
+    }
+
+
+
+
     /*
     |--------------------------------------------------------------------------
     | 製作分頁
