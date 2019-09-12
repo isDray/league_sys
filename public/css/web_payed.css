@@ -1,0 +1,7 @@
+.payed_title , #payed_content{
+	font-family: '微軟正黑體';
+	font-weight: 900;
+}
+#content_right{
+	min-height: calc(100vh - 560px )!important;
+}

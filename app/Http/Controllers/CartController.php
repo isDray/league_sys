@@ -908,9 +908,6 @@ class CartController extends Controller
 
             
         }
-
-        echo "下單成功";
-        /* 訂購成功
         return view('finish')->with([ 'title' => '訂購完成' ,
                                       'order_sn' => $order['order_sn'],
                                       'ship_way' => $order['shipping_name'],
@@ -920,10 +917,39 @@ class CartController extends Controller
                                       'shipTip'        => $shipTip,
                                       'pay_online'     => $pay_online
                                     ]);
-        */
+        
     }
 
 
+
+
+    /*----------------------------------------------------------------
+     | 交易成功之介面
+     |----------------------------------------------------------------
+     |
+     */
+    public function payed( Request $request ){
+        
+        if( isset( $request->RtnCode ) && $request->RtnCode == 1){
+            
+            $order_sn = $request->MerchantTradeNo;
+            
+            //$order = DB::table('order_info')->where('order_sn',$order_sn)->first();
+
+            return view('web_payed')->with([  'title'    => '付款結果',
+                                          'res'      => true,
+                                          'order_sn' => $order_sn
+                                       ]);
+        }else{
+            
+            return view('web_payed')->with([  'title'    => '付款結果',
+                                          'res'      => false,
+
+                                       ]);            
+        }
+        
+
+    }
 
 
     /*

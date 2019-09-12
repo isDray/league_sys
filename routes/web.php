@@ -214,10 +214,15 @@ Route::group(['middleware' => ['CheckLeague']], function () {
 
     // 寫入訂單
     Route::post('/done','CartController@done');
+    
+    // 付款完成
+    Route::get('/payed','CartController@payed');
 
     Route::post('/areaChange','CartController@areaChange');
 
+
     Route::post('/shipChange','CartController@shipChange');
+
     
     Route::any('/storeMap/{device}/{type}','CartController@storeMap');
     

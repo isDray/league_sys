@@ -1,5 +1,5 @@
 <?php
-namespace App\customLib;
+namespace App\Cus_lib;
 /**
  * 付款方式。
  */

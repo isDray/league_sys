@@ -174,7 +174,7 @@ class allpay_card extends AllInOne {
 
         $szRetUrl = str_ireplace('/mobile/', '/', $szRetUrl);*/
         
-        $szRetUrl = "http://sexyecool.com/payed";
+        $szRetUrl = "http://".$_SERVER['HTTP_HOST']."/payed";
         
 
         $this->Send['ReturnURL'] = "https://***REMOVED***.com/***REMOVED***/respond.php?code=allpay_card"."&log_id=".$order['log_id'].'&background=1';//$szRetUrl . '&background=1';
