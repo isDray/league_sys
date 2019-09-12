@@ -53,9 +53,10 @@
     display: none;
 }
 .menu_li{
-	padding-top: 5px;
-	padding-bottom: 5px;
-	background-color: #D81B60;
+	/*padding-top: 5px;
+	padding-bottom: 5px;*/
+	/*background-color: #D81B60;*/
+	background-color: black;
 	text-align: center;
 	width: 100%;
 	position: relative;
@@ -64,11 +65,17 @@
 .child_tree {
 	width: 100%;
 	background-color: #D81B60;
+	padding-top: 5px;
+	padding-bottom: 5px;
 }
-.child_tree +ul{
+
+.child_tree:hover{
+    background-color: orange;
+}
+.child_tree + ul{
 	white-space:nowrap;
 	position: absolute;
-    top:10%;
+    top:0%;
     left:100%;
     background-color: #f2538e;
 }
@@ -76,6 +83,11 @@
     padding-left: 15px;
     padding-right: 15px;
     text-align: center;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+.child_tree + ul > li:hover{
+    background-color: orange;
 }
 .web_nav_tree_name:hover+ul{
 	display: block;
@@ -223,6 +235,9 @@
 #footer_bottom{
 	margin-top: 15px;
 }
+.only_m{
+	display: none;
+}
 @media(max-width:992px){
 	.footer_list{
 		padding-left: 0px;
@@ -320,10 +335,22 @@
   -o-transform: translateY(-13px) rotate(-45deg);
   transform: translateY(-13px) rotate(-45deg);
 }
-
+.over_m , .over_m * , .over_m > *{
+	padding: 0px!important;
+	margin: 0px!important;
+	display: none!important;
+}
+.only_m{
+	display: block;
+}
 /* 全區塊 */
+
+/* 手機板menu */
 #menu_box{
 	border-bottom: 1px solid #771616;
+}
+.child_tree{
+	padding: 0px!important;
 }
 .web_nav1{
 	display: none;
@@ -331,32 +358,47 @@
 	top:60px;
 	left:0px;
 	width: 100%;
+	background-color: #373737;
 }
-/* 根menu */
-#nav_main_ul{
-	width: 100%;
-	margin-bottom: 0px;
-}
-.menu_root{
-	width: 100%;
-}
-.root_tree{
-	text-align: center;
-	width: 100%;
-}
-.child_tree{
-	background-color: #c4c4c4;
-	font-size: 20px;
-}
-.child_tree:hover+ul{
-	position: relative;
-	width: 100%;
-	top:0px;
-	left:0px;
-	font-size: 20px;
-}
-.menu_li{
-	background-color: #c4c4c4;
-}
+.rwd_root_menu{
+	background-color: #373737;
 
+}
+.rwd_root_menu > h4 {
+	display: inline-block;
+	font-family: '微軟正黑體';
+	font-weight: 900;
+	padding-left: 15px;
+	
+}
+.rwd_root_menu > h4 > a {
+	color:white;	
+}
+.rwd_root_menu > h4 + a{
+	color:#ca195a;
+	position: absolute;
+	right: 15px;
+}
+a[aria-expanded=true]>i:before{	
+	content:"\f146";
+}
+.rwd_panel{
+	background-color: #474747;
+	margin-bottom: 0px;
+ 	border-radius: 0px;
+    list-style: none;
+}
+.rwd_panel > .box-header > h4 > a{
+    color:white;
+    font-weight: 900;
+    font-family: '微軟正黑體';
+}
+.rwd_panel > .box-header > h4 + a{
+	color:#ca195a;
+	position: absolute;
+	right: 15px;
+}
+.rwd_panel > .panel-collapse > .box-body > li > a{
+	color:white!important;
+}
 }
