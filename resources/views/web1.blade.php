@@ -101,7 +101,7 @@
                             </h4>
                     
                             @if( count($category['child'] ) > 0)
-                            <a data-toggle="collapse" data-parent="#accordion" href="#accordion_{{$category['rcat']}}" aria-expanded="false" class="collapsed">
+                            <a data-toggle="collapse" data-parent="#accordion" href="#rwd_accordion_{{$category['rcat']}}" aria-expanded="false" class="collapsed">
                                 <i class='fa fa-fw fa-plus-square' ></i>
                             </a>
                             @endif
@@ -109,7 +109,7 @@
                         </div>
                 
                         @if( count($category['child'] ) > 0)
-                        <div id="accordion_{{$category['rcat']}}" class="panel-collapse collapse" aria-expanded="false" style="height: 0px;">
+                        <div id="rwd_accordion_{{$category['rcat']}}" class="panel-collapse collapse" aria-expanded="false" style="height: 0px;">
                             <div class="box-body">
                             @foreach( $category['child'] as $leftchildk => $leftchild )
                                 <li class=''><a href="{{url('/category/'.$leftchild['ccat'])}}"><i class="fa fa-fw fa-angle-right"></i> {{$leftchild['ccat_name']}}</a></li>

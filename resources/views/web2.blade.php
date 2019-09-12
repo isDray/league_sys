@@ -53,8 +53,9 @@
         </div>
 
         <nav class='web_nav1'>
+            <!-- 電腦版用 -->
             <ul id='nav_main_ul'>
-                <li class='menu_root'><span class='web_nav_tree_name root_tree'>商品分類</span>
+                <li class='menu_root over_m'><span class='web_nav_tree_name root_tree'>商品分類</span>
                     <ul>
                         @foreach( $categorys as $categoryk => $category)
                         <li class='menu_li'><span class='web_nav_tree_name child_tree'>{{ $category['rcat_name'] }}</span>
@@ -64,25 +65,69 @@
                                 @endforeach
                             </ul>
                         </li>
-                        @endforeach
-<!--                         <li class='menu_li'><span class='web_nav_tree_name child_tree'>子分類</span>
-                            <ul class="menu_ul">
-                                <li>99999</li>
-                                <li>88888</li>
-                                <li>77777</li>
-                            </ul>
-                        </li>
-                        <li class='menu_li'><span class='web_nav_tree_name child_tree'>子分類2</span>
-                            <ul class="menu_ul">
-                                <li>99999</li>
-                                <li>88888</li>
-                                <li>77777</li>
-                            </ul>
-                        </li> -->                        
+                        @endforeach                       
                     </ul>
                 </li>
-
             </ul>
+            <!-- 電腦版用 -->
+
+            <!-- 手機板 -->
+            <div class="only_m">
+                
+                <div class="rwd_root_menu">
+                    <h4 class="box-title">
+                        <a href="{{url('/')}}">首頁</a>
+                    </h4>                           
+                <div>
+
+                <div class="rwd_root_menu">
+                    <h4 class="box-title">
+                        <a href="{{url('/category/'.$category['rcat'])}}">商品分類</a>
+                    </h4>                
+                    <a data-toggle="collapse" data-parent="#accordion" href="#root_accordion_cat" aria-expanded="false" class="collapsed rwd_collapsed_icon">
+                        <i class='fa fa-fw fa-plus-square'></i>
+                    </a>            
+                <div>
+
+                <div class="panel-collapse collapse " aria-expanded="false" id="root_accordion_cat">
+                    @foreach($categorys as $categoryk => $category)
+                    <div class="panel rwd_panel">
+            
+                        <div class="box-header">
+                            
+                            <h4 class="box-title">
+                                <a href="{{url('/category/'.$category['rcat'])}}">{{ $category['rcat_name'] }}</a>
+                            </h4>
+                    
+                            @if( count($category['child'] ) > 0)
+                            <a data-toggle="collapse" data-parent="#accordion" href="#rwd_accordion_{{$category['rcat']}}" aria-expanded="false" class="collapsed">
+                                <i class='fa fa-fw fa-plus-square' ></i>
+                            </a>
+                            @endif
+
+                        </div>
+                
+                        @if( count($category['child'] ) > 0)
+                        <div id="rwd_accordion_{{$category['rcat']}}" class="panel-collapse collapse" aria-expanded="false" style="height: 0px;">
+                            <div class="box-body">
+                            @foreach( $category['child'] as $leftchildk => $leftchild )
+                                <li class=''><a href="{{url('/category/'.$leftchild['ccat'])}}"><i class="fa fa-fw fa-angle-right"></i> {{$leftchild['ccat_name']}}</a></li>
+                            @endforeach
+                            </div>
+                        </div>
+                        @endif
+                    </div>            
+                    @endforeach 
+                </div>
+
+                <div class="rwd_root_menu">
+                    <h4 class="box-title">
+                        <a href="{{url('/')}}">首頁</a>
+                    </h4>                           
+                <div>                
+
+            </div>           
+            <!-- /手機板 --> 
            
         </nav>  
 
