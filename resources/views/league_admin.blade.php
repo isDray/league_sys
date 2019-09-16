@@ -232,7 +232,7 @@
 <!-- AdminLTE fmo purposes -->
 <script src="{{url('/AdminLTE/dist/js/demo.js')}}"></script>
 
-
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 
 <script>
   $(document).ready(function () {

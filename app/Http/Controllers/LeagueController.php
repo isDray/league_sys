@@ -23,6 +23,8 @@ class LeagueController extends Controller
         $LeagueId = $request->session()->get('user_id');
      
         $MonthStart = strtotime( date('Y-m-01') ) -  date('Z');
+        
+        $Before7Day = time() -  date('Z') - ( 7 * 24 * 60 * 60 );
 
         $MonthEnd   =  strtotime( date('Y-m-t 23:59:59', strtotime('now')) ) - date('Z');
         
@@ -37,20 +39,124 @@ class LeagueController extends Controller
         
         
         // 取出完成訂單數
-        /*
-        $Orders = DB::table('xyzs_order_info')
+        $DoneOrders = DB::table('xyzs_order_info')
         ->where('league',$LeagueId)
         ->where('add_time','>=',$MonthStart)
         ->where('add_time','<=',$MonthEnd)
-        ->where(function( $query ){
-            $query->where('')
-            ->where('')
+        ->where(function( $query ) use ($Before7Day){
+            
+            $query->where(function($quey2) use ($Before7Day){
+                $quey2->where('order_status','5')
+                ->where('shipping_status','1')
+                ->where('shipping_time' ,'<' , $Before7Day);
+            })
+            ->orWhere(function($query3){
+                $query3->where('order_status','5')
+                ->where('shipping_status','2');
+            });
         })
         ->get();
-        */
-         
+        
+        $DoneOrders = count( $DoneOrders );
+        
+        // 未領取獎金計算
+        $Divides = DB::table('xyzs_order_info')
+        ->where('league',$LeagueId)
+        ->where('league_pay',0)
+        ->where(function( $query ) use ($Before7Day){
+            
+            $query->where(function($quey2) use ($Before7Day){
+                $quey2->where('order_status','5')
+                ->where('shipping_status','1')
+                ->where('shipping_time' ,'<' , $Before7Day);
+            })
+            ->orWhere(function($query3){
+                $query3->where('order_status','5')
+                ->where('shipping_status','2');
+            });
+        })
+        ->get(); 
+        
+        $Divides = json_decode( $Divides , true );
+        
+        $Acumulation = 0;
 
-        return view('league_dashboard' , ['OrderNum'=>$OrderNum]);
+        foreach ($Divides as $Dividek => $Divide) {
+
+            $Acumulation += ( $Divide['order_amount'] - $Divide['shipping_fee'] ) * 0.2;
+
+        }
+        $Acumulation = round( $Acumulation );
+        
+        /* 
+        |--------------------------------------------------------------------------
+        | 繪製本月每日訂單圖示
+        |
+        |
+        */
+        $ThisMonthDays = date("t");
+        
+        $MonthDays = [];
+
+        for( $i=1 ; $i <= $ThisMonthDays ; $i++ ){
+            
+            //array_push($MonthDays, $i);
+            $MonthDays["$i"] = 0;
+
+        } 
+
+        $MonthDay2s = $MonthDays;
+
+        // 每日訂單數
+        $PerDayOrders = DB::select('SELECT DAY(FROM_UNIXTIME(add_time+28800)) as order_day, COUNT(order_id) as day_order
+                               FROM xyzs_order_info WHERE league = :league 
+                               AND add_time >= :MonthStart
+                               AND add_time <= :MonthEnd
+                               GROUP BY DAY(FROM_UNIXTIME(add_time + 28800))', ['league' => $LeagueId , 'MonthStart'=>$MonthStart , 'MonthEnd'=>$MonthEnd]);
+
+        foreach ($PerDayOrders as $PerDayOrderk => $PerDayOrder) {
+
+            if( array_key_exists($PerDayOrder->order_day , $MonthDays) ){
+
+                $MonthDays[$PerDayOrder->order_day] = $PerDayOrder->day_order;
+
+            }
+        }
+        
+
+        // 每日完成訂單數
+        $PerDayDoneOrders = DB::select('SELECT DAY(FROM_UNIXTIME(add_time+28800)) as order_day, COUNT(order_id) as day_order
+                               FROM xyzs_order_info WHERE league = :league 
+                               AND add_time >= :MonthStart
+                               AND add_time <= :MonthEnd
+                               AND ( (order_status = 5 AND shipping_status = 1 AND shipping_time <= :Before7Day ) OR
+                                     (order_status = 5 AND shipping_status = 2 )
+                               )
+                               GROUP BY DAY(FROM_UNIXTIME(add_time + 28800))', ['league' => $LeagueId , 'MonthStart'=>$MonthStart , 'MonthEnd'=>$MonthEnd ,'Before7Day'=>$Before7Day]);
+
+        foreach ($PerDayDoneOrders as $PerDayDoneOrderk => $PerDayDoneOrder) {
+
+            if( array_key_exists($PerDayDoneOrder->order_day , $MonthDay2s) ){
+
+                $MonthDay2s[$PerDayDoneOrder->order_day] = $PerDayDoneOrder->day_order;
+
+            }
+        }        
+
+        $MonthDayOrders = json_encode( array_values($MonthDays) ); 
+
+        $MonthDayOrders2 = json_encode( array_values($MonthDay2s) ); 
+
+        $MonthDays = json_encode( array_keys( $MonthDays ));
+
+        return view('league_dashboard' , ['OrderNum'    => $OrderNum,
+                                          'DoneOrders'  => $DoneOrders,
+                                          'Acumulation' => $Acumulation,
+                                          // 每日圖表
+                                          'MonthDayOrders' => $MonthDayOrders,
+                                          'MonthDays'   => $MonthDays,
+                                          'MonthDayOrders2'=>$MonthDayOrders2
+                                         ]);
     }
     
     
