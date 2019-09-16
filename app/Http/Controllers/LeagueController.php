@@ -107,13 +107,16 @@ class LeagueController extends Controller
 
         $MonthDay2s = $MonthDays;
 
+        $MonthDayCommissions = $MonthDays;
+
         // 每日訂單數
-        $PerDayOrders = DB::select('SELECT DAY(FROM_UNIXTIME(add_time+28800)) as order_day, COUNT(order_id) as day_order
+        $PerDayOrders = DB::select('SELECT DAY(FROM_UNIXTIME(add_time+28800)) as order_day, COUNT(order_id) as day_order ,order_id 
                                FROM xyzs_order_info WHERE league = :league 
                                AND add_time >= :MonthStart
                                AND add_time <= :MonthEnd
                                GROUP BY DAY(FROM_UNIXTIME(add_time + 28800))', ['league' => $LeagueId , 'MonthStart'=>$MonthStart , 'MonthEnd'=>$MonthEnd]);
-
+        
+        
         foreach ($PerDayOrders as $PerDayOrderk => $PerDayOrder) {
 
             if( array_key_exists($PerDayOrder->order_day , $MonthDays) ){
@@ -125,7 +128,7 @@ class LeagueController extends Controller
         
 
         // 每日完成訂單數
-        $PerDayDoneOrders = DB::select('SELECT DAY(FROM_UNIXTIME(add_time+28800)) as order_day, COUNT(order_id) as day_order
+        $PerDayDoneOrders = DB::select('SELECT DAY(FROM_UNIXTIME(add_time+28800)) as order_day, COUNT(order_id) as day_order , ROUND(SUM( ( order_amount - shipping_fee) * 0.2 )) as commission
                                FROM xyzs_order_info WHERE league = :league 
                                AND add_time >= :MonthStart
                                AND add_time <= :MonthEnd
@@ -133,7 +136,7 @@ class LeagueController extends Controller
                                      (order_status = 5 AND shipping_status = 2 )
                                )
                                GROUP BY DAY(FROM_UNIXTIME(add_time + 28800))', ['league' => $LeagueId , 'MonthStart'=>$MonthStart , 'MonthEnd'=>$MonthEnd ,'Before7Day'=>$Before7Day]);
-
+        
         foreach ($PerDayDoneOrders as $PerDayDoneOrderk => $PerDayDoneOrder) {
 
             if( array_key_exists($PerDayDoneOrder->order_day , $MonthDay2s) ){
@@ -141,13 +144,67 @@ class LeagueController extends Controller
                 $MonthDay2s[$PerDayDoneOrder->order_day] = $PerDayDoneOrder->day_order;
 
             }
+
+            if( array_key_exists($PerDayDoneOrder->order_day, $MonthDayCommissions ) ){
+
+                $MonthDayCommissions[$PerDayDoneOrder->order_day] = $PerDayDoneOrder->commission;
+            }
         }        
+        
+
+
 
         $MonthDayOrders = json_encode( array_values($MonthDays) ); 
 
         $MonthDayOrders2 = json_encode( array_values($MonthDay2s) ); 
 
         $MonthDays = json_encode( array_keys( $MonthDays ));
+        
+
+        /*
+        |--------------------------------------------------------------------------
+        | 繪製本月訂單完成比例圖
+        |
+        |
+        */
+        $PercentUndone = 0;
+        $PercentDone   = 0;
+        
+
+        foreach ( json_decode( $MonthDayOrders , true) as $MonthDayOrder) {
+            
+            $PercentUndone += $MonthDayOrder;
+
+        }
+
+        foreach ( json_decode( $MonthDayOrders2 , true) as $MonthDayOrder2) {
+            
+            $PercentDone += $MonthDayOrder2;
+            
+        }        
+        
+        $PercnetStatus = json_encode( [( $PercentUndone - $PercentDone ), $PercentDone ] );
+        
+
+        /*
+        |--------------------------------------------------------------------------
+        | 繪製獎金成長圖
+        |
+        |
+        */
+        foreach ($MonthDayCommissions as $MonthDayCommissionk => $MonthDayCommission ) {
+            
+            if( array_key_exists($MonthDayCommissionk-1, $MonthDayCommissions) ){
+                
+                // if( date('d') >= $MonthDayCommissionk ){
+                    $MonthDayCommissions[$MonthDayCommissionk] = $MonthDayCommissions[$MonthDayCommissionk-1] + $MonthDayCommission;
+                // }
+
+            }
+
+        }
+         
+        $MonthDayCommissions = json_encode( array_values($MonthDayCommissions) );
 
         return view('league_dashboard' , ['OrderNum'    => $OrderNum,
                                           'DoneOrders'  => $DoneOrders,
@@ -155,7 +212,11 @@ class LeagueController extends Controller
                                           // 每日圖表
                                           'MonthDayOrders' => $MonthDayOrders,
                                           'MonthDays'   => $MonthDays,
-                                          'MonthDayOrders2'=>$MonthDayOrders2
+                                          'MonthDayOrders2'=>$MonthDayOrders2,
+                                          // 完成比例圖表
+                                          'PercnetStatus' =>$PercnetStatus,
+                                          // 本月獎金累積
+                                          'MonthDayCommissions'=>$MonthDayCommissions
                                          ]);
     }
     

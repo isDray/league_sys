@@ -88,7 +88,7 @@
     	<div class="col-md-6 col-sm-6 col-xs-12">
     	    <div class="box box-primary">
             <div class="box-header with-border">
-              <h3 class="box-title">Donut Chart</h3>
+              <h3 class="box-title">本月訂單完成比例</h3>
 
               <div class="box-tools pull-right">
                 <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
@@ -96,11 +96,47 @@
               </div>
             </div>
             <div class="box-body">
-              <canvas id="pieChart" style="height: 393px; width: 787px;" height="393" width="787"></canvas>
+              <canvas id="done_percent"></canvas>
             </div>
             <!-- /.box-body -->
           </div>
         </div>
+
+        <div class="col-md-6 col-sm-6 col-xs-12">
+            <div class="box box-primary">
+            <div class="box-header with-border">
+              <h3 class="box-title">本月獎金成長曲線</h3>
+
+              <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                </button>
+              </div>
+            </div>
+            <div class="box-body">
+              <canvas id="commission_chart"></canvas>
+            </div>
+            <!-- /.box-body -->
+          </div>
+        </div> 
+
+
+
+        <div class="col-md-6 col-sm-6 col-xs-12">
+            <div class="box box-primary">
+            <div class="box-header with-border">
+              <h3 class="box-title">本月重點銷售類別</h3>
+
+              <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                </button>
+              </div>
+            </div>
+            <div class="box-body">
+              <canvas id="catradar_chart"></canvas>
+            </div>
+            <!-- /.box-body -->
+          </div>
+        </div>                
 
     </div>
 
@@ -132,8 +168,8 @@ var chart = new Chart(ctx, {
             data: {{ $MonthDayOrders }},
         },{
             label: '完成訂單數',
-            backgroundColor: 'rgb(255, 199, 132)',
-            borderColor: 'rgb(255, 99, 132)',
+            backgroundColor: 'rgb(51, 122, 183)',
+            borderColor: 'rgb(51, 122, 183)',
             data: {{ $MonthDayOrders2 }},
         }],
                     
@@ -142,6 +178,85 @@ var chart = new Chart(ctx, {
     // Configuration options go here
     options: {}
 });    
+
+
+
+
+/*
+|--------------------------------------------------------------------------
+| 本月完成訂單比
+|--------------------------------------------------------------------------
+|
+*/
+var done_percent = document.getElementById('done_percent').getContext('2d');
+var doneChart = new Chart(done_percent, {
+    
+    type: 'pie',
+
+    data: {
+        
+        datasets: [{
+            data: {{$PercnetStatus}},
+            backgroundColor:['rgb(255, 99, 132)' , 'rgb(51, 122, 183)'],
+        }],
+        
+        labels: [
+            '未完成訂單',
+            '已完成訂單',
+        ]
+    },
+
+    options: {cutoutPercentage:0}
+});
+
+
+
+
+/*
+|--------------------------------------------------------------------------
+| 本月獎金長長曲線圖
+|--------------------------------------------------------------------------
+|
+*/
+var commission_chart = document.getElementById('commission_chart').getContext('2d');
+var commission_grow_chart = new Chart(commission_chart, {
+    type: 'line',
+    
+    data: {
+        labels:{{ $MonthDays}} ,
+        datasets:[{
+            label:'獎金',
+            data: {{$MonthDayCommissions}} ,
+            backgroundColor: 'rgb(255, 99, 132)',
+            pointBackgroundColor:'rgb(188, 19, 55)',
+            
+        }],
+    },
+    options: {}
+});
+
+
+
+
+/*
+|--------------------------------------------------------------------------
+| 本月重點銷售類別
+|--------------------------------------------------------------------------
+|
+*/
+var catradar_chart = document.getElementById('catradar_chart').getContext('2d');
+var catradar_main_chart = new Chart(catradar_chart, {
+    type: 'radar',
+    data: {
+        labels: ['Running', 'Swimming', 'Eating', 'Cycling'],
+        datasets: [{
+            label:'訂單分類',
+            data: [20, 10, 4, 2]
+        }]
+    },
+    options: {}
+});
+
 })
 
 </script>
