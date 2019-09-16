@@ -80,7 +80,7 @@ class LeagueController extends Controller
         $Divides = json_decode( $Divides , true );
         
         $Acumulation = 0;
-
+        
         foreach ($Divides as $Dividek => $Divide) {
 
             $Acumulation += ( $Divide['order_amount'] - $Divide['shipping_fee'] ) * 0.2;
@@ -128,7 +128,7 @@ class LeagueController extends Controller
         
 
         // 每日完成訂單數
-        $PerDayDoneOrders = DB::select('SELECT DAY(FROM_UNIXTIME(add_time+28800)) as order_day, COUNT(order_id) as day_order , ROUND(SUM( ( order_amount - shipping_fee) * 0.2 )) as commission
+        $PerDayDoneOrders = DB::select('SELECT DAY(FROM_UNIXTIME(add_time+28800)) as order_day, COUNT(order_id) as day_order , ROUND( SUM( ( order_amount - shipping_fee) * 0.2 )) as commission
                                FROM xyzs_order_info WHERE league = :league 
                                AND add_time >= :MonthStart
                                AND add_time <= :MonthEnd
@@ -136,7 +136,7 @@ class LeagueController extends Controller
                                      (order_status = 5 AND shipping_status = 2 )
                                )
                                GROUP BY DAY(FROM_UNIXTIME(add_time + 28800))', ['league' => $LeagueId , 'MonthStart'=>$MonthStart , 'MonthEnd'=>$MonthEnd ,'Before7Day'=>$Before7Day]);
-        
+
         foreach ($PerDayDoneOrders as $PerDayDoneOrderk => $PerDayDoneOrder) {
 
             if( array_key_exists($PerDayDoneOrder->order_day , $MonthDay2s) ){
@@ -205,6 +205,32 @@ class LeagueController extends Controller
         }
          
         $MonthDayCommissions = json_encode( array_values($MonthDayCommissions) );
+        
+        
+        /*
+        |--------------------------------------------------------------------------
+        | 繪製重點銷售類別
+        |
+        |
+        */
+
+        $allDones =DB::select('SELECT order_id
+                               FROM xyzs_order_info WHERE league = :league 
+                               AND add_time >= :MonthStart
+                               AND add_time <= :MonthEnd
+                               AND ( (order_status = 5 AND shipping_status = 1 AND shipping_time <= :Before7Day ) OR
+                                     (order_status = 5 AND shipping_status = 2 )
+                               ) '
+                               , ['league' => $LeagueId , 'MonthStart'=>$MonthStart , 'MonthEnd'=>$MonthEnd,'Before7Day'=>$Before7Day] );
+
+        $allOrderIds = [];
+
+        foreach ($allDones as $allDonek => $allDone) {
+
+            array_push( $allOrderIds , $allDone->order_id );
+        }
+         
+        
 
         return view('league_dashboard' , ['OrderNum'    => $OrderNum,
                                           'DoneOrders'  => $DoneOrders,
