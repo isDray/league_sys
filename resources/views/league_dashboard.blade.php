@@ -229,6 +229,7 @@ var commission_grow_chart = new Chart(commission_chart, {
             data: {{$MonthDayCommissions}} ,
             backgroundColor: 'rgb(255, 99, 132)',
             pointBackgroundColor:'rgb(188, 19, 55)',
+            lineTension:0,
             
         }],
     },
@@ -248,13 +249,33 @@ var catradar_chart = document.getElementById('catradar_chart').getContext('2d');
 var catradar_main_chart = new Chart(catradar_chart, {
     type: 'radar',
     data: {
-        labels: ['Running', 'Swimming', 'Eating', 'Cycling'],
+        labels: @php echo str_replace( "&quot;", "'" ,$RadarCatNames) @endphp,
         datasets: [{
-            label:'訂單分類',
-            data: [20, 10, 4, 2]
+            label:'銷售分類',
+            data:@php echo str_replace( "&quot;", "'" ,$RadarCatNums) @endphp,
+            backgroundColor:'rgb(51, 122, 183,0.2)',
+            borderColor:'rgb(51, 122, 183)',
+            fill:true,
         }]
     },
-    options: {}
+    options: {
+        scale: {
+            ticks: {
+                min:0,
+                stepSize:1,
+                beginAtZero: true,
+            }
+        },
+        tooltips: {
+            enabled: true,
+            callbacks: {
+                label: function(tooltipItem, data) {
+                    return data.datasets[tooltipItem.datasetIndex].label + ' : ' + data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+                }
+            }
+        }        
+    },
+
 });
 
 })

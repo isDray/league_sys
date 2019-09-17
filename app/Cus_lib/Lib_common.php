@@ -305,7 +305,40 @@ class Lib_common{
 
         return $Pages;
     }
+    
 
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | 計算訂單總價
+    |--------------------------------------------------------------------------
+    |
+    |
+    */
+    public static function _GetTotalFee( $alias = '' ){
+        
+        return "   {$alias}goods_amount + {$alias}tax + {$alias}shipping_fee" .
+               " + {$alias}insure_fee + {$alias}pay_fee + {$alias}pack_fee" .
+               " + {$alias}card_fee ";
+    }
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | 計算訂單總價
+    |--------------------------------------------------------------------------
+    |
+    |
+    */
+    public static function _GetTotalFeeLDB( $alias = '' ){
+        
+        return "{$alias}goods_amount + {$alias}tax + {$alias}shipping_fee" .
+               " + {$alias}insure_fee + {$alias}pay_fee + {$alias}pack_fee" .
+               " + {$alias}card_fee ";
+    }    
 }
 
 ?>

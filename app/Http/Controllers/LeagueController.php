@@ -8,6 +8,7 @@ use DB;
 use Intervention\Image\ImageManagerStatic as Image;
 use Illuminate\Support\Facades\Validator;
 use File;
+use App\Cus_lib\Lib_common;
 
 class LeagueController extends Controller
 {
@@ -61,6 +62,7 @@ class LeagueController extends Controller
         
         // 未領取獎金計算
         $Divides = DB::table('xyzs_order_info')
+        ->select(DB::raw("shipping_fee , (".Lib_common::_GetTotalFee().") as total_fee"))
         ->where('league',$LeagueId)
         ->where('league_pay',0)
         ->where(function( $query ) use ($Before7Day){
@@ -83,10 +85,10 @@ class LeagueController extends Controller
         
         foreach ($Divides as $Dividek => $Divide) {
 
-            $Acumulation += ( $Divide['order_amount'] - $Divide['shipping_fee'] ) * 0.2;
+            $Acumulation += round( ( $Divide['total_fee'] ) * 0.2 );
 
         }
-        $Acumulation = round( $Acumulation );
+        $Acumulation =  $Acumulation;
         
         /* 
         |--------------------------------------------------------------------------
@@ -128,7 +130,7 @@ class LeagueController extends Controller
         
 
         // 每日完成訂單數
-        $PerDayDoneOrders = DB::select('SELECT DAY(FROM_UNIXTIME(add_time+28800)) as order_day, COUNT(order_id) as day_order , ROUND( SUM( ( order_amount - shipping_fee) * 0.2 )) as commission
+        $PerDayDoneOrders = DB::select('SELECT DAY(FROM_UNIXTIME(add_time+28800)) as order_day, COUNT(order_id) as day_order , SUM( ROUND( ('.Lib_common::_GetTotalFee().')*0.2 )) as commission
                                FROM xyzs_order_info WHERE league = :league 
                                AND add_time >= :MonthStart
                                AND add_time <= :MonthEnd
@@ -136,7 +138,7 @@ class LeagueController extends Controller
                                      (order_status = 5 AND shipping_status = 2 )
                                )
                                GROUP BY DAY(FROM_UNIXTIME(add_time + 28800))', ['league' => $LeagueId , 'MonthStart'=>$MonthStart , 'MonthEnd'=>$MonthEnd ,'Before7Day'=>$Before7Day]);
-
+       
         foreach ($PerDayDoneOrders as $PerDayDoneOrderk => $PerDayDoneOrder) {
 
             if( array_key_exists($PerDayDoneOrder->order_day , $MonthDay2s) ){
@@ -213,24 +215,49 @@ class LeagueController extends Controller
         |
         |
         */
-
-        $allDones =DB::select('SELECT order_id
-                               FROM xyzs_order_info WHERE league = :league 
-                               AND add_time >= :MonthStart
-                               AND add_time <= :MonthEnd
+        $allDones =DB::select('SELECT oi.order_id
+                               FROM xyzs_order_info as oi 
+                               WHERE oi.league = :league 
+                               AND oi.add_time >= :MonthStart
+                               AND oi.add_time <= :MonthEnd
                                AND ( (order_status = 5 AND shipping_status = 1 AND shipping_time <= :Before7Day ) OR
                                      (order_status = 5 AND shipping_status = 2 )
-                               ) '
+                               )'
                                , ['league' => $LeagueId , 'MonthStart'=>$MonthStart , 'MonthEnd'=>$MonthEnd,'Before7Day'=>$Before7Day] );
-
+        
         $allOrderIds = [];
-
+       
         foreach ($allDones as $allDonek => $allDone) {
 
             array_push( $allOrderIds , $allDone->order_id );
         }
-         
+
+        $allOrderGoods =  DB::table('xyzs_order_goods as og')
+                       -> select('og.goods_id','g.cat_id',DB::raw('SUM(og.goods_number) as cat_num'),'c.cat_name')
+                       -> leftJoin('xyzs_goods as g', 'og.goods_id', '=', 'g.goods_id')
+                       -> leftJoin('xyzs_category as c', 'g.cat_id', '=', 'c.cat_id')
+                       -> whereIn('order_id',$allOrderIds)
+                       -> groupBy('g.cat_id')
+                       -> get();
         
+        // 轉換成為陣列
+        $allOrderGoods = json_decode( $allOrderGoods , true );
+        
+        // 整理成繪圖陣列
+        $RadarCatNames = [];
+        $RadarCatNums  = [];
+
+        foreach ( $allOrderGoods as $allOrderGoodk => $allOrderGood ) {
+            array_push( $RadarCatNames , $allOrderGood['cat_name'] );
+
+            array_push( $RadarCatNums  , $allOrderGood['cat_num'] );
+        }
+        
+        // 轉換成json
+        $RadarCatNames = json_encode( array_values($RadarCatNames) , true );
+
+
+        $RadarCatNums  = json_encode( array_values($RadarCatNums) , true);
 
         return view('league_dashboard' , ['OrderNum'    => $OrderNum,
                                           'DoneOrders'  => $DoneOrders,
@@ -242,7 +269,10 @@ class LeagueController extends Controller
                                           // 完成比例圖表
                                           'PercnetStatus' =>$PercnetStatus,
                                           // 本月獎金累積
-                                          'MonthDayCommissions'=>$MonthDayCommissions
+                                          'MonthDayCommissions'=>$MonthDayCommissions,
+                                          // 重點銷售圖表
+                                          'RadarCatNames' => $RadarCatNames,
+                                          'RadarCatNums'  => $RadarCatNums,
                                          ]);
     }
     
