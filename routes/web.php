@@ -62,6 +62,7 @@ Route::post('/login_act','LoginController@login_act');
 Route::get('/logout_act','LoginController@logout_act');
 
 
+// index_123.blade.php
 
 /*
 |--------------------------------------------------------------------------
@@ -74,8 +75,17 @@ Route::group(['middleware' => ['CheckLogin']], function () {
     
     // 儀錶板頁面
     Route::get('/league_dashboard','LeagueController@index');
+    
+    /*
+    |--------------------------------------------------------------------------
+    | 報表相關
+    |--------------------------------------------------------------------------
+    |
+    */
+    Route::match(['get', 'post'],'/league_report_order','ReportController@league_report_order');
 
-    // 測試
+
+    // 測試 
     Route::get('/league_test','LeagueController@league_test');
     
     /*

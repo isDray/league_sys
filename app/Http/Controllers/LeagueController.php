@@ -233,7 +233,7 @@ class LeagueController extends Controller
         }
 
         $allOrderGoods =  DB::table('xyzs_order_goods as og')
-                       -> select('og.goods_id','g.cat_id',DB::raw('SUM(og.goods_number) as cat_num'),'c.cat_name')
+                       -> select('og.goods_id','g.cat_id',DB::raw('SUM(g.goods_number) as cat_num'),'c.cat_name')
                        -> leftJoin('xyzs_goods as g', 'og.goods_id', '=', 'g.goods_id')
                        -> leftJoin('xyzs_category as c', 'g.cat_id', '=', 'c.cat_id')
                        -> whereIn('order_id',$allOrderIds)
