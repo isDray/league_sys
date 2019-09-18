@@ -30,7 +30,7 @@
         <div class="box-body">
             
             <!-- 開始日期 -->
-            <div class="form-group col-md-3 col-sm-4 col-xs-2">
+            <div class="form-group col-md-3 col-sm-6 col-xs-12">
                 
                 <label>開始日期:</label>
 
@@ -44,7 +44,7 @@
             <!-- /開始日期 -->
 
             <!-- 開始日期 -->
-            <div class="form-group col-md-3 col-sm-4 col-xs-2">
+            <div class="form-group col-md-3 col-sm-6 col-xs-12">
                 
                 <label>結束日期:</label>
 

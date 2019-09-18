@@ -83,7 +83,8 @@ Route::group(['middleware' => ['CheckLogin']], function () {
     |
     */
     Route::match(['get', 'post'],'/league_report_order','ReportController@league_report_order');
-
+    
+    Route::match(['get', 'post'],'/league_report_commission','ReportController@league_report_commission');
 
     // 測試 
     Route::get('/league_test','LeagueController@league_test');
@@ -166,6 +167,7 @@ Route::group(['middleware' => ['CheckLogin']], function () {
     
     // 網站設定功能
     Route::post('/league_webset_act','WebsetController@league_webset_act');
+    
     /*
     |--------------------------------------------------------------------------
     | 加盟會員相關

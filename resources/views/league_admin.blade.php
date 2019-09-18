@@ -101,19 +101,19 @@
       <!-- sidebar menu: : style can be found in sidebar.less -->
       <ul class="sidebar-menu" data-widget="tree">
 
-        <li><a href="{{url('/league_dashboard')}}"><i class="fa fa-fw fa-dashboard text-green"></i> <span>管理後台首頁</span></a></li>
+        <li><a href="{{url('/league_dashboard')}}"><i class="fa fa-fw fa-dashboard text-light-blue"></i> <span>管理後台首頁</span></a></li>
 
         <li class="header">報表</li>
         <li class="treeview">
           <a href="{{url('/league_dashboard')}}">
-            <i class="fa fa-dashboard text-green"></i> <span>訂單報表</span>
+            <i class="fa fa-fw fa-bar-chart text-light-blue"></i> <span>報表查詢</span>
             <span class="pull-right-container">
               <i class="fa fa-angle-left pull-right"></i>
             </span>
           </a>
           <ul class="treeview-menu">
-            <li><a href="{{url('/league_report_order')}}"><i class="fa fa-circle-o"></i>訂單報表</a></li>
-            <li><a href="{{url('/league_report_order')}}"><i class="fa fa-circle-o"></i> Dashboard v2</a></li>
+            <li><a href="{{url('/league_report_order')}}"><i class="fa fa-fw fa-angle-right"></i>訂單報表</a></li>
+            <li><a href="{{url('/league_report_commission')}}"><i class="fa fa-fw fa-angle-right"></i>獎金報表</a></li>
           </ul>
         </li>
 
@@ -123,7 +123,7 @@
         <li class="treeview  @if( isset($tree) && $tree=='sort' ) active @endif" >
             
             <a href="#">
-                <i class="fa fa-fw fa-sort text-green"></i> <span>功能排序</span>
+                <i class="fa fa-fw fa-sort text-light-blue"></i> <span>功能排序</span>
                 <span class="pull-right-container">
                     <i class="fa fa-angle-left pull-right"></i>
                 </span>                
@@ -139,7 +139,7 @@
         <!-- 模組管理 -->
         <li class="treeview  @if( isset($tree) && $tree=='modul' ) active @endif" >
             <a href="#">
-                <i class="fa fa-fw fa-cubes text-green"></i> <span>功能管理</span>
+                <i class="fa fa-fw fa-cubes text-light-blue"></i> <span>功能管理</span>
                 <span class="pull-right-container">
                     <i class="fa fa-angle-left pull-right"></i>
                 </span>                
@@ -153,13 +153,13 @@
         </li>
         <!-- /模組管理 -->
 
-        <li><a href="{{url('/league_webset')}}"><i class="fa fa-fw fa-globe text-green"></i> <span>網站設定</span></a></li>
+        <li><a href="{{url('/league_webset')}}"><i class="fa fa-fw fa-globe text-light-blue"></i> <span>網站設定</span></a></li>
     
         <li class="header">加盟會員</li>
         <!-- <li><a href="{{url('/league_user')}}"><i class="fa fa-fw fa-user text-green"></i> <span>個人資料設定</span></a></li> -->
         <li class="treeview @if( isset($tree) && $tree=='info' ) active @endif" >
             <a href="#">
-                <i class="fa fa-fw fa-user text-green"></i> <span>帳號管理</span>
+                <i class="fa fa-fw fa-user text-light-blue"></i> <span>帳號管理</span>
                 <span class="pull-right-container">
                     <i class="fa fa-angle-left pull-right"></i>
                 </span>                
