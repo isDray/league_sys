@@ -22,7 +22,7 @@
     <div class="box box-primary">
         
         <div class="box-header">
-            <h3 class="box-title">報表條件</h3>
+            <h3 class="box-title">搜尋器</h3>
         </div>
         
         <form action="" method="POST">
@@ -38,7 +38,7 @@
                   <div class="input-group-addon">
                     <i class="fa fa-calendar"></i>
                   </div>
-                  <input type="text" class="form-control pull-right datepicker" id="datepicker" name='start' autocomplete="off">
+                  <input type="text" class="form-control pull-right datepicker" id="datepicker" name='start' autocomplete="off" value="{{$start}}">
                 </div>
             </div>
             <!-- /開始日期 -->
@@ -52,7 +52,7 @@
                   <div class="input-group-addon">
                     <i class="fa fa-calendar"></i>
                   </div>
-                  <input type="text" class="form-control pull-right datepicker" id="datepicker" name='end' autocomplete="off">
+                  <input type="text" class="form-control pull-right datepicker" id="datepicker" name='end' autocomplete="off" value="{{$end}}">
                 </div>
             </div>
             <!-- /開始日期 -->            
@@ -73,7 +73,7 @@
         
         <div class="box box-primary">
             <div class="box-header with-border">
-              <h3 class="box-title">訂單</h3>
+              <h3 class="box-title">每日訂單圖</h3>
 
               <div class="box-tools pull-right">
                 <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
@@ -87,6 +87,58 @@
         </div>
 
     </div>
+
+    <div class="col-md-6 col-sm-6 col-xs-12">
+        <div class="box box-primary">
+            <div class="box-header with-border">
+              <h3 class="box-title">訂單成長曲線</h3>
+
+              <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                </button>
+              </div>
+            </div>
+            <div class="box-body">
+              <canvas id="order_grow"></canvas>
+            </div>
+            <!-- /.box-body -->
+        </div>
+    </div> 
+
+
+    <div class="col-md-6 col-sm-6 col-xs-12">
+        <div class="box box-primary">
+            <div class="box-header with-border">
+              <h3 class="box-title">本月訂單完成比例</h3>
+
+              <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                </button>
+              </div>
+            </div>
+            <div class="box-body">
+              <canvas id="done_percent"></canvas>
+            </div>
+            <!-- /.box-body -->
+        </div>
+    </div>    
+
+    <div class="col-md-6 col-sm-6 col-xs-12">
+        <div class="box box-primary">
+            <div class="box-header with-border">
+              <h3 class="box-title">本月重點銷售類別</h3>
+
+              <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                </button>
+              </div>
+            </div>
+            <div class="box-body">
+              <canvas id="catradar_chart"></canvas>
+            </div>
+            <!-- /.box-body -->
+        </div>
+    </div>    
     <!-- /報表呈現 -->
 
 </div>
@@ -125,28 +177,175 @@ var chart = new Chart(ctx, {
         datasets: [{
             label: '訂單數',
             backgroundColor: 'rgb(255, 99, 132)',
-            borderColor: 'rgb(54, 99, 132)',
             data: {{ $PerDayOrderNums }},
+
+        },
+        {
+            label: '完成訂單數',
+            backgroundColor: 'rgb(51, 122, 183)',
+            data: {{ $PerDayDoneOrderNums }},
 
         }],
                     
     },
 
-    // Configuration options go here
     options: {
         scales: {
             yAxes: [{
                 display: true,
                 ticks: {
+                    stepSize:1,
                     suggestedMin: 0,
                     // OR //
-                    beginAtZero: true   
+                    beginAtZero: true,
+
                 }
             }]
         }
     }
 });    
 
+
+
+
+/*
+|--------------------------------------------------------------------------
+| 訂單成長曲線圖
+|--------------------------------------------------------------------------
+|
+*/
+var order_grow = document.getElementById('order_grow').getContext('2d');
+var order_grow_chart = new Chart(order_grow, {
+    type: 'line',
+    
+    data: {
+        labels:{{ $PerDayLabels}} ,
+        datasets:[
+        {
+            label:'所有訂單',
+            data: {{$OrderGrow}} ,
+            backgroundColor: 'rgb(255, 99, 132)',
+            pointBackgroundColor:'rgb(188, 19, 55)',
+            lineTension:0,
+            fill:false,
+            borderWidth:4,
+            borderColor: 'rgb(255, 99, 132)',
+            
+        },
+        {
+            label:'完成訂單',
+            data: {{$OrderDoneGrow}} ,
+            backgroundColor: 'rgb(51, 122, 183)',
+            pointBackgroundColor:'rgb(40, 94, 141)',
+            lineTension:0,
+            
+        }],
+    },
+    options: {
+        scales: {
+            yAxes: [{
+                display: true,
+                ticks: {
+                    stepSize:1,
+                    suggestedMin: 0,
+                    // OR //
+                    beginAtZero: true,
+
+                }
+            }]
+        }        
+    }
+});
+
+
+
+
+/*
+|--------------------------------------------------------------------------
+| 完成訂單比
+|--------------------------------------------------------------------------
+|
+*/
+var done_percent = document.getElementById('done_percent').getContext('2d');
+var doneChart = new Chart(done_percent, {
+    
+    type: 'pie',
+
+    data: {
+        
+        datasets: [{
+            data: {{$PercnetStatus}},
+            backgroundColor:['rgb(255, 99, 132)' , 'rgb(51, 122, 183)'],
+        }],
+        
+        labels: [
+            '未完成訂單',
+            '已完成訂單',
+        ]
+    },
+
+    options: {
+        cutoutPercentage:0,
+        
+        tooltips: {
+            enabled: true,
+            mode: 'single',
+            callbacks: {
+                
+                label: function(tooltipItem, data) {
+
+                    var statuspercent = ( data.datasets[0].data[tooltipItem.index] / (data.datasets[0].data[0] + data.datasets[0].data[1]) ) *100 ;
+                    var allData = data.datasets[tooltipItem.datasetIndex].data;
+                    var tooltipLabel = data.labels[tooltipItem.index];
+                    var tooltipData = allData[tooltipItem.index];
+                    return tooltipLabel + ": " + tooltipData +'筆 , '+statuspercent.toFixed(2)+ "%";
+                }
+            }
+        }
+    }
+});
+
+
+
+
+/*
+|--------------------------------------------------------------------------
+| 本月重點銷售類別
+|--------------------------------------------------------------------------
+|
+*/
+var catradar_chart = document.getElementById('catradar_chart').getContext('2d');
+var catradar_main_chart = new Chart(catradar_chart, {
+    type: 'radar',
+    data: {
+        labels: @php echo str_replace( "&quot;", "'" ,$RadarCatNames) @endphp,
+        datasets: [{
+            label:'銷售分類',
+            data:@php echo str_replace( "&quot;", "'" ,$RadarCatNums) @endphp,
+            backgroundColor:'rgb(51, 122, 183,0.2)',
+            borderColor:'rgb(51, 122, 183)',
+            fill:true,
+        }]
+    },
+    options: {
+        scale: {
+            ticks: {
+                min:0,
+                stepSize:1,
+                beginAtZero: true,
+            }
+        },
+        tooltips: {
+            enabled: true,
+            callbacks: {
+                label: function(tooltipItem, data) {
+                    return data.datasets[tooltipItem.datasetIndex].label + ' : ' + data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+                }
+            }
+        }        
+    },
+
+});
 
 })
 </script>

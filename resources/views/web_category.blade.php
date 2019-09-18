@@ -69,7 +69,7 @@
                 <div class="caption">
                     <h4 class="goods_title">{{ $Good['goods_name'] }}</h4>
                     <p>{{ $Good['shop_price'] }}</p>
-                    <p><a href="#" class="btn btn-primary" role="button">立即購買</a></p>
+                    <p><a class="btn btn-primary add_to_cart" role="button" goods_id="{{$Good['goods_id']}}">立即購買</a></p>
                 </div>
             </div>                
             
