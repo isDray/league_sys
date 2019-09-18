@@ -59,10 +59,10 @@
                 <li class='menu_root over_m'><span class='web_nav_tree_name root_tree'>商品分類</span>
                     <ul>
                         @foreach( $categorys as $categoryk => $category)
-                        <li class='menu_li'><span class='web_nav_tree_name child_tree'>{{ $category['rcat_name'] }}</span>
+                        <li class='menu_li'><a class='web_nav_tree_name child_tree menua' href="{{url('/category/'.$category['rcat'])}}">{{ $category['rcat_name'] }}</a>
                             <ul class="menu_ul">
                                 @foreach( $category['child'] as $childk => $childv )
-                                <li>{{ $childv['ccat_name'] }}</li>
+                                <a href="{{url('/category/'.$childv['ccat'])}}"><li>{{ $childv['ccat_name'] }}</li></a>
                                 @endforeach
                             </ul>
                         </li>

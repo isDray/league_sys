@@ -30,9 +30,11 @@ class WebsetController extends Controller
 
             $WebData['back_color'] = "#ffffff";
         }
-
+        
+        // 取出配色
+        $colors = DB::table('xyzs_league_color')->get();
         // 取出網站資料
-        return view('league_webset',[ 'WebData' => $WebData ]);
+        return view('league_webset',[ 'WebData' => $WebData , 'colors'=>$colors ]);
     }
 
 

@@ -10,7 +10,7 @@ use DB;
 |
 */
 class Lib_common{
-    
+
     public static  function GetCategorys(){
         
         $RootCategorys = DB::table('xyzs_category')->orderBy('parent_id', 'asc')->orderBy('sort_order', 'asc')->get();

@@ -1,6 +1,16 @@
 @extends('league_admin')
 
 @section('selfcss')
+<style type="text/css">
+.color_radio{
+}
+.color_radio > div{
+    height: 20px;
+}
+radio[name=optionsRadios]:selected + label{
+    border:2px solid red;
+}
+</style>
 @endsection
 
 @section('content')
@@ -38,11 +48,21 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="webback">網站主色系</label>
-                    <input type="color" class="form-control" id="webback" name="webback" placeholder="請選擇網站主色系" value="{{$WebData['back_color']}}">
-                    @if ($errors->has('webback'))
-                    <label id="webback-error" class="form_invalid" for="webback">{{ $errors->first('webback') }}</label>
-                    @endif                     
+                    <label for="webback">網站配色</label>
+                    
+                    
+                    <div class="checkbox">
+                    @foreach( $colors as $colork => $color)
+                        <input type="radio" id="color_{{$colork}}" name="optionsRadios">
+                        <label for="color_{{$colork}}" class="color_radio col-md-2 col-sm-3 col-xs-6">
+                            <div style="background-color:{{$color->color1}}"></div>
+                            <div style="background-color:{{$color->color2}}"></div>
+                            <div style="background-color:{{$color->color3}}"></div>
+                        </label>
+                        
+                    @endforeach
+                   
+                    </div>
                 </div>                
 
             </div>

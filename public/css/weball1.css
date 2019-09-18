@@ -79,12 +79,24 @@
     left:100%;
     background-color: #f2538e;
 }
+.child_tree + ul > a > li{
+	color: white;
+    padding-left: 15px;
+    padding-right: 15px;
+    text-align: center;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
 .child_tree + ul > li{
     padding-left: 15px;
     padding-right: 15px;
     text-align: center;
     padding-top: 5px;
     padding-bottom: 5px;
+}
+.child_tree + ul > a >li:hover{
+	color: white;
+    background-color: orange;
 }
 .child_tree + ul > li:hover{
     background-color: orange;
@@ -141,6 +153,9 @@
 .custom_form_title{
     padding-top: 0px!important;
     padding-bottom: 0px!important;
+}
+.menua , .menua:hover{
+	color:white;
 }
 /*
 |--------------------------------------------------------------------------
