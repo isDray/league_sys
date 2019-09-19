@@ -68,7 +68,8 @@
                 
                 <div class="caption">
                     <h4 class="goods_title">{{ $Good['goods_name'] }}</h4>
-                    <p>{{ $Good['shop_price'] }}</p>
+                    <p class='goods_sn'>貨號:{{ $Good['goods_sn'] }}</p>
+                    <p class='goods_price'>價格:{{ $Good['shop_price'] }}</p>
                     <p><a class="btn colorbtn add_to_cart" role="button" goods_id="{{$Good['goods_id']}}">立即購買</a></p>
                 </div>
             </div>                

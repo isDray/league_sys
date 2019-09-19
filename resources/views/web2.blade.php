@@ -81,6 +81,14 @@
             </ul>
             <!-- 電腦版用 -->
 
+            <div id='search_form'>
+                <form action="{{url('/search')}}" method="POST">
+                    {{ csrf_field() }}
+                    <input type='text' class='form-control' name='keyword'> 
+                    <button class='btn colorbtn form-control'>查詢</button>
+                </form>
+            </div>
+            
             <!-- 手機板 -->
             <div class="only_m">
                 

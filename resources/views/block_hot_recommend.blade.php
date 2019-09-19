@@ -26,7 +26,8 @@ $hots = Lib_block::get_recommend('hot');
                 
                 <div class="caption">
                     <h4 class="goods_title">{{ $hot['goods_name'] }}</h4>
-                    <p>{{ $hot['shop_price'] }}</p>
+                    <p class='goods_sn'>貨號:{{ $hot['goods_sn'] }}</p>
+                    <p class='goods_price'>價格:{{ $hot['shop_price'] }}</p>
                     <p><a  class="btn colorbtn add_to_cart" role="button" goods_id="{{$hot['goods_id']}}">立即購買</a></p>
                 </div>
             </div>                

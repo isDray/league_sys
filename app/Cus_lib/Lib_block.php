@@ -117,7 +117,8 @@ class Lib_block{
                                 ->where('is_delete',0)
                                 ->where('goods_thumb','<>','')
                                 ->whereNotIn('cat_id',  $ExcludeCat )
-                                ->whereNotNull('goods_thumb')                        
+                                ->whereNotNull('goods_thumb')
+                                ->select('*',DB::raw( "ROUND(shop_price) as shop_price" ) )                        
                                 ->first();
                             
                             $tmpPre = (array)$tmpPre ;
@@ -148,7 +149,9 @@ class Lib_block{
                         ->where('is_delete',0)
                         ->where('goods_thumb','<>','')
                         ->whereNotIn('cat_id',  $ExcludeCat )
-                        ->whereNotNull('goods_thumb');
+                        ->whereNotNull('goods_thumb')
+                        ->select('*',DB::raw( "ROUND(shop_price) as shop_price" ) ) 
+                        ;
 
         if( $_type == 'best' ){
 

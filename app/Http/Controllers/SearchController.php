@@ -7,39 +7,23 @@ use DB;
 use App\Cus_lib\Lib_common;
 use Illuminate\Cookie\CookieJar;
 
-class CategoryController extends Controller
+class SearchController extends Controller
 {
     /*
     |--------------------------------------------------------------------------
-    | 商品分類頁面
+    | 搜尋功能
     |--------------------------------------------------------------------------
     |
+    |
     */
-    public function category( Request $request, $cat_id , $cat_sort_item = 'add_time' , $cat_sort_way = 'asc', $now_page = 1 , $per_page = 20 ){
-
-        // 分類ID
-        $CatId = $request->cat_id;
-
-        // 確認是否為母分類
-        $IfRoot = DB::table('xyzs_category')->where('cat_id',$CatId)->first();
+    public function search( Request $request ,$keyword='', $cat_sort_item = 'add_time' , $cat_sort_way = 'asc', $now_page = 1 , $per_page = 20 ){
         
-        $CatArr = [ $CatId ];
-
-        if( $IfRoot->parent_id == 0 ){
-
-            $AllChildCates = DB::table('xyzs_category')->where('parent_id',$CatId)->get();
-            
-            foreach ($AllChildCates as $AllChildCatek => $AllChildCate ) {
-                
-                array_push( $CatArr , $AllChildCate->cat_id );
-            }
-
-        }
+        $keyword = !empty($request->keyword)? $request->keyword:$keyword;
 
         $CatSortItem = !empty( $request->cat_sort_item )? $request->cat_sort_item : $cat_sort_item;
-
-        $CatSortWay  = !empty( $request->cat_sort_way )? $request->cat_sort_way : $cat_sort_way;
         
+        $CatSortWay  = !empty( $request->cat_sort_way )? $request->cat_sort_way : $cat_sort_way;
+
         $SortItemArr = ['add_time','shop_price'];
         
         $SortWayArr  = ['asc' , 'desc'];
@@ -62,19 +46,19 @@ class CategoryController extends Controller
         }else{
 
             $NextCatSortWay = 'asc';
-        }
-
+        }  
+        
         if( $CatSortItem == 'add_time'){
             
-            $AddTimeURL = "/category/$cat_id/add_time/$NextCatSortWay/$now_page/$per_page";
+            $AddTimeURL = "/search/$request->keyword/add_time/$NextCatSortWay/$now_page/$per_page";
 
-            $PriceUrl   = "/category/$cat_id/shop_price/$CatSortWay/$now_page/$per_page";
+            $PriceUrl   = "/search/$request->keyword/shop_price/$CatSortWay/$now_page/$per_page";
 
         }elseif( $CatSortItem == 'shop_price'){
 
-            $AddTimeURL = "/category/$cat_id/add_time/$CatSortWay/$now_page/$per_page";
+            $AddTimeURL = "/search/$request->keyword/add_time/$CatSortWay/$now_page/$per_page";
             
-            $PriceUrl   = "/category/$cat_id/shop_price/$NextCatSortWay/$now_page/$per_page";
+            $PriceUrl   = "/search/$request->keyword/shop_price/$NextCatSortWay/$now_page/$per_page";
 
         }      
         // 起始筆數
@@ -83,14 +67,13 @@ class CategoryController extends Controller
         // 撈出符合分類之商品
         $CondQuery = DB::table('xyzs_goods AS g')
                    ->select("g.*",DB::raw( "ROUND(shop_price) as shop_price" ))
-                   ->leftJoin('xyzs_goods_cat AS c', 'g.goods_id', '=', 'c.goods_id')
                    ->where('g.is_on_sale','1')
-                   ->where(function( $query  )use ($CatArr){
+                   /*->where(function( $query  )use ($CatArr){
                        $query->whereIn('g.cat_id',$CatArr)
                              ->orWhereIn('c.cat_id',$CatArr);
-                   })
+                   })*/
+                   ->where('g.goods_name','like', '%'.$keyword.'%')
                    ->groupBy('g.goods_id');
-            
         $CondQuery->orderBy($CatSortItem,$CatSortWay);
         
         $TotalRow = $CondQuery->get();                   
@@ -98,24 +81,22 @@ class CategoryController extends Controller
         $TotalRow = count( $TotalRow );
         
         // 產生分頁
-        $target = "/category/$CatId/$CatSortItem/$CatSortWay/";
+        $target = "/search/$keyword/$CatSortItem/$CatSortWay/";
 
         $Pages = Lib_common::create_page(  $target , $TotalRow , $now_page , $per_page , 5 );
 
         $CondQuery->skip( $StartRow )->take( $per_page );
 
         $Goods = $CondQuery->get(); 
-        
+
         $Goods = json_decode( $Goods , true );
 
         return view('web_category',[ 'Goods' => $Goods , 
-        	                         'Pages' => $Pages ,
-        	                         'CatSortItem' => $CatSortItem , 
-        	                         'CatSortWay'  => $CatSortWay  ,
+                                     'Pages' => $Pages ,
+                                     'CatSortItem' => $CatSortItem , 
+                                     'CatSortWay'  => $CatSortWay  ,
                                      'AddTimeURL'  => $AddTimeURL  ,
                                      'PriceUrl'    => $PriceUrl
-        	                        ]);
+                                    ]);              
     }
-
-
 }

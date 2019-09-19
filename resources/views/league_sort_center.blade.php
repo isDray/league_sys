@@ -10,8 +10,11 @@
 
 <div class='col-md-2 col-md-offset-4 col-sm-6 col-xs-6' id='bloack_on' subject="呈現區塊" >
     <ul id="sortable1" class="connectedSortable">
+        <li class="ui-state-highlight pin" blocknum='1' >banner</li>
     	@foreach( $OnModules as $OnModulek => $OnModule)
-    	<li class="ui-state-highlight" blocknum='{{$OnModulek}}'>{{$OnModule}}</li>
+    	@if( $OnModulek != 1 )
+        <li class="ui-state-highlight" blocknum='{{$OnModulek}}' >{{$OnModule}}</li>
+        @endif
     	@endforeach
     </ul>
 </div> 
@@ -19,7 +22,9 @@
 <div class='col-md-2 col-md-offset- col-sm-6 col-xs-6' id='block_off' subject="待用區塊" >
     <ul id="sortable2" class="connectedSortable">
     	@foreach( $OffModules as $OffModulek => $OffModule)
+        @if( $OffModulek != 1 )
     	<li class="ui-state-highlight" blocknum='{{$OffModulek}}'>{{$OffModule}}</li>
+        @endif
     	@endforeach
     </ul>
 </div>
@@ -58,7 +63,7 @@ function get_sort(){
 $( function() {
     
     $( "#sortable1, #sortable2" ).sortable({
-    
+        items: '> li:not(.pin)',
         connectWith: ".connectedSortable"
     
     }).disableSelection();

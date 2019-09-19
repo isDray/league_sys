@@ -190,8 +190,33 @@
 	width: 110px;
 	border-radius: 6px;
 }
+/*
+|--------------------------------------------------------------------------
+| 搜尋框
+|--------------------------------------------------------------------------
+|
+*/
+#search_form{
 
-
+	margin-top: 10px;
+	height: 40px;
+	float:right;
+	margin-right: 100px;
+}
+#search_form > form {
+	height: 100%;
+}
+#search_form > form > input ,#search_form > form > button {
+	top:0px;
+	display: inline-block!important;
+	width: auto;
+	height:100%!important;
+	vertical-align: top;
+}
+#search_form > form > input{
+    height:calc( 100% - 1px )!important;
+	background-color: #eff;
+}
 
 /*
 |--------------------------------------------------------------------------
@@ -242,7 +267,7 @@
 .only_m{
 	display: none;
 }
-@media(max-width:992px){
+@media(max-width:767px){
 	.footer_list{
 		padding-left: 0px;
 	}

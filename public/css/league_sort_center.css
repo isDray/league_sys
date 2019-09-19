@@ -43,3 +43,9 @@
 .custom_row{
 	padding-top: 105px!important;
 }
+
+.pin{
+	background-color: #999;
+	color: #ddd;
+	border-color: #7f7f7f;
+}

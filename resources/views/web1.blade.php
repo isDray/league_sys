@@ -42,6 +42,7 @@
 <div class='container-fluid'>
 
 <div class='row'>
+
     <div class='col-md-12 col-sm-12 col-xs-12' id='menu_box' webname="SEXY-TOY STORE">
 
         <div class="col rwd_menu">
@@ -51,11 +52,14 @@
                 <span class="line"></span>
             </div>
         </div>
+
         @if( !empty($LeagueData['logo']) )
         <a href="{{url('/')}}">
         <img src="{{url('/league_logo/'.$LeagueData['logo'])}}" class='menulogo only_m' >
         </a>
         @endif
+
+
         <nav class='web_nav1'>
             @if( !empty($LeagueData['logo']) )
             <a href="{{url('/')}}">
@@ -79,6 +83,14 @@
                 </li>
             </ul>
             <!-- 電腦版用 -->
+            
+            <div id='search_form'>
+                <form action="{{url('/search')}}" method="POST">
+                    {{ csrf_field() }}
+                    <input type='text' class='form-control' name='keyword'> 
+                    <button class='btn colorbtn form-control'>查詢</button>
+                </form>
+            </div>
 
             <!-- 手機板 -->
             <div class="only_m">
@@ -128,17 +140,12 @@
                     </div>            
                     @endforeach 
                 </div>
-
-                <div class="rwd_root_menu">
-                    <h4 class="box-title">
-                        <a href="{{url('/')}}">首頁</a>
-                    </h4>                           
-                <div>                
-
+              
             </div>           
-            <!-- /手機板 -->           
-        </nav>  
+            <!-- /手機板 -->
 
+        </nav>  
+        
         <!-- 購物車 -->
         <div class="dropdown cart_btn">
                 
@@ -167,18 +174,18 @@
         </div>
         <!-- /購物車 -->
     </div>
-    <div class='col-md-2 col-md-offset-2 col-sm-2 col-sm-offset-2 col-xs-12' id='content_left'>
+    <div class='col-md-2 col-md-offset-2 col-sm-4 col-sm-offset-0 col-xs-12' id='content_left'>
                        
         @yield('content_left')
     </div>
-    <div class='col-md-6 col-sm-6 col-xs-12' id="content_right">
+    <div class='col-md-6 col-sm-8 col-xs-12' id="content_right">
         @yield('content_right')
     </div>   
 </div>
 
 <div class='row' id='footer'>
         
-        <div class='col-md-4 col-md-offset-2 col-sm-4 col-sm-offset-2 col-xs-12' id='footer_left'>
+        <div class='col-md-4 col-md-offset-2 col-sm-6 col-sm-offset-0 col-xs-12' id='footer_left'>
             
             <div class='col-md-12 col-sm-12 col-xs-12' id="footer_left_center">
 
@@ -209,7 +216,7 @@
 
         </div>
 
-        <div class='col-md-4 col-sm-4 col-xs-12' id='footer_right'>
+        <div class='col-md-4 col-sm-6 col-xs-12' id='footer_right'>
             <div class='col-md-12 col-sm-12 col-xs-12' id="footer_right_center">
                 <div class="col-md-12 col-sm-12 col-xs-12"> 
                     <img src="https://***REMOVED***.com/***REMOVED***/ecs_static/img/18.png" style='float:right'>                    
