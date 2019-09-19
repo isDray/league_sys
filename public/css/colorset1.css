@@ -1,0 +1,51 @@
+/*
+|--------------------------------------------------------------------------
+| 配色1
+|--------------------------------------------------------------------------
+|
+*/
+/* 上方menu bar , menu根選單*/
+#menu_box , #footer {
+	background-color: #ca195a;
+}
+/* menu第二階 */
+.child_tree {
+	background-color: #D81B60;
+}
+/* menu第三階 */
+.child_tree + ul {
+	background-color: #f2538e;
+}
+/* menu 選單 hover */
+.child_tree:hover , .child_tree + ul > a >li:hover {
+    background-color: orange;
+    color:white;
+}
+#footer_left_center , #footer_right_center{
+	background-color: rgba(33,33,33,0.2);
+}
+
+
+/* 模組相關 */
+.left_menu_item_root{
+	background-color: #ca195a;
+}
+
+/* 按鈕相關 */
+.colorbtn , .colorbtn > a{
+	background-color: #ca195a!important;
+	border-color:#cd2b67!important;
+	color:white!important;
+}
+.colorbtn:hover , .colorbtn:active{
+	background-color: #b01950!important;
+	color:white!important;
+}
+
+/* 標題相關 */
+.goods_title{
+	color:#ca195a!important;
+}
+.caption > a > p {
+	color:#ca195a!important;
+}

@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use DB;
 use Validator;
+use File;
+use Intervention\Image\ImageManagerStatic as Image;
 class WebsetController extends Controller
 {
     /*
@@ -31,10 +33,13 @@ class WebsetController extends Controller
             $WebData['back_color'] = "#ffffff";
         }
         
-        // 取出配色
-        $colors = DB::table('xyzs_league_color')->get();
+        if( empty( $WebData['colorset'] ) ){
+
+            $WebData['back_color'] = '1';
+        }
+
         // 取出網站資料
-        return view('league_webset',[ 'WebData' => $WebData , 'colors'=>$colors ]);
+        return view('league_webset',[ 'WebData' => $WebData ]);
     }
 
 
@@ -49,24 +54,53 @@ class WebsetController extends Controller
     public function league_webset_act( Request $request ){
         
         $LeagueId  = $request->session()->get('user_id');
-
+        
         $validator = Validator::make($request->all(), 
         [ 
-            'webname'         => 'required|',
-            'webback'         => ['required','regex:/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/'],
+            'webname' => 'required|',
+            'webback' => 'required','regex:/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/',
+            'logo'    => 'mimes:jpeg,jpg,png',
 
             
         ],
         [   'webname.required'        => '網站名稱為必填',
             'webback.required'        => '網站背景色為必填',
-            'webback.regex'           => '網站背景色格式錯誤'
+            'webback.regex'           => '網站背景色格式錯誤',
+            'logo.mimes'              => '網站logo圖只接受 jpeg,jpg,png格式',
 
         ])->validate();       
+        
+        $colorsetArr = ['1','2'];
+
+        if( !isset( $request->colorset ) || !in_array($request->colorset, $colorsetArr) ){
+
+            $request->colorset = 1;
+
+        }
 
         DB::beginTransaction();
 
         try {   
-           
+            
+            if( isset( $request->logo ) ){
+                
+                if( !file_exists( public_path('league_logo') ) ){
+
+                    File::makeDirectory( public_path('league_logo') , 755 );
+                }
+
+            
+                Image::make( $request->file('logo'))->resize(180, 60)->save("league_logo/{$request->session()->get('user_id')}.{$request->logo->extension()}");
+                
+                DB::table('xyzs_league_web')
+                ->updateOrInsert(
+                    [ 'user_id' => $LeagueId ],
+                    ['logo' => $request->session()->get('user_id').".".$request->logo->extension(),
+                     'update_date'  => time() - date('Z') 
+                    ]
+                );
+            }
+
             DB::table('xyzs_league')
               ->where('user_id', $LeagueId )
               ->update(['store_name' => $request->webname]);           
@@ -75,6 +109,7 @@ class WebsetController extends Controller
               ->updateOrInsert(
                [ 'user_id' => $LeagueId ],
                [ 'back_color'   => $request->webback,
+                 'colorset' =>  $request->colorset,
                  'update_date'  => time() - date('Z') ]
             );
 

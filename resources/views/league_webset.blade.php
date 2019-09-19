@@ -2,13 +2,22 @@
 
 @section('selfcss')
 <style type="text/css">
-.color_radio{
+.colorsetbox>div>input[name=colorset]{
+    opacity: 0;
 }
-.color_radio > div{
-    height: 20px;
+.colorsetbox>div>label{
+    background-color: #eeeeee;
+    display: block;
+    height: 40px;
+    text-align: center;
+    border:2px solid #eeeeee;
+    padding-left: 0px;
 }
-radio[name=optionsRadios]:selected + label{
-    border:2px solid red;
+.colorsetbox>div> input[name=colorset]:checked + label{
+    border:2px solid #3c8dbc;
+}
+.colorsetbox>div>label{
+    line-height: 36px;  
 }
 </style>
 @endsection
@@ -26,7 +35,7 @@ radio[name=optionsRadios]:selected + label{
             <!-- form start -->
 
   
-            <form role="form" action="{{url('/league_webset_act')}}" method="post" >
+            <form role="form" action="{{url('/league_webset_act')}}" method="post" enctype="multipart/form-data">
             
             {{ csrf_field() }}
             <div class="box-body ">
@@ -51,19 +60,34 @@ radio[name=optionsRadios]:selected + label{
                     <label for="webback">網站配色</label>
                     
                     
-                    <div class="checkbox">
-                    @foreach( $colors as $colork => $color)
-                        <input type="radio" id="color_{{$colork}}" name="optionsRadios">
-                        <label for="color_{{$colork}}" class="color_radio col-md-2 col-sm-3 col-xs-6">
-                            <div style="background-color:{{$color->color1}}"></div>
-                            <div style="background-color:{{$color->color2}}"></div>
-                            <div style="background-color:{{$color->color3}}"></div>
+                    <div class="checkbox colorsetbox col-md-12 col-sm-12 col-xs-12">
+                        <div class='col-md-2 col-sm-4 col-xs-2'>
+                        <input type="radio" id="color_1" name="colorset" value='1' @if($WebData['colorset']==1) checked @endif>
+                        <label for="color_1" class="color_radio">
+                            版型1
                         </label>
-                        
-                    @endforeach
+                        </div>
+
+                        <div class='col-md-2 col-sm-4 col-xs-2'>
+                        <input type="radio" id="color_2" name="colorset" value='2' @if($WebData['colorset']==2) checked @endif>
+                        <label for="color_2" class="color_radio">
+                            版型2
+                        </label>
+                        </div>
                    
                     </div>
-                </div>                
+                </div> 
+
+                <div class="form-group">                        
+                    <label for="logo">logo圖檔( 建議為 60 * 180 )</label>
+                    <input type="file" id="logo" name="logo" onchange="readURL(this);">
+                    @if ($errors->has('logo'))
+                    <label id="logo-error" class="form_invalid" for="logo">{{ $errors->first('logo') }}</label>
+                    @endif  
+                    @if( !empty($WebData['logo']) )
+                    <img src="{{url('/league_logo/'.$WebData['logo'])}}" id='blah' style='width:180px;max-width:100%'>    
+                    @endif
+                </div>                               
 
             </div>
             
@@ -80,4 +104,27 @@ radio[name=optionsRadios]:selected + label{
 @endsection
 
 @section('selfjs')
+<script>
+function readURL(input) { 
+
+    $("#blah").remove();
+
+    if (input.files && input.files[0]) {
+
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+
+            $("#logo").after( "<img src='' id='blah'>" );
+
+            $('#blah')
+            .attr('src', e.target.result)
+       
+            .height(60);
+        };
+
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+</script>
 @endsection

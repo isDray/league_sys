@@ -291,7 +291,7 @@ class Lib_common{
             }
         }
         
-        $Pages .= "<li class='paginate_button active '><a href='".url("$target"."$now_page/$per_page")."'>".$now_page."</a></li>";
+        $Pages .= "<li class='paginate_button colorbtn active '><a href='".url("$target"."$now_page/$per_page")."'>".$now_page."</a></li>";
         
         for ($j = 1; $j <= $control_num ; $j++) { 
             

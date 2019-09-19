@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>@if( !empty($title) ){{$title}} - @endif{{ config('app.name') }}</title>
+    <title>@if( !empty($title) ){{$title}} - @endif {{$LeagueData['store_name']}} </title>
     
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
@@ -31,7 +31,8 @@
     <![endif]-->
 
     <link rel="stylesheet" href="{{url('/css/weball1.css')}}">
-
+    <link rel="stylesheet" href="{{url('/css/colorset'.$LeagueData['colorset'].'.css')}}">
+    
     <!-- Google Font -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
 </head>
@@ -51,8 +52,17 @@
                 <span class="line"></span>
             </div>
         </div>
-
+        @if( !empty($LeagueData['logo']) )
+        <a href="{{url('/')}}">
+        <img src="{{url('/league_logo/'.$LeagueData['logo'])}}" class='menulogo only_m' >
+        </a>
+        @endif
         <nav class='web_nav1'>
+            @if( !empty($LeagueData['logo']) )
+            <a href="{{url('/')}}">
+            <img src="{{url('/league_logo/'.$LeagueData['logo'])}}" class='menulogo over_m' >
+            </a>
+            @endif            
             <!-- 電腦版用 -->
             <ul id='nav_main_ul'>
                 <li class='menu_root over_m'><span class='web_nav_tree_name root_tree'>商品分類</span>

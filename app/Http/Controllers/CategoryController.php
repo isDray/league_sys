@@ -88,7 +88,8 @@ class CategoryController extends Controller
                    ->where(function( $query  )use ($CatArr){
                        $query->whereIn('g.cat_id',$CatArr)
                              ->orWhereIn('c.cat_id',$CatArr);
-                   });
+                   })
+                   ->groupBy('g.goods_id');
             
         $CondQuery->orderBy($CatSortItem,$CatSortWay);
         

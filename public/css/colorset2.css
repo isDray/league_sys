@@ -1,0 +1,111 @@
+/*
+|--------------------------------------------------------------------------
+| 配色2
+|--------------------------------------------------------------------------
+|
+*/
+/* 上方menu bar , menu根選單*/
+#menu_box , #footer {
+/* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#cb60b3+0,c146a1+27,a80077+27,db36a4+100 */
+background: rgb(203,96,179); /* Old browsers */
+background: -moz-linear-gradient(-45deg,  rgba(203,96,179,1) 0%, rgba(193,70,161,1) 27%, rgba(168,0,119,1) 27%, rgba(219,54,164,1) 100%); /* FF3.6-15 */
+background: -webkit-linear-gradient(-45deg,  rgba(203,96,179,1) 0%,rgba(193,70,161,1) 27%,rgba(168,0,119,1) 27%,rgba(219,54,164,1) 100%); /* Chrome10-25,Safari5.1-6 */
+background: linear-gradient(135deg,  rgba(203,96,179,1) 0%,rgba(193,70,161,1) 27%,rgba(168,0,119,1) 27%,rgba(219,54,164,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#cb60b3', endColorstr='#db36a4',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+
+}
+/* menu第二階 */
+.child_tree {
+	background-color: #a90178;
+}
+/* menu第三階 */
+.child_tree + ul {
+	background-color: #c12894;
+}
+/* menu 選單 hover */
+.child_tree:hover , .child_tree + ul > a >li:hover {
+    background-color: orange;
+    color:white;
+}
+#footer_left_center , #footer_right_center{
+	background-color: rgba(33,33,33,0.2);
+}
+
+
+/* 模組相關 */
+.left_menu_item_root{
+	background-color: #b1097f;
+}
+
+/* 按鈕相關 */
+.colorbtn , .colorbtn > a{
+	background-color: #b1097f!important;
+	border-color:#ba0f87!important;
+	color:white!important;
+}
+.colorbtn:hover , .colorbtn:active{
+	background-color: #8d0a66!important;
+	color:white!important;
+}
+
+/* 標題相關 */
+.goods_title{
+	color:#b1097f!important;
+}
+.caption > a > p {
+	color:#b1097f!important;
+}
+/*
+#menu_box{
+    margin-top: 40px;
+}
+
+#menu_box:before{
+	position: absolute;
+	content: '';
+	top:-40px;
+	left: 0px;
+	display: block;
+	z-index: 998;
+	width: 100%;
+	height: 40px;	
+	background-color: black;
+}
+#menu_box:after{
+	position: absolute;
+	top:-40px;
+	left: 0px;
+	display: block;
+	content: attr(webname);
+	z-index: 999;
+	font-weight: 100;
+	font-size: 40px;
+	line-height: 40px;
+    color:white;
+    
+    font-family: 'Pacifico', cursive;
+    text-shadow: 2px 2px 1px rgba(0,0,0,0.3), 0 0px 15px red, 0 0 10px blue, 0 0 50px green;
+    -webkit-animation: fade 0.1s infinite alternate;
+    -moz-animation: fade 0.1s infinite alternate;
+    -o-animation: fade 0.1s infinite alternate;
+    animation: fade 5s infinite alternate;
+}
+
+@keyframes fade {
+  40% {
+    opacity: 0.8;
+  }
+  42% {
+    opacity: 0.1;
+  }
+  43% {
+    opacity: 0.8;
+  }
+  45% {
+    opacity: 0.1;
+  }
+  46% {
+    opacity: 0.8;
+  }
+*/
+}

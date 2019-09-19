@@ -73,7 +73,6 @@
 .left_menu_item_root{
 	border-top: 0px;
 	border-bottom: 0px;
-	background-color: #ca195a;
 }
 .left_menu_item_root > div > .box-body{
 	list-style: none;
