@@ -53,12 +53,19 @@ class CheckLeague
 
         View::share('LeftBlocks' , $LeftBlocks);     
         
-        if( $request->session()->has('cart') ){
+        $num_in_cart = 0;
 
+        if( $request->session()->has('cart') ){
+            
+            foreach ($request->session()->get('cart') as $session_cart ) {
+                $num_in_cart += $session_cart['num'];
+            }
             View::share('Carts' , $request->session()->get('cart') );  
 
         }
         
+        View::share('num_in_cart' , $num_in_cart );  
+
         return $next($request);
     }
 }

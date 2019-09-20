@@ -49,3 +49,12 @@
 .caption > a > p {
 	color:#ca195a!important;
 }
+
+/* 購物車按鈕 */
+.cart_btn.dropdown{
+	background-color: #1c1c1c!important;
+	border-color: #ba0f87!important;
+}
+.num_in_cart{
+	background-color: #ffa3a3;
+}

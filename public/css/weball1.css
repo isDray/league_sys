@@ -158,18 +158,34 @@
 .cart_btn.dropdown{
 	position: absolute;
 	display: inline-block;
-	right: 0px;
-	top:0px;
+	right: 10px;
+	top:10px;
 	float: right;
-	height: 60px;
+	height: 40px;
 	padding-right: 15px;
 	padding-left:15px;
 	z-index: 20;
+	border-radius: 4px;
+	border:1px solid #dddddd;
 }
 .cart_btn.dropdown > a {
 	color: #efefef;
 	font-size: 24px;
-	line-height: 60px;
+	line-height: 40px;
+}
+.num_in_cart{
+	display: inline-block;
+	position: absolute;
+	width: 26px;
+	height: 26px;
+	background-color: yellow;
+	left:-13px;
+	top:calc(50% - 13px);
+	border-radius: 50%;
+	font-weight: 900;
+	text-align: center;
+	line-height: 26px;
+	box-shadow: 1px 1px 5px #444444;
 }
 #cart_list.dropdown-menu{
     left:auto;

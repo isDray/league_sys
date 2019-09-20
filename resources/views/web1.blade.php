@@ -84,7 +84,7 @@
             </ul>
             <!-- 電腦版用 -->
             
-            <div id='search_form'>
+            <div id='search_form' class='over_m'>
                 <form action="{{url('/search')}}" method="POST">
                     {{ csrf_field() }}
                     <input type='text' class='form-control' name='keyword'> 
@@ -171,6 +171,8 @@
                     <a href="{{url('/cart')}}" class='btn colorbtn btn-flat margin'>去結帳</a>
                 </li>
             </ul>
+
+            <div class='num_in_cart'>{{$num_in_cart}}</div>            
         </div>
         <!-- /購物車 -->
     </div>
@@ -326,8 +328,6 @@ $(function(){
         });
  
         request.done(function( res ) {
-            
-            console.log(res);
 
             if( res['res'] == false ){
 
@@ -347,11 +347,14 @@ $(function(){
                 toastr.success('成功加入購物車');
                 // 如果順利加入購物車 , 就重整購物車內容
                 $(".cart_list_area").empty();
+                
+                var num_in_cart = 0;
 
                 $.each( res['data'] , function( listk , listv ){
                     
                     var tmp_goods = "<table class='cart_table' width='100%'>";
                     /*tmp_goods += "<tr><td colspan='4' class='cart_item_title'>"+listv['name']+"</td></tr>";*/
+                    num_in_cart += parseInt(listv['num']);
 
                     tmp_goods += "<tr><td class='tableimg'><img src='https://***REMOVED***.com/***REMOVED***/"+listv['thumbnail']+"'></td>"+
                                       "<td width='30%'>×"+listv['num']+"="+listv['subTotal']+"</td>"+
@@ -360,6 +363,9 @@ $(function(){
                     
                     $(".cart_list_area").append( tmp_goods );
                 });
+
+                $(".num_in_cart").empty();
+                $(".num_in_cart").append(num_in_cart);
             }
 
         });
@@ -400,11 +406,15 @@ $('body').on('click', '.rmbtn', function() {
 
         // 如果順利加入購物車 , 就重整購物車內容
         $(".cart_list_area").empty();
+        
+        var num_in_cart = 0;
 
         $.each( res['data'] , function( listk , listv ){
                     
             var tmp_goods = "<table class='cart_table' width='100%'>";
             /*tmp_goods += "<tr><td colspan='4' class='cart_item_title'>"+listv['name']+"</td></tr>";*/
+            
+            num_in_cart += parseInt(listv['num']);
 
             tmp_goods += "<tr><td class='tableimg'><img src='https://***REMOVED***.com/***REMOVED***/"+listv['thumbnail']+"'></td>"+
                              "<td width='30%'>×"+listv['num']+"="+listv['subTotal']+"</td>"+
@@ -413,6 +423,9 @@ $('body').on('click', '.rmbtn', function() {
                     
             $(".cart_list_area").append( tmp_goods );
         });
+
+        $(".num_in_cart").empty();
+        $(".num_in_cart").append(num_in_cart);        
     });
  
     rmrequest.fail(function( jqXHR, textStatus ) {

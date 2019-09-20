@@ -136,13 +136,7 @@
                         @endif
                     </div>            
                     @endforeach 
-                </div>
-
-                <div class="rwd_root_menu">
-                    <h4 class="box-title">
-                        <a href="{{url('/')}}">首頁</a>
-                    </h4>                           
-                <div>                
+                </div>               
 
             </div>           
             <!-- /手機板 --> 
@@ -150,7 +144,7 @@
         </nav>  
 
         <!-- 購物車 -->
-        <div class="dropdown cart_btn">
+<!--         <div class="dropdown cart_btn">
                 
             <a id="dLabel" data-target="#" href="http://example.com/" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
                 <li class='fa fa-fw fa-shopping-cart'></li>
@@ -174,7 +168,10 @@
                     <a href="{{url('/cart')}}" class='btn bg-maroon btn-flat margin'>去結帳</a>
                 </li>
             </ul>
-        </div>
+            
+            <div class='num_in_cart'>{{$num_in_cart}}</div> 
+
+        </div> -->
         <!-- /購物車 -->
     </div>
     <div class='col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2 col-xs-12' id="content_right">
@@ -326,8 +323,6 @@ $(function(){
  
         request.done(function( res ) {
             
-            console.log(res);
-
             if( res['res'] == false ){
 
                 var alert_text = '';
@@ -346,11 +341,15 @@ $(function(){
                 toastr.success('成功加入購物車');
                 // 如果順利加入購物車 , 就重整購物車內容
                 $(".cart_list_area").empty();
+                
+                var num_in_cart = 0;
 
                 $.each( res['data'] , function( listk , listv ){
                     
                     var tmp_goods = "<table class='cart_table' width='100%'>";
                     /*tmp_goods += "<tr><td colspan='4' class='cart_item_title'>"+listv['name']+"</td></tr>";*/
+                    
+                    num_in_cart += parseInt(listv['num']);
 
                     tmp_goods += "<tr><td class='tableimg'><img src='https://***REMOVED***.com/***REMOVED***/"+listv['thumbnail']+"'></td>"+
                                       "<td width='30%'>×"+listv['num']+"="+listv['subTotal']+"</td>"+
@@ -359,6 +358,9 @@ $(function(){
                     
                     $(".cart_list_area").append( tmp_goods );
                 });
+
+                $(".num_in_cart").empty();
+                $(".num_in_cart").append(num_in_cart);                
             }
 
         });
@@ -399,11 +401,15 @@ $('body').on('click', '.rmbtn', function() {
 
         // 如果順利加入購物車 , 就重整購物車內容
         $(".cart_list_area").empty();
+        
+        var num_in_cart = 0;
 
         $.each( res['data'] , function( listk , listv ){
                     
             var tmp_goods = "<table class='cart_table' width='100%'>";
             /*tmp_goods += "<tr><td colspan='4' class='cart_item_title'>"+listv['name']+"</td></tr>";*/
+            
+            num_in_cart += parseInt(listv['num']);
 
             tmp_goods += "<tr><td class='tableimg'><img src='https://***REMOVED***.com/***REMOVED***/"+listv['thumbnail']+"'></td>"+
                              "<td width='30%'>×"+listv['num']+"="+listv['subTotal']+"</td>"+
@@ -412,6 +418,9 @@ $('body').on('click', '.rmbtn', function() {
                     
             $(".cart_list_area").append( tmp_goods );
         });
+
+        $(".num_in_cart").empty();
+        $(".num_in_cart").append(num_in_cart);        
     });
  
     rmrequest.fail(function( jqXHR, textStatus ) {

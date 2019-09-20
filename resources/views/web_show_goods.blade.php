@@ -136,11 +136,15 @@ $(function(){
                 toastr.success('成功加入購物車');
                 // 如果順利加入購物車 , 就重整購物車內容
                 $(".cart_list_area").empty();
+                
+                var num_in_cart = 0;
 
                 $.each( res['data'] , function( listk , listv ){
                     
                     var tmp_goods = "<table class='cart_table' width='100%'>";
                     /*tmp_goods += "<tr><td colspan='4' class='cart_item_title'>"+listv['name']+"</td></tr>";*/
+                    
+                    num_in_cart += parseInt(listv['num']);
 
                     tmp_goods += "<tr><td class='tableimg'><img src='https://***REMOVED***.com/***REMOVED***/"+listv['thumbnail']+"'></td>"+
                                       "<td width='30%'>×"+listv['num']+"="+listv['subTotal']+"</td>"+
@@ -149,6 +153,9 @@ $(function(){
                     
                     $(".cart_list_area").append( tmp_goods );
                 });
+
+                $(".num_in_cart").empty();
+                $(".num_in_cart").append(num_in_cart);                
             }
 
         });

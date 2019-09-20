@@ -55,6 +55,15 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#cb60b3', end
 .caption > a > p {
 	color:#b1097f!important;
 }
+/* 購物車按鈕 */
+.cart_btn.dropdown{
+	background-color: #b1097f!important;
+	border-color: #ba0f87!important;
+}
+.num_in_cart{
+	background-color: #ffa3a3;
+}
+
 /*
 #menu_box{
     margin-top: 40px;
