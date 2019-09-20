@@ -18,7 +18,7 @@ $recommends = Lib_block::get_recommend('new');
         
         @foreach( $recommends as $recommendk => $recommend)
         <a href="https://***REMOVED***.com/***REMOVED***/goods.php?id={{$recommend['goods_id']}}">
-        <div class='col-md-3 col-sm-4 col-xs-6'>
+        <div class='col-md-3 col-sm-4 col-xs-6 show_goods_box'>
 
             <div class="thumbnail">
                 

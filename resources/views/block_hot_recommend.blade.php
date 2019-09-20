@@ -18,7 +18,7 @@ $hots = Lib_block::get_recommend('hot');
         
         @foreach( $hots as $hotk => $hot)
         <a href="{{url('/show_goods/'.$hot['goods_id'])}}">
-        <div class='col-md-3 col-sm-4 col-xs-6'>
+        <div class='col-md-3 col-sm-4 col-xs-6 show_goods_box'>
 
             <div class="thumbnail">
                 

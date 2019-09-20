@@ -34,11 +34,8 @@
     	</div>
         
         <div class="col-md-5 col-sm-5 col-xs-12 in_goods_info">    	
-            
-            <h4>商品售價:{{ round($GoodsData['shop_price']) }}</h4>
-
             <h4>商品編號:{{ $GoodsData['goods_sn'] }}</h4>
-           
+            <h4>商品售價: <span style='color:ff4d4d;'>{{ round($GoodsData['shop_price']) }}</span></h4>
             <p><label for="in_goods_num">數量:</label>
                  
                 @if( $GoodsData['goods_number'] > 0)
