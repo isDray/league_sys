@@ -268,7 +268,7 @@ class ReportController extends Controller
     |
     */
     public function league_report_commission( Request $request ){
-        
+
         $NoteMsgs = [];
 
         $LeagueId = $request->session()->get('user_id');
@@ -279,40 +279,61 @@ class ReportController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | 如果沒有選取值 , 就以當月開始跟結尾當成預設值
+        | 如果沒有選擇日期 , 則需要將查詢日期選到最接近的結算月
+        | 上個月:1~30(31)的訂單
+        | 本月超過15號才可以查詢
+        | 本月超過20號才可以進行匯款動作
         |
         */
+        
+        // 先查看今天月份及日期
+        $NowMonth = date( 'm' , time() );
+        
+        $NowDate  = date('d' , time() );
+        
+        $NowMonth01 = strtotime( date('Y-m-01 00:00:00') );
+
         if( empty( $request->start ) ){
             
-            $request->start = strtotime( date('Y-m-01 00:00:00') ) - date('Z');
+            if( $NowDate >= 15 ){
+
+                /*echo date('Ymd.H*s*i',time());*/
+                echo '<br>';
+
+                $StartDate = date("Y-m-d H:s:i", strtotime("-1 month", $NowMonth01 - date('Z') ));
+                
+            }else{
+          
+                $StartDate = date("Y-m-d H:s:i", strtotime("-2 month", $NowMonth01 - date('Z') ));
+            }
 
         }else{
-            
-            $request->start = strtotime( $request->start." 00:00:00" ) - date('Z');
-        }
-        
-        if( empty( $request->end ) ){
-            
-            $request->end = strtotime( date('Y-m-t 23:59:59') ) - date('Z');
-            
-        }else{
-            
-            $request->end = strtotime( $request->end." 23:59:59") - date('Z');
-        }
-        
-        /*
-        |--------------------------------------------------------------------------
-        | 最多查詢三個月
-        | 
-        | ** 此查詢為了避免使用者疑惑 , 有刻意多補一天
-        */
 
-        if( ($request->start + 86401) < strtotime("-3 months",$request->end ) ){
+            echo $request->start ;
 
-            $request->start = strtotime("-3 months",$request->end );
+            /**/
+            $p = 'T';
 
-            array_push( $NoteMsgs , '開始日期到結束日期不能超過三個月 , 目前已將您的日期調整至三個月內 ');
+            $T = 'supr';
 
+            $supreme = ['col','siz'];
+            
+            $col= ['r','g'];
+
+            $siz =['m','x'];
+
+            $mix = [
+                       ['supr','r'] , ['supr','x']
+                    ];
+
+            $this->attributes = ['carler','seiz'];
+
+            $goods = [ $this->attributes ];
+
+
+            /**/
+
+            
         }
         
         /*

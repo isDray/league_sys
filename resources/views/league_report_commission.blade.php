@@ -2,8 +2,10 @@
 
 @section('selfcss')
 <link rel="stylesheet" href="{{url('/AdminLTE/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css')}}">
-<!-- <link rel="stylesheet" href="{{url('/css/login.css')}}"> -->
+<link rel="stylesheet" href="{{url('/css/monthpicker.css')}}">
+
 @endsection
+<!-- <link rel="stylesheet" href="{{url('/css/login.css')}}"> -->
 
 @section('content')
 <div class='row custom_row'>
@@ -32,7 +34,7 @@
             <!-- 開始日期 -->
             <div class="form-group col-md-3 col-sm-6 col-xs-12">
                 
-                <label>開始日期:</label>
+                <label>查詢月份:</label>
 
                 <div class="input-group date">
                   <div class="input-group-addon">
@@ -41,21 +43,7 @@
                   <input type="text" class="form-control pull-right datepicker" id="datepicker" name='start' autocomplete="off" value="{{$start}}">
                 </div>
             </div>
-            <!-- /開始日期 -->
-
-            <!-- 開始日期 -->
-            <div class="form-group col-md-3 col-sm-6 col-xs-12">
-                
-                <label>結束日期:</label>
-
-                <div class="input-group date">
-                  <div class="input-group-addon">
-                    <i class="fa fa-calendar"></i>
-                  </div>
-                  <input type="text" class="form-control pull-right datepicker" id="datepicker" name='end' autocomplete="off" value="{{$end}}">
-                </div>
-            </div>
-            <!-- /開始日期 -->            
+            <!-- /開始日期 -->           
             
             <!-- 獎金狀態 -->
             <div class="form-group col-md-3 col-sm-6 col-xs-12">
@@ -174,16 +162,23 @@
 
 <script src="{{url('/AdminLTE/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js')}}"></script>
 <script src="{{url('/AdminLTE/bower_components/bootstrap-datepicker/dist/locales/bootstrap-datepicker.zh-TW.min.js')}}"></script>
+<script src="{{url('/js/jquery.mtz.monthpicker.js')}}"></script>
+<link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/themes/smoothness/jquery-ui.css">
+monthpicker.min.js
 <script type="text/javascript">
 $(function(){
 
 // 時間選擇器
-$('.datepicker').datepicker({
-    autoclose: true,
-    language: 'zh-TW',
-    format:'yyyy-mm-dd'
-});
+// $('.datepicker').datepicker({
+//     autoclose: true,
+//     language: 'zh-TW',
+//     format:'yyyy-mm-dd',
+// });
 
+$('.datepicker').monthpicker({
+    pattern:'yyyy-mm',
+    monthNames: ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'],
+});
 
 
 

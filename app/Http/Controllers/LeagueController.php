@@ -49,11 +49,13 @@ class LeagueController extends Controller
             $query->where(function($quey2) use ($Before7Day){
                 $quey2->where('order_status','5')
                 ->where('shipping_status','1')
+                ->where('pay_status','2')
                 ->where('shipping_time' ,'<' , $Before7Day);
             })
             ->orWhere(function($query3){
                 $query3->where('order_status','5')
-                ->where('shipping_status','2');
+                ->where('shipping_status','2')
+                ->where('pay_status','2');
             });
         })
         ->get();
@@ -70,11 +72,13 @@ class LeagueController extends Controller
             $query->where(function($quey2) use ($Before7Day){
                 $quey2->where('order_status','5')
                 ->where('shipping_status','1')
+                ->where('pay_status','2')
                 ->where('shipping_time' ,'<' , $Before7Day);
             })
             ->orWhere(function($query3){
                 $query3->where('order_status','5')
-                ->where('shipping_status','2');
+                ->where('shipping_status','2')
+                ->where('pay_status','2');
             });
         })
         ->get(); 
@@ -153,7 +157,6 @@ class LeagueController extends Controller
             }
         }        
         
-
 
 
         $MonthDayOrders = json_encode( array_values($MonthDays) ); 
@@ -675,6 +678,8 @@ class LeagueController extends Controller
 
             //return redirect('/register_result/0');
             // something went wrong
+
+
         }
 
         return redirect('/league_message');
@@ -979,4 +984,11 @@ class LeagueController extends Controller
 
         echo $mail_content;
     }
+/*   
+    0801 - 0831
+     
+    0915 找出所有條件吻合之訂單
+
+    計算獎金
+*/
 }
