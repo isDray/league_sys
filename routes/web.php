@@ -89,6 +89,9 @@ Route::group(['middleware' => ['CheckLogin']], function () {
     // 測試 
     Route::get('/league_test','LeagueController@league_test');
     
+
+
+
     /*
     |--------------------------------------------------------------------------
     | 通用訊息相關
@@ -236,11 +239,12 @@ Route::group(['middleware' => ['CheckLeague']], function () {
 
     Route::post('/areaChange','CartController@areaChange');
 
-
     Route::post('/shipChange','CartController@shipChange');
 
-    
     Route::any('/storeMap/{device}/{type}','CartController@storeMap');
+
+    // 網站文章
+    Route::get('/article/{article_id}','LeagueWebController@article');
     
 
 });

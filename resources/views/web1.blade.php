@@ -67,7 +67,7 @@
             </a>
             @endif
             <!-- 電腦版用 -->
-            <ul id='nav_main_ul'>
+            <ul id='nav_main_ul' class='over_m'>
                 <li class='menu_root over_m'><span class='web_nav_tree_name root_tree'>商品分類</span>
                     <ul>
                         @foreach( $categorys as $categoryk => $category)
@@ -174,7 +174,7 @@
         </div>
         <!-- /購物車 -->
     </div>
-    <div class='col-md-2 col-md-offset-2 col-sm-4 col-sm-offset-0 col-xs-12' id='content_left'>
+    <div class='col-md-2 col-md-offset-2 col-sm-4 col-sm-offset-0 col-xs-12 over_m' id='content_left'>
                        
         @yield('content_left')
     </div>
@@ -191,25 +191,25 @@
 
                 <div class='col-md-4 col-sm-4 col-xs-12'>
                     <ul class='footer_list'><h4>如何購買</h4>
-                        <li>購買流程</li>
-                        <li>配送說明</li>
-                        <li>支付方式說明</li>
-                        <li>退換貨原則</li>
+                        <li> <a href="{{url('/article/10')}}">購買流程</a> </li>
+                        <li> <a href="{{url('/article/15')}}">配送說明</a></li>
+                        <li> <a href="{{url('/article/17')}}">支付方式說明</a></li>
+                        <li> <a href="{{url('/article/21')}}">退換貨原則</a></li>
                     </ul>
                 </div>
 
                 <div class='col-md-4 col-sm-4 col-xs-12'>
                     <ul class='footer_list'><h4>常見問題</h4>
-                        <li>發票說明</li>
-                        <li>情趣用品清洗及收納注意事項</li>
-                        <li>常見Q&A</li>
-                        <li>產品保固說明</li>
+                        <li> <a href="{{url('/article/9')}}">發票說明</a></li>
+                        <li> <a href="{{url('/article/33')}}">情趣用品清洗及收納注意事項</a></li>
+                        <li> <a href="{{url('/article/48')}}">常見Q&A</a></li>
+                        <li> <a href="{{url('/article/51')}}">產品保固說明</a></li>
                     </ul>
                 </div>                
 
                 <div class='col-md-4 col-sm-4 col-xs-12'>
                     <ul class='footer_list'><h4>會員中心</h4>
-                        <li>批發合作說明</li>
+                        <li> <a href="{{url('/article/47')}}">批發合作說明</a></li>
                     </ul>
                 </div>
             </div>

@@ -197,7 +197,6 @@
 |
 */
 #search_form{
-
 	margin-top: 10px;
 	height: 40px;
 	float:right;
@@ -217,7 +216,17 @@
     height:calc( 100% - 1px )!important;
 	background-color: #eff;
 }
+@media( max-width:767px ){
 
+#search_form{
+	padding-left: 15px;
+	float: none!important;
+	display: block;
+	margin-right: 0px;
+    margin-top: 5px;
+}
+
+}
 /*
 |--------------------------------------------------------------------------
 | footer 區塊
@@ -243,7 +252,7 @@
     color:#d1d1d1;
     font-family: '微軟正黑體';
 }
-.footer_list > li {
+.footer_list > li , .footer_list > li >a {
 	font-size: 16px;
 	font-weight: 900;
     color:#ffafaf;
@@ -375,9 +384,6 @@
 /* 全區塊 */
 
 /* 手機板menu */
-#menu_box{
-	border-bottom: 1px solid #771616;
-}
 .child_tree{
 	padding: 0px!important;
 }

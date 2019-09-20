@@ -1,0 +1,6 @@
+.article_content{
+	overflow-x:hidden;
+}
+.article_content > * {
+	max-width: 100%;
+}

@@ -39,4 +39,29 @@ class LeagueWebController extends Controller
         return view('web_index', [ 'CenterBlocks' => $CenterBlocks ]);
     }
 
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | 網站文章
+    |--------------------------------------------------------------------------
+    |
+    */
+    public function article( Request $request ){
+        
+        $article = DB::table('xyzs_article')->where('article_id',$request->article_id)->first();
+
+        if( $article ){
+            $article_title = $article->title;
+            $article = $article->content;
+
+        }else{
+
+            return redirect("/");
+        }
+
+        return view( 'web_atricle' , ['article'=>$article , 'article_title'=>$article_title]);
+    }
+
 }

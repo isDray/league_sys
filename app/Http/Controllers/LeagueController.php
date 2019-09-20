@@ -972,4 +972,11 @@ class LeagueController extends Controller
 
         return redirect('/league_message');
     }
+    
+    public function league_test( Request $request ){
+        
+        $mail_content = view('mail.order_received',['customername'=>'王大牆'])->render();
+
+        echo $mail_content;
+    }
 }

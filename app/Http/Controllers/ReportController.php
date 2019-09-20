@@ -251,7 +251,8 @@ class ReportController extends Controller
                                             'OrderDoneGrow' => $OrderDoneGrow,
                                             'PercnetStatus' => $PercnetStatus,
                                             'RadarCatNames' => $RadarCatNames,
-                                            'RadarCatNums'  => $RadarCatNums
+                                            'RadarCatNums'  => $RadarCatNums,
+                                            'tree'=>'report'
 
         	                              ]);
     }
@@ -442,7 +443,8 @@ class ReportController extends Controller
                                                  'Orders' => $Orders,
                                                  'DateX' => $DateX,
                                                  'DayCommissions'=>$DayCommissions,
-                                                 'PerDayCommissions'=>$PerDayCommissions
+                                                 'PerDayCommissions'=>$PerDayCommissions,
+                                                 'tree'=>'report'
                                                ]);
 
 

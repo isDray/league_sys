@@ -104,14 +104,14 @@
         <li><a href="{{url('/league_dashboard')}}"><i class="fa fa-fw fa-dashboard text-light-blue"></i> <span>管理後台首頁</span></a></li>
 
         <li class="header">報表</li>
-        <li class="treeview">
+        <li class="treeview @if( isset($tree) && $tree=='report' ) active @endif">
           <a href="{{url('/league_dashboard')}}">
             <i class="fa fa-fw fa-bar-chart text-light-blue"></i> <span>報表查詢</span>
             <span class="pull-right-container">
               <i class="fa fa-angle-left pull-right"></i>
             </span>
           </a>
-          <ul class="treeview-menu">
+          <ul class="treeview-menu ">
             <li><a href="{{url('/league_report_order')}}"><i class="fa fa-fw fa-angle-right"></i>訂單報表</a></li>
             <li><a href="{{url('/league_report_commission')}}"><i class="fa fa-fw fa-angle-right"></i>獎金報表</a></li>
           </ul>
