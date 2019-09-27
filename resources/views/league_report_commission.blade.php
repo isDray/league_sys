@@ -46,7 +46,7 @@
             <!-- /開始日期 -->           
             
             <!-- 獎金狀態 -->
-            <div class="form-group col-md-3 col-sm-6 col-xs-12">
+<!--             <div class="form-group col-md-3 col-sm-6 col-xs-12">
                 
                 <div class="form-group">
                     
@@ -58,7 +58,7 @@
                         <option value='2' @if($commission_status == 2) SELECTED @endif>已提領</option>
                   </select>
                 </div>            
-            </div>
+            </div> -->
             <!-- /獎金狀態 -->
             <div class="form-group col-md-12 col-sm-12 col-xs-12">
                 <input type='submit' class='btn btn-primary'>
@@ -71,6 +71,47 @@
     </div> 
     <!-- /搜尋條件 -->
     
+    <!-- 一覽 -->
+    <div class="col-md-4 col-sm-4 col-xs-12">
+          <div class="info-box">
+            <span class="info-box-icon bg-light-blue"><i class="ion ion-ios-gear-outline"></i></span>
+
+            <div class="info-box-content">
+              <span class="info-box-text">本期獎金</span>
+              <span class="info-box-number">{{ $ThisMonthCommission }}</span>
+            </div>
+            <!-- /.info-box-content -->
+          </div>
+          <!-- /.info-box -->
+    </div>
+
+    <div class="col-md-4 col-sm-4 col-xs-12">
+          <div class="info-box">
+            <span class="info-box-icon bg-light-blue"><i class="ion ion-ios-gear-outline"></i></span>
+
+            <div class="info-box-content">
+              <span class="info-box-text">未出帳獎金</span>
+              <span class="info-box-number">{{$Unpay}}</span>
+            </div>
+            <!-- /.info-box-content -->
+          </div>
+          <!-- /.info-box -->
+    </div>
+
+    <div class="col-md-4 col-sm-4 col-xs-12">
+          <div class="info-box">
+            <span class="info-box-icon bg-light-blue"><i class="ion ion-ios-gear-outline"></i></span>
+
+            <div class="info-box-content">
+              <span class="info-box-text">獎金總和@if( ($ThisMonthCommission + $Unpay) < 2000)<small style='color:red'>(尚未達到發放獎金標準)</small>@endif</span>
+              <span class="info-box-number">{{ $ThisMonthCommission + $Unpay }}</span>
+            </div>
+            <!-- /.info-box-content -->
+          </div>
+          <!-- /.info-box -->
+    </div>        
+    <!-- 一覽 -->
+
     <!-- 清單呈現 -->
     <div class="col-xs-12 col-sm-12 col-xs-12">
         <div class="box box-primary">
@@ -115,6 +156,8 @@
         </div>
     </div>    
     <!-- 清單呈現結束 -->
+
+
 
     <!-- 報表呈現 -->
     <div class="col-md-6 col-sm-6 col-xs-12">

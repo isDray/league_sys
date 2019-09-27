@@ -268,13 +268,14 @@ class ReportController extends Controller
     |
     */
     public function league_report_commission( Request $request ){
-
-        $NoteMsgs = [];
-
-        $LeagueId = $request->session()->get('user_id');
-
-        $Before7Day = time() -  date('Z') - ( 7 * 24 * 60 * 60 );
         
+        // 提示訊息
+        $NoteMsgs = [];
+        
+        // 加盟會員ID
+        $LeagueId = $request->session()->get('user_id');
+        
+        // 頁面標題
         $PageTitle = '獎金報表'; 
 
         /*
@@ -284,65 +285,81 @@ class ReportController extends Controller
         | 本月超過15號才可以查詢
         | 本月超過20號才可以進行匯款動作
         |
-        */
+        */         
         
-        // 先查看今天月份及日期
+        // 當下月份
         $NowMonth = date( 'm' , time() );
         
+        // 當下日期
         $NowDate  = date('d' , time() );
         
+        // 本月第一天
         $NowMonth01 = strtotime( date('Y-m-01 00:00:00') );
 
+        // 本月最後一天
+        $NowMonthLasted = strtotime( date('Y-m-t 23:59:59') );
+        
+        // 如果沒有接收到月份相關的參數 , 就已最近期可以查詢的日期作為查詢條件
         if( empty( $request->start ) ){
             
+            // 由於每月超過15號才能夠查詢上個月的獎金 , 所以當下日期如果沒有超過15號就只能查上上個月
             if( $NowDate >= 15 ){
-
-                /*echo date('Ymd.H*s*i',time());*/
-                echo '<br>';
-
-                $StartDate = date("Y-m-d H:s:i", strtotime("-1 month", $NowMonth01 - date('Z') ));
-                
-            }else{
           
-                $StartDate = date("Y-m-d H:s:i", strtotime("-2 month", $NowMonth01 - date('Z') ));
+                $StartDate = strtotime("-1 month", $NowMonth01 )- date('Z');
+
+                $EndDate   = strtotime( "-1 month", $NowMonthLasted )- date('Z');
+
+            }else{
+    
+                // 如果小於15號 , 表示還不能查詢上個月的獎金 , 只能查上上個月的
+                $StartDate = strtotime("-2 month", $NowMonth01) -date('Z')  ;
+
+                $EndDate   = strtotime( "-2 month", $NowMonthLasted )- date('Z');
+
             }
 
         }else{
-
-            echo $request->start ;
-
-            /**/
-            $p = 'T';
-
-            $T = 'supr';
-
-            $supreme = ['col','siz'];
             
-            $col= ['r','g'];
+            // 先判斷是否為可以查詢的月份
 
-            $siz =['m','x'];
+            // 最後一天可查詢日期
+            $LatestDray = '';
 
-            $mix = [
-                       ['supr','r'] , ['supr','x']
-                    ];
+            if( $NowDate >= 15 ){
+                
+                $LatestDray   = strtotime( "-1 month", $NowMonthLasted )- date('Z');
 
-            $this->attributes = ['carler','seiz'];
+            }else{
 
-            $goods = [ $this->attributes ];
-
-
-            /**/
-
+                $LatestDray   = strtotime( "-2 month", $NowMonthLasted )- date('Z');
+            }
             
+            $EndDate = date( 'Y-m-t 23:59:59'   , strtotime( $request->start )  );
+
+            $EndDate = strtotime($EndDate) - date('Z');
+            
+            // 如果使用者所選取的查訊日 , 小於最後可以查詢日期 , 表示此日期可以查詢 , 否則則需要強制替其變換日期
+            if( $LatestDray > $EndDate ) {
+                
+                $StartDate = strtotime("-1 month", $EndDate ) - 57599 - date('Z');
+
+            }else{
+
+                $StartDate = strtotime("-1 month", $NowMonth01 )- date('Z');
+
+                $EndDate   = strtotime( "-1 month", $NowMonthLasted )- date('Z');
+            }
+
         }
-        
+
+
         /*
         |--------------------------------------------------------------------------
         | 針對狀態惡意操作避免 , 永遠只接受三個狀態 , 如果不符合就給預設值
         |
         |
         */
-        $AgreeSatuts = [0,1,2];
+        /*$AgreeSatuts = [0,1,2];
 
         if( !isset( $request->commission_status ) || !in_array( $request->commission_status , $AgreeSatuts) ){
 
@@ -361,28 +378,33 @@ class ReportController extends Controller
             
             $CommissionStatus = [ 1 ];
         }
-        
+        */
+
+        $CommissionStatus = [ 0 , 1 ];
+
         /*
         |--------------------------------------------------------------------------
         | 查詢訂單
         |
         |
         */
+        /*$table('goods')->select('color','size');
+
+        $table('goods')->leftJoin('attr');
+
+        $goods['red']['mid'] = 10;*/
+
+
         $Orders = DB::table('xyzs_order_info')
                   ->where('league',$LeagueId)
-                  ->where('add_time','>=',$request->start)
-                  ->where('add_time','<=',$request->end)
+                  ->where('add_time','>=',$StartDate)
+                  ->where('add_time','<=',$EndDate)
                   ->whereIn('league_pay',$CommissionStatus)
-                  ->where(function( $query ) use ($Before7Day){
-                    $query->where(function($quey2) use ($Before7Day){
-                        $quey2->where('order_status','5')
-                              ->where('shipping_status','1')
-                              ->where('shipping_time' ,'<' , $Before7Day);
-                    })
-                    ->orWhere(function($query3){
-                        $query3->where('order_status','5')
-                        ->where('shipping_status','2');
-                    });
+                  ->where( function( $query ){
+                        $query->where('order_status','5')
+                              ->where('pay_status','2')
+                              ->where('shipping_status','2');
+
                   })                  
                   ->select(DB::raw("(".Lib_common::_GetTotalFee().") as total_fee"),"add_time","order_sn" , DB::raw("(ROUND( (".Lib_common::_GetTotalFee().") * 0.2 ) ) as commission"),'league_pay')
                   ->get();
@@ -397,11 +419,12 @@ class ReportController extends Controller
         */
         $RangeDateArrs = [];
         
-        for ( $i = $request->start ; $i <= $request->end ; $i += 86400) { 
+        for ( $i = $StartDate ; $i <= $EndDate ; $i += 86400) { 
             
             $RangeDateArrs[ date('Ymd' , $i+date('Z') ) ] = 0;
 
         }
+        
 
         $DayCommissions = DB::table('xyzs_order_info')
         ->select( DB::raw( "DATE_FORMAT(FROM_UNIXTIME(add_time+28800),'%Y%m%d') as order_date") ,
@@ -409,35 +432,30 @@ class ReportController extends Controller
                   DB::raw( "SUM(ROUND( (".Lib_common::_GetTotalFee().") * 0.2)) as commission"),
                   'order_id' )
         ->where('league',$LeagueId)
-        ->where('add_time','>=',$request->start)
-        ->where('add_time','<=',$request->end)
+        ->where('add_time','>=',$StartDate)
+        ->where('add_time','<=',$EndDate)
         ->whereIn('league_pay',$CommissionStatus)
-        ->where(function( $query ) use ($Before7Day){
-            $query->where(function($quey2) use ($Before7Day){
-                $quey2->where('order_status','5')
-                ->where('shipping_status','1')
-                ->where('shipping_time' ,'<' , $Before7Day);
-            })
-            ->orWhere(function($query3){
-                $query3->where('order_status','5')
-                ->where('shipping_status','2');
-            });
+        ->where(function( $query ){
+            $query->where('order_status','5')
+                  ->where('pay_status','2')
+                  ->where('shipping_status','2');
         })
         ->groupBy( DB::raw( "DAY(FROM_UNIXTIME(add_time + 28800) )"))
         ->get();
         
+
         $DayCommissions = json_decode( $DayCommissions , true );
-        
+
         foreach ($DayCommissions as $DayCommissionk => $DayCommission) {
             
             if( array_key_exists( $DayCommission['order_date'] , $RangeDateArrs) ){
                 
-                $RangeDateArrs[ $DayCommission['order_date'] ] = $DayCommission['commission'];
+                $RangeDateArrs[ $DayCommission['order_date'] ] = (int)$DayCommission['commission'];
             }
         }
         
         $DateX = json_encode( array_keys($RangeDateArrs) );
-
+        
         $DayCommissions = array_values($RangeDateArrs);
         
         $PerDayCommissions = json_encode( $DayCommissions );
@@ -453,19 +471,43 @@ class ReportController extends Controller
                 $DayCommissions[$DayCommissionk] = $DayCommission;
             }
         }
-
+        $ThisMonthCommission = end( $DayCommissions );
         $DayCommissions = json_encode( $DayCommissions );
+
+        // 取出指定月份前尚未撥款獎金總和
+        $Unpay = DB::table('xyzs_order_info')
+        ->select( DB::raw( "SUM(ROUND( (".Lib_common::_GetTotalFee().") * 0.2)) as commission" ) )
+        ->where('league',$LeagueId)
+        ->where('add_time','<',$StartDate)
+        ->whereIn('league_pay',$CommissionStatus)
+        ->where(function( $query ){
+            $query->where('order_status','5')
+                  ->where('pay_status','2')
+                  ->where('shipping_status','2');
+        })
+        /*->groupBy( DB::raw( "DAY(FROM_UNIXTIME(add_time + 28800) )"))*/
+        ->get();
+        
+        $Unpay = $Unpay[0]->commission;
+        
+        if( empty($Unpay) ){
+
+            $Unpay = 0;
+
+        }
         
         return view('league_report_commission',[ 'PageTitle'=>$PageTitle,
-                                                 'start' => date('Y-m-d' , $request->start +date('Z')),
-                                                 'end'   => date('Y-m-d' , $request->end +date('Z')),
+                                                 'start' => date('Y-m' , $StartDate +date('Z')),
+                                                 'end'   => date('Y-m' , $EndDate + date('Z')),
                                                  'commission_status' => $request->commission_status,
                                                  'NoteMsgs' => $NoteMsgs ,
                                                  'Orders' => $Orders,
                                                  'DateX' => $DateX,
                                                  'DayCommissions'=>$DayCommissions,
                                                  'PerDayCommissions'=>$PerDayCommissions,
-                                                 'tree'=>'report'
+                                                 'tree'=>'report',
+                                                 'Unpay' => $Unpay,
+                                                 'ThisMonthCommission' =>$ThisMonthCommission
                                                ]);
 
 
