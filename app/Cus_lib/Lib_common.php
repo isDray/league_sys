@@ -13,7 +13,7 @@ class Lib_common{
 
     public static  function GetCategorys(){
         
-        $RootCategorys = DB::table('xyzs_category')->orderBy('parent_id', 'asc')->orderBy('sort_order', 'asc')->get();
+        $RootCategorys = DB::table('xyzs_category')->whereNotIn('cat_id',[42,153])->orderBy('parent_id', 'asc')->orderBy('sort_order', 'asc')->get();
         
         $RootCategorys = json_decode( $RootCategorys , true );
         
