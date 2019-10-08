@@ -14,6 +14,24 @@ class LeagueWebController extends Controller
     |
     */
     public function index( Request $request ){
+        
+        $urlarr = explode('/',url()->previous());
+        
+
+        if( trim(end( $urlarr )) == 'over18' ){
+            
+            setcookie('over18',true,time()+86400);
+             
+        }else{
+            
+            if( !isset( $_COOKIE['over18'] )){
+
+                return redirect('/over18');
+            }            
+        }
+    
+
+
 
         $LeagueId = $request->session()->get('user_id');
         
@@ -62,6 +80,22 @@ class LeagueWebController extends Controller
         }
 
         return view( 'web_atricle' , ['article'=>$article , 'article_title'=>$article_title]);
+    }
+    
+    
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | 網站過橋頁
+    |--------------------------------------------------------------------------
+    |
+    */
+    public function over18( Request $request ){
+        
+        $LeagueId = $request->session()->get('user_id');
+
+        return view('over18');
     }
 
 }

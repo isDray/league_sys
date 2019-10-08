@@ -205,6 +205,9 @@ Route::group(['middleware' => ['CheckLeague']], function () {
     
     // 首頁
     Route::get('/','LeagueWebController@index');
+
+    // 過橋頁
+    Route::get('/over18','LeagueWebController@over18');
     
     // 商品內頁
     Route::get('/show_goods/{goods_id}','GoodsController@show_goods');
