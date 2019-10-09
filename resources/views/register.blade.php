@@ -8,23 +8,87 @@
     <div class='col-md-4 col-md-offset-2 col-sm-12 col-xs-12' id='register_intro'>
         
         <div  class='label_box' label='加盟優勢' >
-            <p>1.輕鬆自在免成本、免屯貨，沒有業績壓力，沒有庫存壓力，時間自已安排。</p>
-            <p>2.銷售市場全國性、全球性，不用拋頭露面、免風吹日曬也能做生意賺大錢。</p>
-            <p>3.自己當家作主，想賺錢，就上網；累了休息，訂單還是滾滾而來。</p>
-            <p>4.所有進出貨、退換貨、商品上架、聯絡顧客、收款、等瑣事均由加盟總站一手包辦，加盟站只要負責讓網站曝光，其它都不用煩腦。 </p>
-            <p>5.總公司每月都與日本、歐美同步上架新產品，求新求變以應付廣大的網友需求。 </p>
-            <p>6.訂單獎金抽成20~30%</p>
+            <p>&nbsp; <span class="label pull-left bg-orange">免成本</span><span class="label pull-left text-black"> 免加盟金 ， 免壓年金 ， 免囤貨 </span></p>
+            <p>&nbsp; <span class="label pull-left bg-orange">高度自由</span><span class="label pull-left text-black"> 不論在家或者咖啡廳都能輕鬆完成 </span></p>
+            <p>&nbsp; <span class="label pull-left bg-orange">專業協助</span><span class="label pull-left text-black"> 訂單處理 、 商品包裝配送 、 售後服務退換貨 ，所有關於商品問題皆由享愛完成 </span></p>
+            <p>&nbsp; <span class="label pull-left bg-orange">貨源充足</span><span class="label pull-left text-black"> 享愛加盟平台定期依照銷售曲線預估貨量 , 確保您的訂單都能夠順利出貨 </span></p>
+            <p>&nbsp; <span class="label pull-left bg-orange">優渥獎金</span><span class="label pull-left text-black"> 提供高比例獎金 ， 銷售輛與獎金成正比 </span></p>
+            <p>&nbsp; <span class="label pull-left bg-orange">專屬品牌</span><span class="label pull-left text-black"> 網頁上的曝光讓客群更認識屬於您的專屬品牌 ， 讓品牌名聲與獎金形成良性循環</span></p>
+
         </div>
 
         <div  class='label_box' label='獎金計算' >
             
             <p>
-               訂單金額的20%(需扣除訂單運費150元)
+               <span class="label pull-left bg-maroon">訂單的20%</span>
+               
                <br>
-               假設訂單有10筆，每筆1000元，您的紅利獎金就是(1000-150)x10x20%=1700元。
+               假設您有一筆1000元的訂單 , 則此筆訂單可以抽成200元 
             </p>
  
         </div>
+
+        <div  class='label_box' label='簡單加盟程序' >
+            
+            <ul class="timeline">
+                <!-- timeline time label -->
+                                
+                <!-- /.timeline-label -->
+
+                <!-- timeline item -->
+            <li>
+              <i class="fa fa-fw fa-pencil bg-maroon"></i>
+
+              <div class="timeline-item">
+
+                <h3 class="timeline-header"><a href="#">申請</a> </h3>
+
+                <div class="timeline-body">
+                    於加盟會員表單中填寫您的個人資料 , 包含自訂帳號密碼 、姓名、電話 、收款銀行帳戶...等
+                    完成後送出申請表單。
+                </div>
+              </div>
+            </li>
+
+            <li>
+              <i class="fa fa-fw fa-thumbs-o-up bg-maroon"></i>
+
+              <div class="timeline-item">
+
+                <h3 class="timeline-header"><a href="#">審核</a></h3>
+
+                <div class="timeline-body">
+                    享愛加盟系統接收到您的申請資料後 , 開始進行審核動作 , 在審核完成之後由系統發送審核通知信
+                    至您的信箱。
+                </div>
+              </div>
+            </li> 
+
+            <li>
+              <i class="fa fa-fw fa-usd bg-maroon"></i>
+
+              <div class="timeline-item">
+
+                <h3 class="timeline-header"><a href="#">開始使用</a></h3>
+
+                <div class="timeline-body">
+                    完成審核之後 , 您將可以用您註冊的帳號密碼進入管理後台 , 管理網站樣式以及查看目前銷售成效。
+                </div>
+              </div>
+            </li>                       
+
+          </ul>
+ 
+        </div>
+
+        <div  class='label_box' label='網站管理' >
+            
+            <p>&nbsp; <span class="label pull-left bg-orange">報表</span><span class="label pull-left text-black"> 網站提供圖形化報表 ， 為您提供策略化經營的利器 。</span></p>
+            <p>&nbsp; <span class="label pull-left bg-orange">訂製</span><span class="label pull-left text-black"> 網站版型區塊可讓您自由決定位置 ， 讓您設計出獨一無二的網站 </span></p>
+            <p>&nbsp; <span class="label pull-left bg-orange">擴充</span><span class="label pull-left text-black"> 網站版型及功能持續開發及維護 </span></p>
+
+        </div>        
+
 
     </div>
 
