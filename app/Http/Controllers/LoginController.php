@@ -63,22 +63,26 @@ class LoginController extends Controller
                 leftJoin('xyzs_league AS l', 'u.user_id', '=', 'l.user_id')->
                 where('user_name', $request->account )->
                 where('password', md5( $request->password ) )->
+                where('user_rank' , 5 )->
                 select('u.*', 'l.status')->
                 first();
 
         if( $user !== NULL ){
             
-            // 完全正確狀態 , 才開放登入
-            if( $user->register_rank == 5 && $user->user_rank == 5 && $user->status == 1 ){
+
+            // 如果已經為停用 , 就不需要再
+            if( $user->able == 0){
                 
+                $LoginErrMsg = "登入失敗 , 此帳號已被暫停使用 , 如有任何疑問請洽客服 。";
+
+            }elseif( $user->able == 1 ){
+
+                // 沒有停用才判斷是否能夠登入     
                 $LoginResult = TRUE;
+
             }
 
-            // 針對尚未開通的會員 , 給予不一樣的錯誤訊息
-            if( $user->register_rank == 5 && $user->user_rank == 0 && $user->status == 0 ){
 
-                $LoginErrMsg = "登入失敗 , 您的帳戶尚未完成審核 , 審核結果將以信件通知 , 感謝您的耐心等候 。";
-            }
         }
 
         if( !$LoginResult ){

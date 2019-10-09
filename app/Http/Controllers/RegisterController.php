@@ -46,7 +46,7 @@ class RegisterController extends Controller
             'name'        => 'required',
             'phone'       => 'required|regex:/^09[0-9]{8}$/',
             'tel'         => 'required|regex:/^0[0-9]{1,3}[0-9]{7,8}$/',
-            'email'       => 'required|email',
+            'email'       => 'required|email|unique:xyzs_users,email',
             'storename'   => 'required',
             'bank'        => "required|in:$BankStr",
             'banksub'     => 'required',
@@ -73,6 +73,7 @@ class RegisterController extends Controller
 
             'email.required'       => '信箱為必填',
             'email.email'          => '信箱格式錯誤',
+            'email.unique'         => '信箱已被使用 , 請使用其他信箱',
 
             'storename.required'   => '加盟商店名稱為必填',
 

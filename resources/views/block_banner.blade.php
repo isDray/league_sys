@@ -4,7 +4,9 @@ use Illuminate\Http\Request;
 
 $bannsers = Lib_block::banner();
 
+
 @endphp
+@if( count($bannsers) > 0 )
 <div class='block_banner box box-solid'>
     
     <!-- /.box-header -->
@@ -43,4 +45,5 @@ $bannsers = Lib_block::banner();
     </div>
     <!-- /.box-body -->
 </div>
-<!-- 輪播banner -->          
+<!-- 輪播banner -->   
+@endif       

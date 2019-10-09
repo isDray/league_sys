@@ -117,11 +117,9 @@ class ReportController extends Controller
         $PerDayDoneOrders = DB::select('SELECT DATE_FORMAT(FROM_UNIXTIME(add_time+28800),"%Y%m%d") as order_date, COUNT(order_id) as day_order ,order_id 
                                         FROM xyzs_order_info WHERE league = :league 
                                         AND add_time >= :MonthStart
-                                        AND add_time <= :MonthEnd
-                                        AND ( (order_status = 5 AND shipping_status = 1 AND shipping_time <= :Before7Day ) OR
-                                              (order_status = 5 AND shipping_status = 2 )
-                                        )                                        
-                                        GROUP BY DAY(FROM_UNIXTIME(add_time + 28800))', ['league' => $LeagueId , 'MonthStart'=>$request->start , 'MonthEnd'=>$request->end , 'Before7Day'=>$Before7Day]);
+                                        AND add_time <= :MonthEnd                                    
+                                        AND (order_status = 5 AND shipping_status = 2 AND pay_status = 2 )
+                                        GROUP BY DAY(FROM_UNIXTIME(add_time + 28800))', ['league' => $LeagueId , 'MonthStart'=>$request->start , 'MonthEnd'=>$request->end ]);
         
         $TmpPerDayDoneOrders = [];
         
@@ -201,10 +199,8 @@ class ReportController extends Controller
                                WHERE oi.league = :league 
                                AND oi.add_time >= :MonthStart
                                AND oi.add_time <= :MonthEnd
-                               AND ( (order_status = 5 AND shipping_status = 1 AND shipping_time <= :Before7Day ) OR
-                                     (order_status = 5 AND shipping_status = 2 )
-                               )'
-                               , ['league' => $LeagueId , 'MonthStart'=>$request->start  , 'MonthEnd'=>$request->end,'Before7Day'=>$Before7Day] );        
+                               AND (order_status = 5 AND shipping_status = 2 AND pay_status = 2 )'
+                               , ['league' => $LeagueId , 'MonthStart'=>$request->start  , 'MonthEnd'=>$request->end] );        
         $allOrderIds = [];
         
 
@@ -495,7 +491,7 @@ class ReportController extends Controller
             $Unpay = 0;
 
         }
-        
+        //echo date("Ymd H:i:s");
         return view('league_report_commission',[ 'PageTitle'=>$PageTitle,
                                                  'start' => date('Y-m' , $StartDate +date('Z')),
                                                  'end'   => date('Y-m' , $EndDate + date('Z')),

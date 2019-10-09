@@ -42,7 +42,9 @@ Route::get('/get_captcha/{config?}', function (\Mews\Captcha\Captcha $captcha, $
 // 註冊成功
 Route::get('/register_result/{status}','RegisterController@register_result');
 
-
+Route::get('/no_league', function () {
+    return view('no_league', ['name' => 'none']);
+});
 
 
 /*

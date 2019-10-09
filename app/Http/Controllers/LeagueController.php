@@ -44,7 +44,7 @@ class LeagueController extends Controller
         ->where('league',$LeagueId)
         ->where('add_time','>=',$MonthStart)
         ->where('add_time','<=',$MonthEnd)
-        ->where(function( $query ) use ($Before7Day){
+        /*->where(function( $query ) use ($Before7Day){
             
             $query->where(function($quey2) use ($Before7Day){
                 $quey2->where('order_status','5')
@@ -57,7 +57,10 @@ class LeagueController extends Controller
                 ->where('shipping_status','2')
                 ->where('pay_status','2');
             });
-        })
+        })*/
+        ->where('order_status','5')
+        ->where('shipping_status','2')
+        ->where('pay_status','2')
         ->get();
         
         $DoneOrders = count( $DoneOrders );
@@ -67,20 +70,23 @@ class LeagueController extends Controller
         ->select(DB::raw("shipping_fee , (".Lib_common::_GetTotalFee().") as total_fee"))
         ->where('league',$LeagueId)
         ->where('league_pay',0)
-        ->where(function( $query ) use ($Before7Day){
+        // ->where(function( $query ) use ($Before7Day){
             
-            $query->where(function($quey2) use ($Before7Day){
-                $quey2->where('order_status','5')
-                ->where('shipping_status','1')
-                ->where('pay_status','2')
-                ->where('shipping_time' ,'<' , $Before7Day);
-            })
-            ->orWhere(function($query3){
-                $query3->where('order_status','5')
-                ->where('shipping_status','2')
-                ->where('pay_status','2');
-            });
-        })
+        //     $query->where(function($quey2) use ($Before7Day){
+        //         $quey2->where('order_status','5')
+        //         ->where('shipping_status','1')
+        //         ->where('pay_status','2')
+        //         ->where('shipping_time' ,'<' , $Before7Day);
+        //     })
+        //     ->orWhere(function($query3){
+        //         $query3->where('order_status','5')
+        //         ->where('shipping_status','2')
+        //         ->where('pay_status','2');
+        //     });
+        // })
+        ->where('order_status','5')
+        ->where('shipping_status','2')
+        ->where('pay_status','2')        
         ->get(); 
         
         $Divides = json_decode( $Divides , true );
@@ -138,10 +144,8 @@ class LeagueController extends Controller
                                FROM xyzs_order_info WHERE league = :league 
                                AND add_time >= :MonthStart
                                AND add_time <= :MonthEnd
-                               AND ( (order_status = 5 AND shipping_status = 1 AND shipping_time <= :Before7Day ) OR
-                                     (order_status = 5 AND shipping_status = 2 )
-                               )
-                               GROUP BY DAY(FROM_UNIXTIME(add_time + 28800))', ['league' => $LeagueId , 'MonthStart'=>$MonthStart , 'MonthEnd'=>$MonthEnd ,'Before7Day'=>$Before7Day]);
+                               AND (order_status = 5 AND shipping_status = 2 AND pay_status = 2)
+                               GROUP BY DAY(FROM_UNIXTIME(add_time + 28800))', ['league' => $LeagueId , 'MonthStart'=>$MonthStart , 'MonthEnd'=>$MonthEnd ]);
        
         foreach ($PerDayDoneOrders as $PerDayDoneOrderk => $PerDayDoneOrder) {
 
@@ -223,10 +227,8 @@ class LeagueController extends Controller
                                WHERE oi.league = :league 
                                AND oi.add_time >= :MonthStart
                                AND oi.add_time <= :MonthEnd
-                               AND ( (order_status = 5 AND shipping_status = 1 AND shipping_time <= :Before7Day ) OR
-                                     (order_status = 5 AND shipping_status = 2 )
-                               )'
-                               , ['league' => $LeagueId , 'MonthStart'=>$MonthStart , 'MonthEnd'=>$MonthEnd,'Before7Day'=>$Before7Day] );
+                               AND (order_status = 5 AND shipping_status = 2 AND pay_status = 2)'
+                               , ['league' => $LeagueId , 'MonthStart'=>$MonthStart , 'MonthEnd'=>$MonthEnd] );
         
         $allOrderIds = [];
        

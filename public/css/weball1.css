@@ -228,6 +228,9 @@
 	height:100%!important;
 	vertical-align: top;
 }
+.rwd_search_box{
+	display: none;
+}
 .rwd_search_box > form{
 	margin-top: 10px;
 }
@@ -492,6 +495,7 @@ a[aria-expanded=true]>i:before{
     color:white;
 }
 .rwd_search_box{
+	display: inline-block;
     position: fixed;
     width: 100%;
     height: 50px;

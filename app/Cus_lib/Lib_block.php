@@ -61,6 +61,10 @@ class Lib_block{
         if( $ExcludeCat != NULL){
             
             $ExcludeCat =  unserialize( $ExcludeCat->avoid_cat );
+
+        }else{
+            
+            $ExcludeCat = [];
         }
         
 

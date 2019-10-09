@@ -39,8 +39,15 @@ class LeagueWebController extends Controller
         $CenterBlock = DB::table('xyzs_league_block_sort')->where('user_id', $LeagueId)->where('block_id',1)->first();
         
         $CenterBlock = (array)$CenterBlock;
+        
+        if( array_key_exists('sort', $CenterBlock) ){
+            
+            $CenterBlocks = unserialize( $CenterBlock['sort'] );
 
-        $CenterBlocks = unserialize( $CenterBlock['sort'] );
+        }else{
+
+            $CenterBlocks = $CenterBlock;
+        }
         
         foreach ($CenterBlocks as $CenterBlockk => $CenterBlock) {
             
