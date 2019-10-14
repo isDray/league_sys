@@ -116,6 +116,12 @@
     /*white-space: nowrap;*/
     text-overflow: ellipsis;
     height: 40px;
+    font-size: 14px!important;
+}
+.goods_price , .goods_sn{
+
+	font-size: 16px;
+
 }
 .recommend_title{
 
@@ -123,11 +129,14 @@
 	
 }
 /* 排序按鈕 */
+.sortup,.sortdown{
+	position: relative;
+}
 .sortup::after{
 	font-family: 'FontAwesome';
 	position: absolute;
 	content:'\f0aa';
-	top:-4px;
+	top:0px;
 	right: 0px;
 	font-size: 16px;
 	font-weight: 900;

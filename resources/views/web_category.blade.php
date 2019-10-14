@@ -16,7 +16,7 @@
 
 @section('content_right')
 <!-- 設定區塊 -->
-<div class="box box-solid">
+<!-- <div class="box box-solid">
     
     <div class="box-header with-border">
         
@@ -25,7 +25,7 @@
         <h3 class="box-title">排序</h3>
     </div>
     
-    <!-- /.box-header -->
+
     <div class="box-body">
         
         <a class="btn btn-app @if( $CatSortItem == 'add_time')bg-yellow  @if( $CatSortWay == 'asc')sortup @else sortdown @endif @endif" 
@@ -41,20 +41,28 @@
         </a>
 
     </div>
-    <!-- /.box-body -->
 
-</div>
+
+</div> -->
 <!-- /設定區塊 -->
 
 <!-- 呈現區塊 -->
 <div class="box box-solid">
     
-<!--     <div class="box-header with-border">
+    <div class="box-header with-border">
         
-        <i class="fa fa-text-width"></i>
+        <a class="btn @if( $CatSortItem == 'add_time')bg-yellow  @if( $CatSortWay == 'asc')sortup @else sortdown @endif @else btn-default @endif" 
+            href="{{url($AddTimeURL)}}"
+        >
+            <i class="fa fa-calendar-times-o"></i> 上架時間 
+        </a>
 
-        <h3 class="box-title">Text Emphasis</h3>
-    </div> -->
+        <a class="btn @if( $CatSortItem == 'shop_price')bg-yellow  @if( $CatSortWay == 'asc')sortup @else sortdown @endif @else btn-default @endif" 
+            href="{{url($PriceUrl)}}"
+        >
+            <i class="fa fa-dollar"></i> 價格
+        </a>
+    </div>
     
     <!-- /.box-header -->
     <div class="box-body">
