@@ -17,6 +17,7 @@
 }
 .menulogo{
 	float: left;
+	margin-left: 20px;
 }
 .menulogo.only_m{
 	position: absolute;
@@ -25,9 +26,10 @@
 }
 .menu_root>.web_nav_tree_name{
 	line-height: 60px;
-	font-size: 24px;
+	font-size: 18px;
 	padding-left: 15px;
 	padding-right: 15px;
+	min-width: 180px;
 }
 #content_left{
 	margin-top: 82px;
@@ -43,6 +45,8 @@
 #nav_main_ul{
 	margin-bottom: 0px;
 	position: relative;
+	font-weight: 900;
+	font-family: '微軟正黑體';
 }
 .menu_ul{
 	display: inline-block;
@@ -323,6 +327,9 @@
 }
 /* 手機板選單 */
 @media(max-width:992px){
+.menulogo{
+	margin-left: 0px;
+}
 /* COLUMNS */
 .rwd_menu{
 	height: 100%;

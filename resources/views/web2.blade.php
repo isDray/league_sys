@@ -62,16 +62,16 @@
             <a href="{{url('/')}}">
             <img src="{{url('/league_logo/'.$LeagueData['logo'])}}" class='menulogo over_m' >
             </a>
-            @endif            
+            @endif
             <!-- 電腦版用 -->
-            <ul id='nav_main_ul'>
-                <li class='menu_root over_m'><span class='web_nav_tree_name root_tree'>商品分類</span>
+            <ul id='nav_main_ul' class='over_m'>
+                <li class='menu_root over_m'><span class='web_nav_tree_name root_tree'>商品分類<i class='fa fa-fw fa-sort-down'></i></span>
                     <ul>
                         @foreach( $categorys as $categoryk => $category)
-                        <li class='menu_li'><span class='web_nav_tree_name child_tree'>{{ $category['rcat_name'] }}</span>
+                        <li class='menu_li'><a class='web_nav_tree_name child_tree menua' href="{{url('/category/'.$category['rcat'])}}">{{ $category['rcat_name'] }}</a>
                             <ul class="menu_ul">
                                 @foreach( $category['child'] as $childk => $childv )
-                                <li>{{ $childv['ccat_name'] }}</li>
+                                <a href="{{url('/category/'.$childv['ccat'])}}"><li>{{ $childv['ccat_name'] }}</li></a>
                                 @endforeach
                             </ul>
                         </li>
@@ -80,15 +80,15 @@
                 </li>
             </ul>
             <!-- 電腦版用 -->
-
-            <div id='search_form'>
+            
+            <div id='search_form' class='over_m'>
                 <form action="{{url('/search')}}" method="POST">
                     {{ csrf_field() }}
                     <input type='text' class='form-control' name='keyword'> 
                     <button class='btn colorbtn form-control'>查詢</button>
                 </form>
             </div>
-            
+
             <!-- 手機板 -->
             <div class="only_m">
                 
@@ -136,12 +136,12 @@
                         @endif
                     </div>            
                     @endforeach 
-                </div>               
-
+                </div>
+              
             </div>           
-            <!-- /手機板 --> 
-           
-        </nav>  
+            <!-- /手機板 -->
+
+        </nav>   
 
         <!-- 購物車 -->
 <!--         <div class="dropdown cart_btn">

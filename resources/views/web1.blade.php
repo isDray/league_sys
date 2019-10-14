@@ -68,7 +68,7 @@
             @endif
             <!-- 電腦版用 -->
             <ul id='nav_main_ul' class='over_m'>
-                <li class='menu_root over_m'><span class='web_nav_tree_name root_tree'>商品分類</span>
+                <li class='menu_root over_m'><span class='web_nav_tree_name root_tree'>商品分類<i class='fa fa-fw fa-sort-down'></i></span>
                     <ul>
                         @foreach( $categorys as $categoryk => $category)
                         <li class='menu_li'><a class='web_nav_tree_name child_tree menua' href="{{url('/category/'.$category['rcat'])}}">{{ $category['rcat_name'] }}</a>
