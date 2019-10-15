@@ -29,10 +29,11 @@ class CheckLeague
             $current_league = $ldres->user_id;
 
         }else{
-
+            
+            $current_league = '';
         }
         
-        //$current_league = '2616';
+        
 
         $request->session()->put('user_id', $current_league );
 
@@ -46,7 +47,7 @@ class CheckLeague
 
         if( $valid_league == NULL ){
          
-            return redirect("/no_league");
+            return redirect("/register");
 
         }
 
