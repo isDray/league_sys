@@ -35,9 +35,9 @@ class CheckLeague
         
         
 
-        $request->session()->put('user_id', $current_league );
+        $request->session()->put('league_id', $current_league );
 
-        $LeagueId = $request->session()->get('user_id');
+        $LeagueId = $request->session()->get('league_id');
         
         /** 
          * 先確認是否真的為啟用的加盟會員 , 如果不是就直接中斷

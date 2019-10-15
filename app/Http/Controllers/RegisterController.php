@@ -207,7 +207,7 @@ class RegisterController extends Controller
     */
     public function mobileEncode( $_key , $_num ){
     
-      $_key = '8610';
+      $_key = '1992';
     
       $idNums  = preg_split('//', $_key, -1, PREG_SPLIT_NO_EMPTY);
     
@@ -249,7 +249,7 @@ class RegisterController extends Controller
     public function mobileDecode( $_key , $_ciphertext ){
     
       //$_ciphertext;
-      $_key = '8610';  
+      $_key = '1992';  
       $iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_128, MCRYPT_MODE_CBC);
       $iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
       $encodeNum = trim(mcrypt_decrypt(MCRYPT_RIJNDAEL_128, md5($_key), base64_decode($_ciphertext), MCRYPT_MODE_ECB, $iv));

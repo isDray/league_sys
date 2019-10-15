@@ -93,6 +93,8 @@ class LoginController extends Controller
 
             $request->session()->put('user_id', $user->user_id );
 
+            $request->session()->put('login'  , true );
+
             if( $request->session()->get('WantTo') !== NULL ){
 
                 $WantTo = $request->session()->get('WantTo');
@@ -123,7 +125,8 @@ class LoginController extends Controller
         
         // 清除登入session後 , 轉跳到登入頁面
         $request->session()->forget('user_id');
-
+        $request->session()->forget('login');
+        
         return redirect('/login');
     }
 }

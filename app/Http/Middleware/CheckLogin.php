@@ -15,7 +15,7 @@ class CheckLogin
      */
     public function handle($request, Closure $next)
     {   
-        if( empty($request->session()->get('user_id')) ){
+        if( empty($request->session()->get('user_id')) || ( empty($request->session()->get('login')) || $request->session()->get('login') != true ) ){
            
            $WantTo = Route::getFacadeRoot()->current()->uri();
 

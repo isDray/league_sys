@@ -763,7 +763,7 @@ class CartController extends Controller
         
         $order['dealer_id'] = 0;
         
-        $order['league'] = $request->session()->get('user_id');
+        $order['league'] = $request->session()->get('league_id');
         
         $order['league_pay'] = 0;
         

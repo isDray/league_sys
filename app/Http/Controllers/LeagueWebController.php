@@ -33,7 +33,7 @@ class LeagueWebController extends Controller
 
 
 
-        $LeagueId = $request->session()->get('user_id');
+        $LeagueId = $request->session()->get('league_id');
         
         // 中央區塊
         $CenterBlock = DB::table('xyzs_league_block_sort')->where('user_id', $LeagueId)->where('block_id',1)->first();
@@ -100,7 +100,7 @@ class LeagueWebController extends Controller
     */
     public function over18( Request $request ){
         
-        $LeagueId = $request->session()->get('user_id');
+        $LeagueId = $request->session()->get('league_id');
 
         return view('over18');
     }
