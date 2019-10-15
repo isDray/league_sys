@@ -16,7 +16,25 @@ class CheckLeague
      */
     public function handle($request, Closure $next)
     {   
-        $request->session()->put('user_id', '2616' );
+        /**
+         * 根據網域名稱去判斷當前的加盟會員
+         *  
+         **/
+        $nowdomain = trim( \Request::server ("SERVER_NAME") );
+
+        $ldres = DB::table('xyzs_league_domain')->where('domain',$nowdomain)->first();
+
+        if( $ldres != NULL ){
+
+            $current_league = $ldres->user_id;
+
+        }else{
+
+        }
+        
+        //$current_league = '2616';
+
+        $request->session()->put('user_id', $current_league );
 
         $LeagueId = $request->session()->get('user_id');
         

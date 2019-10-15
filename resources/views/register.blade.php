@@ -409,7 +409,7 @@ $(function(){
 
         $.ajax({
             method: 'GET',
-            url: '/get_captcha/' + config,
+            url:"{{url('/get_captcha/')}}/" + config,
         
         }).done(function (response) {
             
