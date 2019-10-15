@@ -116,6 +116,7 @@
     /*white-space: nowrap;*/
     text-overflow: ellipsis;
     height: 40px;
+    line-height: 20px;
     font-size: 14px!important;
 }
 .goods_price , .goods_sn{
