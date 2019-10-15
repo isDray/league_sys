@@ -24,7 +24,7 @@ class LoginController extends Controller
         //var_dump( $request->session()->get('user_id') );
 
         // 如果已經有登入狀態了 , 就直接將其轉跳進入後台
-        if( !empty($request->session()->get('user_id')) ){
+        if( !empty($request->session()->get('user_id')) && $request->session()->get('login') == true ){
 
             return redirect('/league_dashboard');
         }
@@ -126,7 +126,7 @@ class LoginController extends Controller
         // 清除登入session後 , 轉跳到登入頁面
         $request->session()->forget('user_id');
         $request->session()->forget('login');
-        
+
         return redirect('/login');
     }
 }

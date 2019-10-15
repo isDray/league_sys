@@ -54,7 +54,7 @@ class Lib_common{
 
     public static function mobileEncode( $_key , $_num ){
     
-      $_key = '8610';
+      $_key = '1992';
     
       $idNums  = preg_split('//', $_key, -1, PREG_SPLIT_NO_EMPTY);
     
@@ -96,7 +96,7 @@ class Lib_common{
     public  static function mobileDecode( $_key , $_ciphertext ){
     
       //$_ciphertext;
-      $_key = '8610';  
+      $_key = '1992';  
       $iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_128, MCRYPT_MODE_CBC);
       $iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
       $encodeNum = trim(mcrypt_decrypt(MCRYPT_RIJNDAEL_128, md5($_key), base64_decode($_ciphertext), MCRYPT_MODE_ECB, $iv));
@@ -132,7 +132,7 @@ class Lib_common{
     // 家電加密
     public static function telEncode( $_key , $_num ){
     
-      $_key = '8610';
+      $_key = '1992';
       $idNums  = preg_split('//', $_key, -1, PREG_SPLIT_NO_EMPTY);
     
       $idSum   = 0;
@@ -173,7 +173,7 @@ class Lib_common{
     // 家電解密
     public static function telDecode( $_key , $_ciphertext ){
     
-      $_key = '8610';
+      $_key = '1992';
       $iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_128, MCRYPT_MODE_CBC);
       $iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
       $encodeNum = trim(mcrypt_decrypt(MCRYPT_RIJNDAEL_128, md5($_key), base64_decode($_ciphertext), MCRYPT_MODE_ECB, $iv));

@@ -189,11 +189,11 @@
         @endif
         <!-- <small>it all starts here</small> -->
       </h1>
-      <ol class="breadcrumb">
+<!--       <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
         <li><a href="#">Examples</a></li>
         <li class="active">Blank page</li>
-      </ol>
+      </ol> -->
     </section>
 
     <!-- Main content -->
@@ -206,10 +206,9 @@
 
   <footer class="main-footer">
     <div class="pull-right hidden-xs">
-      <b>Version</b> 2.4.13
+      <!-- <b>Version</b> 2.4.13 -->
     </div>
-    <strong>Copyright &copy; 2014-2019 <a href="https://adminlte.io">AdminLTE</a>.</strong> All rights
-    reserved.
+    <strong>享愛加盟系統</strong> 版權所有
   </footer>
 
   <!-- /.control-sidebar -->
