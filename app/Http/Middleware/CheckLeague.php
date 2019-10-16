@@ -33,7 +33,20 @@ class CheckLeague
             $current_league = '';
         }
         
-        
+        // 判斷加盟會員是否還處於可以使用之狀態
+        if( !empty($current_league) ){
+            
+            $chk_league_able = DB::table('xyzs_users')->where('user_id',$current_league)->where('user_rank',5)->select('able')->first();
+            
+            // 如果根本找不到會員 , 或者able !== 1 ( 表示未啟用 ) , 就當作無此加盟商
+            if( $chk_league_able === NULL || $chk_league_able->able !== 1){
+
+                $current_league = '';
+
+            }
+
+
+        }
 
         $request->session()->put('league_id', $current_league );
 
