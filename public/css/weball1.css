@@ -449,18 +449,29 @@
 	width: 100%;
 	background-color: #373737;
 }
+.rwd_menu_box{
+	max-height: calc( 100vh - 100px );
+	overflow: auto;
+}
 .rwd_root_menu{
 	background-color: #373737;
-
 }
-.rwd_root_menu > h4 {
-	display: inline-block;
+.rwd_root_menu > a > h4 {
+	display: block;
 	font-family: '微軟正黑體';
-	font-weight: 900;
 	padding-left: 15px;
-	
+	font-size: 14px;
+    height: 43px;
+    line-height: 43px;
+    margin: 0px;
+    position: relative;
 }
-.rwd_root_menu > h4 > a {
+.rwd_root_menu > a > h4 > i{
+	position: absolute;
+	right: 15px;
+	line-height: 43px;
+}
+.rwd_root_menu > a {
 	color:white;	
 }
 .rwd_root_menu > h4 + a{
@@ -468,28 +479,49 @@
 	position: absolute;
 	right: 15px;
 }
-a[aria-expanded=true]>i:before{	
-	content:"\f146";
+
+a[aria-expanded=true]>h4>i:before{	
+	content:"\f106";
 }
 .rwd_panel{
 	background-color: #474747;
 	margin-bottom: 0px;
  	border-radius: 0px;
     list-style: none;
+    border: 0px;
 }
-.rwd_panel > .box-header > h4 > a{
-    color:white;
-    font-weight: 900;
-    font-family: '微軟正黑體';
+.rwd_panel > .box-header {
+	padding: 0px;
 }
-.rwd_panel > .box-header > h4 + a{
-	color:#ca195a;
+.rwd_panel > .box-header > a > h4 {
+	color:white;
+	display: block;
+	height: 36px;
+	line-height: 36px;
+	font-size: 13px;
+	padding-left: 18px;
+    font-family: '微軟正黑體';	
+}
+.rwd_panel > .box-header > a > h4 > i{
 	position: absolute;
 	right: 15px;
+	line-height: 36px;
 }
-.rwd_panel > .panel-collapse > .box-body > li > a{
-	color:white!important;
+.rwd_panel > div > .box-body > a > li {
+    color:white;
+	height: 36px;
+	line-height: 36px;
+	font-size: 13px;
+	padding-left: 18px;      
+	background-color: #696969;
 }
+.rwd_panel > div > .box-body {
+	padding: 0px;
+}
+.rwd_panel > .collapse > .box-body > a{
+    color: white;
+}
+
 }
 /* rwd toolbar */
 @media(max-width: 767px){

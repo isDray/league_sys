@@ -90,38 +90,55 @@
             </div>
 
             <!-- 手機板 -->
-            <div class="only_m">
+            <div class="only_m rwd_menu_box">
                 
                 <div class="rwd_root_menu">
+                    <a href="{{url('/')}}">
                     <h4 class="box-title">
-                        <a href="{{url('/')}}">首頁</a>
-                    </h4>                           
+                        首頁
+                    </h4>
+                    </a>                          
                 <div>
 
                 <div class="rwd_root_menu">
+
+                    <a data-toggle="collapse" data-parent="#accordion" href="#root_accordion_cat" aria-expanded="true" class="collapsed rwd_collapsed_icon">
                     <h4 class="box-title">
-                        <a href="{{url('/category/'.$category['rcat'])}}">商品分類</a>
-                    </h4>                
-                    <a data-toggle="collapse" data-parent="#accordion" href="#root_accordion_cat" aria-expanded="false" class="collapsed rwd_collapsed_icon">
-                        <i class='fa fa-fw fa-plus-square'></i>
+                        商品分類
+                        <i class='fa fa-fw fa-angle-down'></i>
+                    </h4>   
+                    </a>
+
+                    <!-- 選單開合改為永久開啟 , 所以不需要開關
+                    <a data-toggle="collapse" data-parent="#accordion" href="#root_accordion_cat_bk" aria-expanded="false" class="collapsed rwd_collapsed_icon">
+                        
                     </a>            
+                    -->
                 <div>
 
-                <div class="panel-collapse collapse " aria-expanded="false" id="root_accordion_cat">
+                <div class="panel-collapse collapse in" aria-expanded="false" id="root_accordion_cat">
                     @foreach($categorys as $categoryk => $category)
                     <div class="panel rwd_panel">
             
                         <div class="box-header">
-                            
-                            <h4 class="box-title">
-                                <a href="{{url('/category/'.$category['rcat'])}}">{{ $category['rcat_name'] }}</a>
-                            </h4>
-                    
+
                             @if( count($category['child'] ) > 0)
                             <a data-toggle="collapse" data-parent="#accordion" href="#rwd_accordion_{{$category['rcat']}}" aria-expanded="false" class="collapsed">
-                                <i class='fa fa-fw fa-plus-square' ></i>
+                            <h4 class="box-title">
+                                
+                                {{ $category['rcat_name'] }}
+                                <i class='fa fa-fw fa-angle-down' ></i>
+                                                                
+                            </h4>
                             </a>
+                            @else
+                            <a href="{{url('/category/'.$category['rcat'])}}">
+                            <h4 class="box-title">
+                                {{ $category['rcat_name'] }}                             
+                            </h4>
+                            </a>                            
                             @endif
+
 
                         </div>
                 
@@ -129,7 +146,12 @@
                         <div id="rwd_accordion_{{$category['rcat']}}" class="panel-collapse collapse" aria-expanded="false" style="height: 0px;">
                             <div class="box-body">
                             @foreach( $category['child'] as $leftchildk => $leftchild )
-                                <li class=''><a href="{{url('/category/'.$leftchild['ccat'])}}"><i class="fa fa-fw fa-angle-right"></i> {{$leftchild['ccat_name']}}</a></li>
+                                <a href="{{url('/category/'.$leftchild['ccat'])}}">
+                                    <li class=''>
+                                        <i class="fa fa-fw fa-angle-right"></i> 
+                                        {{$leftchild['ccat_name']}}
+                                    </li>
+                                </a>
                             @endforeach
                             </div>
                         </div>
