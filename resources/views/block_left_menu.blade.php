@@ -7,23 +7,28 @@
             @foreach($categorys as $categoryk => $category)
             
             <div class="panel box left_menu_item_root">
-            
+                
+
                 <div class="box-header with-border left_menu_item_div">
+                    <a href="{{url('/category/'.$category['rcat'])}}">
                     <h4 class="box-title">
-                    	<a href="{{url('/category/'.$category['rcat'])}}">{{ $category['rcat_name'] }}</a>
+                    	{{ $category['rcat_name'] }}
                     </h4>
-                    
-                    @if( count($category['child'] ) > 0)
-<!--                     <a data-toggle="collapse" data-parent="#accordion" href="#accordion_{{$category['rcat']}}" aria-expanded="false" class="collapsed left_menu_item">
-                        <i class='fa fa-fw fa-plus-square left_menu_item_i' ></i>
-                    </a> -->
-                    @endif
+                    </a>
 
                     @if( count($category['child'] ) > 0)
+
                     <div id="accordion_{{$category['rcat']}}" class="block_leftmenu_childmenu" aria-expanded="false" style="height: 0px;">
                         <div class="box-body">
                             @foreach( $category['child'] as $leftchildk => $leftchild )
-                                <li class='left_menu_child_item'><a href="{{url('/category/'.$leftchild['ccat'])}}"><i class="fa fa-fw fa-angle-right"></i> {{$leftchild['ccat_name']}}</a></li>
+                                <a href="{{url('/category/'.$leftchild['ccat'])}}">
+                                <li class='left_menu_child_item'>
+                                    
+                                        <i class="fa fa-fw fa-angle-right"></i> 
+                                        {{$leftchild['ccat_name']}}
+                                    
+                                </li>
+                                </a>
                             @endforeach
                         </div>
                     </div>
@@ -59,11 +64,15 @@
 }
 .left_menu_item_div{
     height: 40px;
+    padding: 0px;
 }
-.left_menu_item_div >h4 {
+.left_menu_item_div > a > h4 {
+    display: block!important;
+    line-height: 40px!important;
 	font-weight: 900;
 	color: #eeeeee;
 	font-family: "微軟正黑體";
+    padding-left: 15px;
 }
 .left_menu_item_div >h4>a{
 	color:#eeeeee;
@@ -79,7 +88,7 @@
 .left_menu_item_root > div > .box-body{
 	list-style: none;
 }
-.left_menu_child_item > a {
+.left_menu_child_item {
 	color:#eeeeee;
 	font-family: "微軟正黑體";
 	font-weight: 900;
@@ -99,7 +108,7 @@
     list-style: none;
     padding: 0px;
 }
-.block_leftmenu_childmenu .box-body li:hover{
+.block_leftmenu_childmenu .box-body a li:hover{
     background-color: #b1097f;
 }
 .left_menu_item_div:hover > .block_leftmenu_childmenu .box-body{
