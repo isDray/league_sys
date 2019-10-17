@@ -84,6 +84,18 @@
             </ul>
             <!-- 電腦版用 -->
             
+            <div id='login_member_box' class='over_m'>
+                <a href="{{url('/member_login')}}" class="btn colorbtn">
+                <i class='fa fa-fw fa-user-plus'></i>會員登入
+                </a>
+            </div>
+
+            <div id='add_member_box' class='over_m'>
+                <a href="{{url('/join_member')}}" class="btn colorbtn">
+                <i class='fa fa-fw fa-user-plus'></i>加入會員
+                </a>
+            </div>
+
             <div id='search_form' class='over_m'>
                 <form action="{{url('/search')}}" method="POST">
                     {{ csrf_field() }}
@@ -284,6 +296,11 @@
         </a>        
     </div>
     <div class='col-md-3 col-sm-3 col-xs-3'>
+        <a href="{{url('/join_member')}}">
+        <i class="fa fa-fw fa-user-plus"></i>
+        <br>
+        加入會員
+        </a>          
     </div>
     <div class='col-md-3 col-sm-3 col-xs-3'>
     </div>            

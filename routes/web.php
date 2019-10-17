@@ -252,4 +252,15 @@ Route::group(['middleware' => ['CheckLeague']], function () {
     Route::get('/article/{article_id}','LeagueWebController@article');
     
 
+    /**
+     * 加盟商私人會員
+     *
+     **/
+    Route::get('/join_member','MemberController@create');
+
+    Route::post('/join_member_store','MemberController@store');
+
+    Route::post('/member_account_exit','MemberController@member_account_exit');
+
+    Route::post('/member_login','MemberController@login');
 });

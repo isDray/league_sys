@@ -80,7 +80,13 @@
                 </li>
             </ul>
             <!-- 電腦版用 -->
-            
+
+            <div id='add_member_box' class='over_m'>
+                <a href="{{url('/join_member')}}" class="btn colorbtn">
+                <i class='fa fa-fw fa-user-plus'></i>加入會員
+                </a>
+            </div>
+
             <div id='search_form' class='over_m'>
                 <form action="{{url('/search')}}" method="POST">
                     {{ csrf_field() }}
@@ -261,6 +267,42 @@
 
 </div>
 
+<!-- 手機用 bottom tool -->
+<div id='rwd_tool_bar' class='only_m'>
+    <div class='col-md-3 col-sm-3 col-xs-3'>
+        <a href="{{url('/')}}">
+        <i class="fa fa-fw fa-home"></i>
+        <br>
+        首頁
+        </a>
+    </div>
+    <div class='col-md-3 col-sm-3 col-xs-3 rwd_search_btn'>
+        <a>
+        <i class="fa fa-fw fa-search"></i>
+        <br>
+        搜尋
+        </a>        
+    </div>
+    <div class='col-md-3 col-sm-3 col-xs-3'>
+        <a href="{{url('/join_member')}}">
+        <i class="fa fa-fw fa-user-plus"></i>
+        <br>
+        加入會員
+        </a>          
+    </div>
+    <div class='col-md-3 col-sm-3 col-xs-3'>
+    </div>            
+</div>
+
+<div class="rwd_search_box">
+    <form action="{{url('/search')}}" method="POST">
+        {{ csrf_field() }}
+        <input type='text' class='form-control' name='keyword'> 
+        <button class='btn colorbtn form-control'>查詢</button>
+    </form>    
+</div>
+<!-- /手機用 bottom tool -->
+
 </div>
 
 
@@ -284,6 +326,13 @@
 @yield('selfjs')
 
 <script type="text/javascript">
+
+$(function(){
+    $(".rwd_search_btn").click(function(){
+        $(".rwd_search_box").toggleClass( "active" );
+    })
+})
+
 /*
 |--------------------------------------------------------------------------
 | 手機板menu按鍵
