@@ -1,0 +1,19 @@
+label[class="form_invalid"]{
+	margin-top: 6px;
+	position: relative;
+	background-color: #ff6464;
+	color:white;
+	font-family: '微軟正黑體';
+	border:1px solid #ff6464;
+}
+label[class="form_invalid"]:after{
+	position: absolute;
+    content: '';
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 0 4px 6px 4px;
+    border-color: transparent transparent #ff6464 transparent;
+    top:-6px;
+    left:calc(50% - 2px);
+}

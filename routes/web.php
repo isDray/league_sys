@@ -262,5 +262,21 @@ Route::group(['middleware' => ['CheckLeague']], function () {
 
     Route::post('/member_account_exit','MemberController@member_account_exit');
 
-    Route::post('/member_login','MemberController@login');
+    Route::get('/member_login','MemberController@login');
+
+    Route::post('/member_login_act','MemberController@member_login_act');
+    
+    
+    /*
+    |--------------------------------------------------------------------------
+    | 判斷是否有登入加盟會員知會員
+    |--------------------------------------------------------------------------
+    |
+    */
+    Route::group(['middleware' => ['CheckMemberLogin']], function () {
+        
+        Route::get('/member_order','MemberController@member_order');
+
+    });
+    
 });

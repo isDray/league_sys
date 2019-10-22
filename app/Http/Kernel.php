@@ -59,5 +59,6 @@ class Kernel extends HttpKernel
         'CheckLogin' => \App\Http\Middleware\CheckLogin::class,
         'CheckProfile' => \App\Http\Middleware\CheckProfile::class,
         'CheckLeague' => \App\Http\Middleware\CheckLeague::class,
+        'CheckMemberLogin' => \App\Http\Middleware\CheckMemberLogin::class,
     ];
 }

@@ -339,6 +339,49 @@ class Lib_common{
                " + {$alias}insure_fee + {$alias}pay_fee + {$alias}pack_fee" .
                " + {$alias}card_fee ";
     }    
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | 登入功能
+    |--------------------------------------------------------------------------
+    | 專門給加盟會員的會員使用的登入功能
+    |
+    | 1. $_password   = 使用者輸入之密碼
+    | 2. $_passwordDB = 資料庫密碼
+    | 3. $_salt       = salt值
+    | 
+    */
+    public static function _MemberLogin( $_password , $_passwordDB , $_salt ){
+        
+        // 如果沒有salt值 , 只要直接比對md5加蜜後即可
+        if( empty($_salt) ){
+            
+            if( md5($_password) == $_passwordDB ){
+
+                return true;
+            
+            }else{
+
+                return false;
+            }
+        
+        // 如果有salt值, 就要添加salt後 , 兩層md5
+        }else{
+            
+            if( md5(md5($_password.$_salt)) == $_passwordDB ){
+                
+                return true;
+
+            }else{
+                
+                return false;
+            }
+        }
+
+    }
 }
 
 ?>
