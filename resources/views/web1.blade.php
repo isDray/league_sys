@@ -84,11 +84,24 @@
             </ul>
             <!-- 電腦版用 -->
             
+            @if( session()->has('member_login') && session('member_id') == true && session()->has('member_id') )
+            <div id='login_member_box' class='over_m'>
+                <a href="{{url('/member_logout_act')}}" class="btn colorbtn">
+                <i class='fa fa-fw fa-sign-out'></i>會員登出【{{session('member_name')}}】
+                </a>
+            </div>   
+            <div id='add_member_box' class='over_m'>
+                <a href="{{url('/member_order')}}" class="btn colorbtn">
+                <i class='fa fa-fw fa-dashboard'></i>會員中心
+                </a>
+            </div>               
+            @else
             <div id='login_member_box' class='over_m'>
                 <a href="{{url('/member_login')}}" class="btn colorbtn">
-                <i class='fa fa-fw fa-user-plus'></i>會員登入
+                <i class='fa fa-fw fa-sign-in'></i>會員登入
                 </a>
-            </div>
+            </div>            
+            @endif            
 
             <div id='add_member_box' class='over_m'>
                 <a href="{{url('/join_member')}}" class="btn colorbtn">

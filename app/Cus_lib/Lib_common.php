@@ -382,6 +382,93 @@ class Lib_common{
         }
 
     }
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | 訂單狀態轉換
+    |--------------------------------------------------------------------------
+    |
+    */
+    public static function _StatusToStr( $_type , $_status ){
+        
+        if( $_type == 'os' ){
+            
+            switch ( $_status ) {
+                case 0:
+                    return '未確認';
+                break;
+
+                case 1:
+                    return '已確認';
+                break;
+                case 2:
+                    return '已取消';
+                break;
+                case 3:
+                    return '無效';
+                break;
+                case 4:
+                    return '退貨';
+                break;     
+                case 5:
+                    return '已出貨';
+                break;                                                                          
+              default:
+                    return '';
+                break;
+            }
+        }
+
+        if( $_type == 'ss' ){
+
+            switch ( $_status ) {
+                case 0:
+                    return '未出貨';
+                break;
+
+                case 1:
+                    return '已出貨';
+                break;
+                case 2:
+                    return '已收貨';
+                break;
+                case 3:
+                    return '備貨中';
+                break;
+                case 4:
+                    return '已發貨';
+                break;     
+                case 5:
+                    return '出貨中';
+                break;                                                                          
+              default:
+                    return '';
+                break;
+            }
+        }
+
+        if( $_type == 'ps'){
+            switch ( $_status ) {
+                case 0:
+                    return '未付款';
+                break;
+
+                case 1:
+                    return '付款中';
+                break;
+                case 2:
+                    return '已付款';
+                break;                                              
+                default:
+                    return '';
+                break;
+            }
+        }
+    }
 }
+
 
 ?>

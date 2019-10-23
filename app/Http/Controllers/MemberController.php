@@ -176,8 +176,7 @@ class MemberController extends Controller
     |
     */
     public function login( Request $request ){
-        $request->session()->forget('member_login');
-        $request->session()->forget('member_id');
+
         return view('member.login');
     }
     
@@ -258,6 +257,8 @@ class MemberController extends Controller
             $request->session()->put('member_login'  , true );
             
             $request->session()->put('member_id' , $res['id'] );
+
+            $request->session()->put('member_name' , $res['name'] );
             
             if( $request->session()->get('WantTo') !== NULL ){
 
@@ -268,7 +269,7 @@ class MemberController extends Controller
 
             }else{
 
-                return redirect('/league_dashboard');
+                return redirect('/member_order');
 
             }
 
@@ -281,7 +282,50 @@ class MemberController extends Controller
   
 
     }
+    
 
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | 登出功能
+    |--------------------------------------------------------------------------
+    |
+    */
+    public function member_logout_act( Request $request ){
+        
+        $logout_msg = '';
+
+        // 執行登出動作
+        try {
+
+            $request->session()->forget('member_login');
+
+            $request->session()->forget('member_id');
+
+            $request->session()->forget('member_name');
+            
+            $logout_res = true;
+
+        } catch (\Exception $e) {
+
+            $logout_res = flase;
+        }
+
+        if( $logout_res === true ){
+            
+            $logout_msg = '已從系統順利登出。';
+
+        }else{
+            
+            $logout_msg = '登出過程出錯 ，請稍後再執行一次 ， 謝謝。';
+        }
+
+        return view('member.msg_page',['res' => $logout_res,
+                                       'msg' => $logout_msg
+                                      ]);
+    }
+   
 
 
 
@@ -289,12 +333,38 @@ class MemberController extends Controller
     |--------------------------------------------------------------------------
     | 二階會員訂單查詢
     |--------------------------------------------------------------------------
-    |
+    | 呈現會員所有訂單
     |
     */
     public function member_order( Request $request ){
+        
+        try {
 
-        echo 'ENTER';
+            $orders = DB::table('xyzs_order_info')->select(DB::raw('*,(goods_amount + shipping_fee + insure_fee + pay_fee + pack_fee + card_fee + tax - discount - bonus) AS total_fee') )->where('member_id',$request->session()->get('member_id') )->get();
+
+            $orders = json_decode( $orders , true );
+
+        } catch (Exception $e) {
+            
+            $orders = [];
+        }
+        
+        /** 
+         * 迴圈將狀態轉換為中文
+         *
+         **/
+        
+        foreach ($orders as $orderk => $order) {
+
+            $orders[$orderk]['os'] = Lib_common::_StatusToStr('os',$order['order_status']);
+            $orders[$orderk]['ss'] = Lib_common::_StatusToStr('ss',$order['shipping_status']);
+            $orders[$orderk]['ps'] = Lib_common::_StatusToStr('ps',$order['pay_status']);
+
+        }
+
+        return view('member_order',[ 'orders' => $orders ,
+                                     'now_function' => __FUNCTION__
+                                   ]);
 
     }
 

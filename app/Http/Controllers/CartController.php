@@ -767,7 +767,18 @@ class CartController extends Controller
         
         $order['league_pay'] = 0;
         
-        
+        /**
+         * 判斷是否有登入加盟會員下的會員 , 如果有則需要將其會員代號寫入
+         *
+         **/
+        if( $request->session()->get('member_id') && $request->session()->get('member_login') && $request->session()->get('member_login') == true ){
+            
+            $order['member_id'] = intval( $request->session()->get('member_id') ); 
+
+        }else{
+            
+            $order['member_id'] = 0;
+        }
         
         
 
