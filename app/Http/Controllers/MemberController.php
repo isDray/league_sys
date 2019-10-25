@@ -231,8 +231,10 @@ class MemberController extends Controller
         $res = (Array)$res;
 
         if( Lib_common::_MemberLogin( $request->password , $res['password'] , $res['salt'] ) ){
-
-            // 如果登入成功且尚無salt值 , 則替其產生一組
+             
+            /**
+             * 如果登入成功且尚無salt值 , 則替其產生一組
+             **/
             if( empty($res['salt']) ){
                 
                 $new_salt     = sprintf("%04d", rand(1,9999) );
@@ -253,6 +255,21 @@ class MemberController extends Controller
                     
             }
             
+            /**
+             * 記錄登入時間點
+             **/
+            try {
+                    
+                DB::table('xyzs_league_member')
+                ->where('league_id', $LeagueId)
+                ->where('account',$request->account)
+                ->update( ['login_time' => Lib_common::_GetGMTTime() ] );     
+
+            } catch (\Exception $e) {
+                    
+            }            
+      
+            
             // 登入成功給予兩個判斷用session
             $request->session()->put('member_login'  , true );
             
@@ -269,7 +286,7 @@ class MemberController extends Controller
 
             }else{
 
-                return redirect('/member_order');
+                return redirect('/member_index');
 
             }
 
@@ -328,6 +345,296 @@ class MemberController extends Controller
    
 
 
+    
+    /*
+    |--------------------------------------------------------------------------
+    | 二階會員首頁
+    |--------------------------------------------------------------------------
+    |
+    */
+    public function member_index( Request $request ){
+        
+        $page_title = '會員中心入口';
+
+        /**
+         * 取出會員資料 , 呈現歡迎頁面
+         **/
+        $LeagueId = $request->session()->get('league_id');
+        $MemberId = $request->session()->get('member_id');
+
+        $member = DB::table('xyzs_league_member')->
+                  where('league_id',$LeagueId)->
+                  where('id', $MemberId)->
+                  first();
+       
+        if( $member != null ){
+            
+            $member = (array)$member;
+
+            $member['login_time'] = Lib_common::_GMTToLocalTime( $member['login_time'] , 'Y-m-d h:i:s');
+
+        }else{
+
+            $member = [];
+        }
+        
+        /**
+         * 計算最近三十天訂單
+         **/
+        $before30 = Lib_common::_GetGMTTime() - (86400 * 30);
+        
+        $orders_num = DB::table('xyzs_order_info')
+                ->select(DB::raw('COUNT(order_id) as order_sum'))
+                ->where('member_id',$MemberId)
+                ->where('add_time','>=',$before30)
+                ->first();
+        
+        
+        $order_sum = $orders_num->order_sum;
+
+
+        return view('member_index',[ 'page_title'=>$page_title ,
+                                     'member'=>$member,
+                                     'now_function' => __FUNCTION__,
+                                     'order_sum' => $order_sum
+                                   ]);
+
+    }
+    
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | 會員編修資料介面
+    |--------------------------------------------------------------------------
+    |
+    */
+    public function member_edit( Request $request ){
+
+        $page_title = '個人資料';
+        $LeagueId = $request->session()->get('league_id');
+        $MemberId = $request->session()->get('member_id');
+
+        $member = DB::table('xyzs_league_member')->
+                  where('league_id',$LeagueId)->
+                  where('id', $MemberId)->
+                  first();
+       
+        if( $member != null ){
+            
+            $member = (array)$member;
+
+            $member['login_time'] = Lib_common::_GMTToLocalTime( $member['login_time'] , 'Y-m-d h:i:s');
+
+        }else{
+
+            $member = [];
+        }
+
+        /**
+         * 資料轉換
+         **/
+
+        $member['phone'] = Lib_common::mobileDecode( '' , $member['phone'] );
+
+        $member['tel']   = Lib_common::telDecode( '' , $member['tel'] );
+
+        return view('member_edit',[ 'page_title'=>$page_title ,
+                                     'member'=>$member,
+                                     'now_function' => __FUNCTION__
+                                   ]);
+
+
+    }
+    
+
+
+    
+    /*
+    |--------------------------------------------------------------------------
+    | 修改私有會員的基本資料
+    |--------------------------------------------------------------------------
+    |
+    */
+    public function member_edit_detail_act( Request $request ){
+        
+        /**
+         * 表單驗證
+         **/
+        $LeagueId = $request->session()->get('league_id');
+        $MemberId = $request->session()->get('member_id');
+
+        $validator = Validator::make($request->all(), 
+        [    
+            'name'     => 'required|min:2|max:16',
+            'email'    => 'required|email|unique:xyzs_league_member,email,'.$MemberId.',id,league_id,'.$LeagueId,
+            'phone'    => 'required|regex:/^[09]{2}[0-9]{8}$/',
+            'tel'      => 'required|regex:/^0[0-9]*$/',
+        ],
+        [  
+            'name.required' =>'姓名為必填',
+            'name.min'      =>'姓名最少要2個字',
+            'name.max'      =>'姓名最多16個字',
+            'email.required' =>'信箱為必填',
+            'email.email'    =>'信箱格式錯誤',
+            'email.unique'   =>'信箱已使用過',
+            'phone.required' =>'手機為必填',
+            'phone.regex'    =>'手機格式錯誤',
+            'tel.required' =>'電話為必填',
+            'tel.regex' =>'電話格式錯誤'
+ 
+
+
+        ]);
+
+        if ($validator->fails()) {
+            
+            return back()->withErrors($validator)->withInput();
+
+        }        
+        
+        /**
+         * 更新基本資料
+         **/
+        $update_arr = [];
+        $update_arr['name']  = trim( $request->name );
+        $update_arr['email'] = trim( $request->email );
+        $update_arr['phone'] = Lib_common::mobileEncode( '' , trim( $request->phone ) );
+        $update_arr['tel']   = Lib_common::telEncode( '' , trim( $request->tel ) );
+
+
+        try {
+
+            DB::table('xyzs_league_member')
+            ->where('league_id', $LeagueId)
+            ->where('id',$MemberId)
+            ->update(['name'  => $update_arr['name'],
+                      'email' => $update_arr['email'],
+                      'phone' => $update_arr['phone'],
+                      'tel'   => $update_arr['tel'] 
+            ]);
+            
+            $res = true;
+            
+            $msg = '會員基本資料更新成功';
+
+        } catch (Exception $e) {
+
+            $res = false;
+
+            $msg = '會員基本資料攻心失敗';
+        }
+        
+        $next_urls = [ '/member_edit'=>'回個人資料'
+                     ];
+
+        return view('member.msg_page',['res' => $res,
+                                       'msg' => $msg,
+                                       'next_urls'=> $next_urls
+                                      ]);
+    }
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | 私有會員修改密碼
+    |--------------------------------------------------------------------------
+    |
+    */
+    public function member_edit_password_act( Request $request ){
+        
+        /**
+         * 表單驗證
+         **/
+        $LeagueId = $request->session()->get('league_id');
+        $MemberId = $request->session()->get('member_id');
+        
+        $validator = Validator::make($request->all(), 
+        [   'passwordo' => 'required',
+            'password'  => 'required|min:6|',
+            'password_confirm' => 'required|min:6|same:password',
+        ],
+        [   'passwordo.required' => '原密碼為必填',
+            'password.required'  =>'新密碼為必填',
+            'password.min'       =>'新密碼最少要6個字',
+            'password_confirm.required' =>'新密碼確認為必填',
+            'password_confirm.min'      =>'新密碼確認至少要6個字',
+            'password_confirm.same'     =>'新密碼確認與新密碼不一致',
+
+        ]);
+        
+        $res = DB::table('xyzs_league_member')->where('league_id',$LeagueId)->where('id',$MemberId)->first();
+        
+        if (!Lib_common::_MemberLogin( $request->passwordo , $res->password , $res->salt )) {         
+            
+            $validator->after(function ($validator) {
+
+                $validator->errors()->add('passwordo', '原密碼錯誤');
+            
+            });         
+        }
+
+        if ($validator->fails()) {
+            
+            return back()->withErrors($validator)->withInput();
+
+        } 
+
+        /** 
+         * 更新密碼
+         * 
+         **/
+        $update_arr = [];
+        $update_arr['password']  = md5( $request->password );
+        $update_arr['salt']      = "";
+
+        try {
+
+            DB::table('xyzs_league_member')
+            ->where('league_id', $LeagueId)
+            ->where('id',$MemberId)
+            ->update(['password'  => $update_arr['password'],
+                      'salt'      => $update_arr['salt'],
+            ]);
+            
+            $res = true;
+            
+            $msg = '密碼更新成功 , 為確保您帳戶安全 , 將自動登出 , 請點選下方按鍵再次登入即可';    
+
+            $next_urls = [ '/member_login'=>'會員登入'
+                         ];                    
+            
+            $request->session()->forget('member_login');
+
+            $request->session()->forget('member_id');
+
+            $request->session()->forget('member_name');
+
+        } catch (Exception $e) {
+            
+            $res = false;
+            
+            $msg = '密碼更新失敗';    
+
+            $next_urls = [ '/member_edit'=>'回個人資料'
+                         ];                     
+            
+        }
+
+
+
+        return view('member.msg_page',['res' => $res,
+                                       'msg' => $msg,
+                                       'next_urls'=> $next_urls
+                                      ]);        
+
+    }
+
+
+
 
     /*
     |--------------------------------------------------------------------------
@@ -337,11 +644,39 @@ class MemberController extends Controller
     |
     */
     public function member_order( Request $request ){
-        
+
+        if( empty($request->page) ){
+
+            $request->page = 1;
+        }
+
+        if( empty($request->perpage) ){
+
+            $request->perpage = 5;
+        }
+
+
+        $start = 0;
+
         try {
+            
+            /**
+             * 計算總共有多少資料
+             **/
+            $res_num = DB::table('xyzs_order_info')
+                    ->select(DB::raw('COUNT(order_id) as allres'))
+                    ->where('member_id',$request->session()->get('member_id') )
+                    ->first();
+            
 
-            $orders = DB::table('xyzs_order_info')->select(DB::raw('*,(goods_amount + shipping_fee + insure_fee + pay_fee + pack_fee + card_fee + tax - discount - bonus) AS total_fee') )->where('member_id',$request->session()->get('member_id') )->get();
-
+            $orders = DB::table('xyzs_order_info')
+                   ->select(DB::raw('*,(goods_amount + shipping_fee + insure_fee + pay_fee + pack_fee + card_fee + tax - discount - bonus) AS total_fee') )
+                   ->where('member_id',$request->session()->get('member_id') )
+                   ->orderBy('order_id','DESC')
+                   ->offset( ($request->page - 1) * $request->perpage )
+                   ->limit( $request->perpage )                   
+                   ->get();
+           
             $orders = json_decode( $orders , true );
 
         } catch (Exception $e) {
@@ -349,6 +684,7 @@ class MemberController extends Controller
             $orders = [];
         }
         
+        $pages = Lib_common::create_page( '/member_order/' , $res_num->allres , $request->page , $request->perpage );
         /** 
          * 迴圈將狀態轉換為中文
          *
@@ -361,9 +697,10 @@ class MemberController extends Controller
             $orders[$orderk]['ps'] = Lib_common::_StatusToStr('ps',$order['pay_status']);
 
         }
-
+        
         return view('member_order',[ 'orders' => $orders ,
-                                     'now_function' => __FUNCTION__
+                                     'now_function' => __FUNCTION__,
+                                     'pages'=>$pages
                                    ]);
 
     }

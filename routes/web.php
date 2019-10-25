@@ -175,6 +175,19 @@ Route::group(['middleware' => ['CheckLogin']], function () {
     
     /*
     |--------------------------------------------------------------------------
+    | 加盟會員 - 私有會員相關
+    |--------------------------------------------------------------------------
+    |
+    */
+    Route::get('/league_member_list/{page?}/{perpage?}','LeagueMemberController@index');
+
+    Route::get('/league_member_show/{member_id}','LeagueMemberController@edit');
+
+    Route::post('/league_member_update','LeagueMemberController@update');
+
+
+    /*
+    |--------------------------------------------------------------------------
     | 加盟會員相關
     |--------------------------------------------------------------------------
     |
@@ -247,6 +260,8 @@ Route::group(['middleware' => ['CheckLeague']], function () {
     Route::post('/shipChange','CartController@shipChange');
 
     Route::any('/storeMap/{device}/{type}','CartController@storeMap');
+    
+    Route::post('/validate_bonus','CartController@validate_bonus');
 
     // 網站文章
     Route::get('/article/{article_id}','LeagueWebController@article');
@@ -276,7 +291,20 @@ Route::group(['middleware' => ['CheckLeague']], function () {
     */
     Route::group(['middleware' => ['CheckMemberLogin']], function () {
         
-        Route::get('/member_order','MemberController@member_order');
+        // 私有會員首頁
+        Route::get('/member_index','MemberController@member_index');
+        
+        // 私有會員編輯頁面
+        Route::get('/member_edit','MemberController@member_edit');
+        
+        // 私有會員基本資料編輯實作
+        Route::post('/member_edit_detail_act','MemberController@member_edit_detail_act');
+        
+        // 私有會員密碼編輯實作
+        Route::post('/member_edit_password_act','MemberController@member_edit_password_act');
+        
+        // 私有會員訂單查詢
+        Route::get('/member_order/{page?}/{perpage?}','MemberController@member_order');
 
     });
     

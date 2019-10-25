@@ -572,6 +572,8 @@ a[aria-expanded=true]>h4>i:before{
 	box-shadow: 0px -1px 16px 0px black;
 }
 #rwd_tool_bar > div {
+	padding-left:2px;
+	padding-right: 2px;
     cursor: pointer;	
 	height: 100%;
 	text-align: center;

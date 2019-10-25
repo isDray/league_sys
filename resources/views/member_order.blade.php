@@ -2,7 +2,7 @@
 
 @section('selfcss')
 
-<link rel="stylesheet" href="{{url('/css/member_order.css')}}">
+<link rel="stylesheet" href="{{url('/css/member_default.css')}}">
 
 @endsection
 
@@ -14,14 +14,21 @@
 @endsection
 
 @section('content_right')
-    
+
+
+
 <div class='row custom_row'>
+
+<div class='box box-solid member_menu'>
+@includeIf( 'block_member_menu' , ['now_function'=>$now_function] )
+</div>
+
 <div class="box box-solid">
 
-<div class="box box-default myorder">
+<div class="box box-default member_default">
     
     <div class="box-header with-border">
-        <h3 class="box-title myorder_title">
+        <h3 class="box-title member_default_title">
         我的訂單
         </h3>   
     </div>
@@ -58,7 +65,7 @@
     </div>
     
     <div class="box-footer">
-
+    {!!$pages!!}
     </div>
 
 </div>

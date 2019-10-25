@@ -89,7 +89,7 @@
                 </a>
             </div>   
             <div id='add_member_box' class='over_m'>
-                <a href="{{url('/member_order')}}" class="btn colorbtn">
+                <a href="{{url('/member_index')}}" class="btn colorbtn">
                 <i class='fa fa-fw fa-dashboard'></i>會員中心
                 </a>
             </div>            
@@ -311,6 +311,19 @@
         </a>          
     </div>
     <div class='col-md-3 col-sm-3 col-xs-3'>
+        @if( session()->has('member_login') && session('member_id') == true && session()->has('member_id') )
+        <a href="{{url('/member_index')}}">
+        <i class="fa fa-fw fa-dashboard"></i>
+        <br>
+        會員中心
+        </a>        
+        @else
+        <a href="{{url('/member_login')}}">
+        <i class="fa fa-fw fa-sign-in"></i>
+        <br>
+        登入
+        </a>
+        @endif    
     </div>            
 </div>
 

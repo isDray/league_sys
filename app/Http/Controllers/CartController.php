@@ -1370,4 +1370,62 @@ class CartController extends Controller
         setcookie("real_ipd", $realip, time()+36000, "/");  /*添加*/
         return $realip;
     }    
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | 優惠代碼檢測
+    |--------------------------------------------------------------------------
+    |
+    */
+    public function validate_bonus( Request $request ){
+
+
+        if( empty( $request->bonus_sn ) ){
+
+            return json_encode( [false] );
+
+        }else{
+
+            $bonus_sn = intval( $request->bonus_sn );
+        }
+
+        //1000003295
+        $res = DB::table('xyzs_user_bonus as b')
+            ->leftJoin('xyzs_bonus_type as t', 't.type_id', '=', 'b.bonus_type_id')
+            ->where('bonus_sn',$bonus_sn)
+            ->first();
+
+        if( $res === null ){
+
+            return json_encode( [false] );
+
+        }else{
+            
+            $res = (array)$res;
+        }
+        
+        
+        if( ( Lib_common::_GetGMTTime() <= $res['send_end_date'] ) && ( Lib_common::_GetGMTTime() >= $res['send_start_date'] ) ){
+            
+            if( $res['min_amount'] > 0 ){
+
+                return json_encode( [ true , "折價券:".$res['type_name']."(滿".$res['min_amount']."才可使用)"  ] );
+
+            }else{
+
+                return json_encode( [ true , "折價券:".$res['type_name']."(不限金額皆可使用)"  ] );
+            }
+
+        }else{
+            
+            return json_encode([false]);
+        }
+
+        // var_dump($res);
+
+        //min_amount
+
+    }
 }

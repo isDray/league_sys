@@ -166,7 +166,7 @@ $(function(){
         }
     });    
 
-    $("#member_form_").validate({
+    $("#member_form").validate({
         
         //debug: true,
 

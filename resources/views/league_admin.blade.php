@@ -84,7 +84,7 @@
             </ul>
           </li> -->
           <li>
-            <a href="/logout_act" ><i class="fa fa-gears"></i> 登出</a>
+            <a href="/logout_act" ><i class="fa fa-fw fa-sign-out"></i> 登出</a>
           </li>
         </ul>
       </div>
@@ -154,8 +154,12 @@
         <!-- /模組管理 -->
 
         <li><a href="{{url('/league_webset')}}"><i class="fa fa-fw fa-globe text-light-blue"></i> <span>網站設定</span></a></li>
-    
-        <li class="header">加盟會員</li>
+        
+        <!-- 會員 -->
+        <li class="header">會員管理</li>
+        <li><a href="{{url('/league_member_list')}}"><i class="fa fa-fw fa-users text-light-blue"></i> <span>會員列表</span></a></li>
+        <!-- /會員-->
+        <li class="header">個人資料</li>
         <!-- <li><a href="{{url('/league_user')}}"><i class="fa fa-fw fa-user text-green"></i> <span>個人資料設定</span></a></li> -->
         <li class="treeview @if( isset($tree) && $tree=='info' ) active @endif" >
             <a href="#">

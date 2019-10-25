@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>@if( !empty($title) ){{$title}} - @endif{{$LeagueData['store_name']}}</title>
+    <title>@if( !empty($title) ){{$title}} - @endif {{$LeagueData['store_name']}}</title>
     
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
@@ -91,7 +91,7 @@
                 </a>
             </div>   
             <div id='add_member_box' class='over_m'>
-                <a href="{{url('/member_order')}}" class="btn colorbtn">
+                <a href="{{url('/member_index')}}" class="btn colorbtn">
                 <i class='fa fa-fw fa-dashboard'></i>會員中心
                 </a>
             </div>               
@@ -224,10 +224,10 @@
         <!-- /購物車 -->
     </div>
     <div class='col-md-2 col-md-offset-2 col-sm-4 col-sm-offset-0 col-xs-12 over_m' id='content_left'>
-                       
         @yield('content_left')
     </div>
-    <div class='col-md-6 col-sm-8 col-xs-12' id="content_right">
+    
+    <div class='col-md-6 col-sm-12 col-xs-12' id="content_right">
         @yield('content_right')
     </div>   
 </div>
@@ -316,6 +316,19 @@
         </a>          
     </div>
     <div class='col-md-3 col-sm-3 col-xs-3'>
+        @if( session()->has('member_login') && session('member_id') == true && session()->has('member_id') )
+        <a href="{{url('/member_index')}}">
+        <i class="fa fa-fw fa-dashboard"></i>
+        <br>
+        會員中心
+        </a>        
+        @else
+        <a href="{{url('/member_login')}}">
+        <i class="fa fa-fw fa-sign-in"></i>
+        <br>
+        登入
+        </a>
+        @endif    
     </div>            
 </div>
 

@@ -1,14 +1,21 @@
-.msg_box > .box-header{
+.member_default > .box-header{
 	background-color: #a7a7a7;
 	/* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#dddddd+0,898989+100 */
     background: #dddddd; /* Old browsers */
     background: -moz-linear-gradient(top,  #dddddd 0%, #898989 100%); /* FF3.6-15 */
     background: -webkit-linear-gradient(top,  #dddddd 0%,#898989 100%); /* Chrome10-25,Safari5.1-6 */
     background: linear-gradient(to bottom,  #dddddd 0%,#898989 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#dddddd', endColorstr='#898989',GradientType=0 ); /* IE6-9 */	
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#dddddd', endColorstr='#898989',GradientType=0 ); /* IE6-9 */
+
 }
-.msg_title , .msg_des{
+.member_default_title{
 
 	font-family: '微軟正黑體';
 	font-weight: 900;
+}
+@media( min-width: 993px ){
+    
+    .member_menu{
+        display: none;
+    }
 }

@@ -292,6 +292,19 @@
             </div>
             <!-- 付款方式解釋結束 -->    
 
+            @if( session()->has('member_login') && session('member_id') == true && session()->has('member_id') )
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <span><font color="red"></font>折價券:</span><br>
+                
+                <div class="input-group">
+                    <input type="text" class="form-control" id='bonus_sn' name='bonus_sn'>
+                    <span class="input-group-btn">
+                        <button type="button" class="btn colorbtn btn-flat" id='validation_bonus'>檢查折價券!</button>
+                    </span>
+                </div>
+
+            </div>
+            @endif
 
             <!-- 電子發票 -->
             <div class="col-md-12 col-sm-12 col-xs-12 form-group" id="invArea">
@@ -405,6 +418,38 @@
 <script type="text/javascript">
 
 $(document).ready(function(){
+    
+    $("#validation_bonus").click(function(){
+
+        var bonusAjax = $.ajax({
+            url: "{{url('/validate_bonus')}}",
+            method: "POST",
+            data: { 
+                    _token : "{{ csrf_token() }}",
+                    bonus_sn: $("#bonus_sn").val(),
+                    type : 1
+            },
+            dataType: "json"
+        });
+
+        bonusAjax.done(function( res ) {
+            
+            if( res[0] == true ){
+                
+                alert( res[1] );
+
+            }else{
+
+                alert('查無此優惠券');
+            }
+        });
+ 
+        bonusAjax.fail(function( jqXHR, textStatus ) {
+        
+        }); 
+
+    });
+
     $('.taskTooltip').tooltip({trigger: 'manual'}).tooltip('show');
 
     /*----------------------------------------------------------------

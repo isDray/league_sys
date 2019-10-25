@@ -26,7 +26,15 @@
     </div>
     
     <div class="box-footer">
-        <a href="{{url('/')}}" class='btn btn-default'>回首頁</a>
+        @if( !isset( $next_urls ) )
+            
+            <a href="{{url('/')}}" class='btn btn-default'>回首頁</a>
+        @else
+
+            @foreach( $next_urls as $next_urlk => $next_url)
+            <a href="{{url($next_urlk)}}" class='btn btn-default'>{{$next_url}}</a>
+            @endforeach
+        @endif
     </div>
 
 </div>
