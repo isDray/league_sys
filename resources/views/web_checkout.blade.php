@@ -440,7 +440,7 @@ $(document).ready(function(){
 
             }else{
 
-                alert('查無此優惠券');
+                alert( res[1]);
             }
         });
  

@@ -138,6 +138,74 @@ class Lib_bonus{
         
 
 	}
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | 確認優惠券是否能夠使用
+    |--------------------------------------------------------------------------
+    |
+    */
+    public static function _validateBonus( $bonus_sn = ''){
+    
+        if( empty($bonus_sn) ){
+
+            return [ false , "此優惠券不存在" ];
+        }
+
+        $bonus = DB::table('xyzs_user_bonus as b')
+            ->leftJoin('xyzs_bonus_type as t', 't.type_id', '=', 'b.bonus_type_id')
+            ->where('bonus_sn',$bonus_sn)
+            ->first();
+
+        if( $bonus === null ){
+
+            return json_encode( [ false , "此優惠券不存在" ] );
+
+        }else{
+            
+            $bonus = (array)$bonus;
+        }
+
+        $nowTime = Lib_common::_GetGMTTime();
+        
+        // 檢查如果不符合條件就直接視為不可使用 
+        if( $nowTime < $bonus['use_start_date'] || $nowTime >$bonus['use_end_date'] ){
+
+            return json_encode( [ false , "目前非此優惠券使用時間" ] );
+
+        }
+        
+        // use_type 表示針對加盟會員的計數類型優惠券
+        if( $bonus['use_type'] == 1 ){
+            
+            if (empty($bonus) || $bonus['user_id'] != 0 || $bonus['order_id'] > 0 || $bonus['min_goods_amount'] > Lib_common::_getCartAmount()){
+                
+                return json_encode( [ false , "此優惠券不可使用" ] );
+            }
+            
+            // 如果使用次數超過上限就直接認定不可使用
+            if( $bonus['count_use'] >= $bonus['max_use'] ){
+                
+                return json_encode( [ false , "此優惠券不可使用" ] );
+            }
+
+        }else{ // 如果非計數類型優惠券則為一般優惠券(即一組編號一人使用)
+
+            if (empty($bonus) || $bonus['user_id'] != 0 || $bonus['order_id'] > 0 || $bonus['min_goods_amount'] > Lib_common::_getCartAmount()){
+                
+                return json_encode( [ false , "此優惠券不可使用" ] );
+
+            }
+
+        }
+        
+        // 如果是計數類型優惠券 , 需要將使用次數加1 , 並且將當下的時間點寫入使用關聯表
+        return json_encode( [ true , "此優惠券可以使用" ] );     
+        
+    }
 }
 
 ?>
