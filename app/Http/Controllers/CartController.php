@@ -7,6 +7,7 @@ use Validator;
 use DB;
 use App\Cus_lib\Lib_common;
 use App\Cus_lib\allpay_card;
+use App\Cus_lib\Lib_bonus;
 
 class CartController extends Controller
 {
@@ -616,13 +617,22 @@ class CartController extends Controller
         // 費用計算
         $total = $this->order_fee( $request->session()->get('cart') );
 
-        $order['bonus'] = 0;
         $order['goods_amount'] = $total['goods_price'];
         $order['discount'] = 0;
         $order['surplus']  = 0;
         $order['tax']      = 0;
         $order['rent_total'] = 0;
         $order['bonus_id'] = 0;
+
+        // 如果有接收到優惠碼
+        if( isset($request->bonus_sn) && !empty( $request->bonus_sn ) ){
+            
+            $order['bonus'] = Lib_bonus::_useBonus( $request->bonus_sn , $order['goods_amount'] );
+
+        }else{
+
+            $order['bonus'] = 0;
+        }
 
         $shipcode = DB::table('xyzs_shipping')
                  ->select('shipping_code','shipping_name')
@@ -732,9 +742,22 @@ class CartController extends Controller
             
             $order['pay_name'] = addslashes( $payment->pay_name );
         }    
+        
 
-        $order['order_amount'] = $order['goods_amount'] + $order['shipping_fee'] + $order['tax'];
 
+        $order['order_amount'] = $order['goods_amount'] + $order['shipping_fee'] + $order['tax'] - $order['bonus'];
+        
+        /**
+         * 如果有登入會員 , 才進行折價券判斷 , 如果沒登入就直接當沒有優惠券處李
+         **/
+        if( !empty($request->session()->get('member_id')) && ( !empty($request->session()->get('member_login')) && $request->session()->get('member_login') == true ) ){
+            
+            if( !empty($request->bonus_sn) ){
+                
+                //$this->
+
+            }
+        }
         // 保留原始手機及家電
         $mobileForMail   = $order['mobile'];
         $telForMail      = $order['tel'];
@@ -798,7 +821,8 @@ class CartController extends Controller
 
             } catch (\Exception $e) {
                 
-                var_dump($e->getMessage());
+                //var_dump($e->getMessage());
+
                 if (strpos( $e->getMessage() ,'1062 Duplicate entry') == false) {
 
                     $inSwitch = 0;
@@ -1240,7 +1264,7 @@ class CartController extends Controller
         // 計算商品總價
         $tmpTotal = 0;
         
-       // var_dump($carts);
+        // var_dump($carts);
 
         foreach ( $carts as $cartk => $cart ) {
             
@@ -1427,5 +1451,42 @@ class CartController extends Controller
 
         //min_amount
 
+    }
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | 計算折價券折抵價格
+    |--------------------------------------------------------------------------
+    |
+    */
+    public function bonus_discount( $_bonus_sn = '' ){
+        
+        if( !empty( $_bonus_sn ) ){
+            
+            $_bonus_sn = intval( $_bonus_sn );
+
+            $res = DB::table('xyzs_user_bonus as b')
+                ->leftJoin('xyzs_bonus_type as t', 't.type_id', '=', 'b.bonus_type_id')
+                ->where('bonus_sn',$_bonus_sn)
+                ->first();
+
+            if( $res === null ){
+
+                return 0;
+
+            }else{
+            
+                $res = (array)$res;
+                
+            }
+
+
+        }else{
+            
+            return 0;
+        }
     }
 }

@@ -299,7 +299,7 @@
                 <div class="input-group">
                     <input type="text" class="form-control" id='bonus_sn' name='bonus_sn'>
                     <span class="input-group-btn">
-                        <button type="button" class="btn colorbtn btn-flat" id='validation_bonus'>檢查折價券!</button>
+                        <button type="button" class="btn colorbtn btn-flat" id='validation_bonus'>檢查折價券</button>
                     </span>
                 </div>
 
@@ -667,7 +667,6 @@ $(document).ready(function(){
      */
     $('#checkout_form').submit(function(){ 
         
-        return true;
 
         // 立即封鎖提交按鈕 , 避免重複提交
         $("#checkOutBtn").prop('disabled', true);

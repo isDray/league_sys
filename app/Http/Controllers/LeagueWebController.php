@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Cus_lib\Lib_bonus;
 use DB;
 
 
@@ -104,6 +105,28 @@ class LeagueWebController extends Controller
         $LeagueId = $request->session()->get('league_id');
 
         return view('over18');
+    }
+    
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | 檢測頁面
+    |--------------------------------------------------------------------------
+    |
+    */
+    public function test( Request $request ){
+        
+        /**
+         * 開始使用優惠券
+         **/
+
+        // 可折扣的金額
+        $bonus_price = Lib_bonus::_useBonus( '1000018995' , 6 );
+         
+        
+        
     }
 
 }

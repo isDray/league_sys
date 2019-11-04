@@ -1,7 +1,7 @@
 <?php
 namespace App\Cus_lib;
 use DB;
-
+use Session;
 /*
 |--------------------------------------------------------------------------
 | 通用工具
@@ -502,7 +502,35 @@ class Lib_common{
             return date( $_formate, $_gmt + date('Z') );
         }
     }
+    
 
+
+    /*
+    |--------------------------------------------------------------------------
+    | 計算購物車總價( 單純購物車內商品總價 )
+    |-------------------------------------------------------------------------- 
+    |
+    */
+    public static function _getCartAmount(){
+        
+        $cartGoods = Session::get('cart');
+        
+        if( $cartGoods === null ){
+
+            return 0;
+
+        }else{
+            
+            $total = 0;
+
+            foreach ($cartGoods as $cartGoodk => $cartGood) {
+                
+                $total += $cartGood['subTotal'];
+            }
+
+            return $total;
+        }
+    }
 }
 
 
