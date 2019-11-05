@@ -8,12 +8,12 @@
     <div class='col-md-4 col-md-offset-2 col-sm-12 col-xs-12' id='register_intro'>
         
         <div  class='label_box' label='加盟優勢' >
-            <p>&nbsp; <span class="label pull-left bg-orange">免成本</span><span class="label pull-left text-black"> 免加盟金 ， 免壓年金 ， 免囤貨 </span></p>
-            <p>&nbsp; <span class="label pull-left bg-orange">高度自由</span><span class="label pull-left text-black"> 不論在家或者咖啡廳都能輕鬆完成 </span></p>
-            <p>&nbsp; <span class="label pull-left bg-orange">專業協助</span><span class="label pull-left text-black"> 訂單處理 、 商品包裝配送 、 售後服務退換貨 ，所有關於商品問題皆由享愛完成 </span></p>
-            <p>&nbsp; <span class="label pull-left bg-orange">貨源充足</span><span class="label pull-left text-black"> 享愛加盟平台定期依照銷售曲線預估貨量 , 確保您的訂單都能夠順利出貨 </span></p>
-            <p>&nbsp; <span class="label pull-left bg-orange">優渥獎金</span><span class="label pull-left text-black"> 提供高比例獎金 ， 銷售輛與獎金成正比 </span></p>
-            <p>&nbsp; <span class="label pull-left bg-orange">專屬品牌</span><span class="label pull-left text-black"> 網頁上的曝光讓客群更認識屬於您的專屬品牌 ， 讓品牌名聲與獎金形成良性循環</span></p>
+            <p>&nbsp; <span class="label pull-left bg-orange">免成本</span><br/> 免加盟金 ， 免壓年金 ， 免囤貨 </p>
+            <p>&nbsp; <span class="label pull-left bg-orange">高度自由</span><br/> 不論在家或者咖啡廳都能輕鬆完成</p>
+            <p>&nbsp; <span class="label pull-left bg-orange">專業協助</span><br/> 訂單處理 、 商品包裝配送 、 售後服務退換貨 ，所有關於商品問題皆由享愛完成</p>
+            <p>&nbsp; <span class="label pull-left bg-orange">貨源充足</span><br/> 享愛加盟平台定期依照銷售曲線預估貨量 , 確保您的訂單都能夠順利出貨</p>
+            <p>&nbsp; <span class="label pull-left bg-orange">優渥獎金</span><br/> 提供高比例獎金 ， 銷售輛與獎金成正比</p>
+            <p>&nbsp; <span class="label pull-left bg-orange">專屬品牌</span><br/> 網頁上的曝光讓客群更認識屬於您的專屬品牌 ， 讓品牌名聲與獎金形成良性循環</p>
 
         </div>
 
@@ -83,9 +83,9 @@
 
         <div  class='label_box' label='網站管理' >
             
-            <p>&nbsp; <span class="label pull-left bg-orange">報表</span><span class="label pull-left text-black"> 網站提供圖形化報表 ， 為您提供策略化經營的利器 。</span></p>
-            <p>&nbsp; <span class="label pull-left bg-orange">訂製</span><span class="label pull-left text-black"> 網站版型區塊可讓您自由決定位置 ， 讓您設計出獨一無二的網站 </span></p>
-            <p>&nbsp; <span class="label pull-left bg-orange">擴充</span><span class="label pull-left text-black"> 網站版型及功能持續開發及維護 </span></p>
+            <p>&nbsp; <span class="label pull-left bg-orange">報表</span><br/>網站提供圖形化報表 ， 為您提供策略化經營的利器 。</p>
+            <p>&nbsp; <span class="label pull-left bg-orange">訂製</span><br/>網站版型區塊可讓您自由決定位置 ， 讓您設計出獨一無二的網站</p>
+            <p>&nbsp; <span class="label pull-left bg-orange">擴充</span><br/>網站版型及功能持續開發及維護</p>
 
         </div>        
 
