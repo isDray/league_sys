@@ -107,14 +107,28 @@ class MemberController extends Controller
                    'phone'  => Lib_common::mobileEncode('',$request->phone),
                    'tel'    => Lib_common::telEncode('',$request->tel)
                 ]
-            );            
-            
+            );     
+
+            $res = true;
+            $msg = "加入會員成功 , 請點下方連結進行登入";
+            $next_urls = [ '/member_login'=>'前往登入頁面'
+                         ];            
+
         } catch (\Exception $e) {
             
-            echo '新增失敗';
+            //echo '新增失敗';
+            $res = false;
+            $msg = "加入會員過程出錯 , 請稍後再試";
+            $next_urls = [ '/join_member'=>'前往加入會員頁面'
+                         ];            
         }
 
-        
+
+
+        return view('member.msg_page',['res' => $res,
+                                       'msg' => $msg,
+                                       'next_urls'=> $next_urls
+                                      ]);        
 
 
     }
