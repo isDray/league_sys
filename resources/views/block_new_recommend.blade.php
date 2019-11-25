@@ -9,7 +9,8 @@ $recommends = Lib_block::get_recommend('new');
     
     <div class="box-header with-border">
 
-        <h3 class="box-title recommend_title ">新品上市</h3>
+        <h2 class="box-title recommend_title ">新品上市</h2>
+        <h3 class="page_more_desc">為您推薦最新潮最刺激的情趣用品,讓你走在情趣的時代尖端</h3>
 
     </div>
     
@@ -17,18 +18,18 @@ $recommends = Lib_block::get_recommend('new');
     <div class="box-body">
         
         @foreach( $recommends as $recommendk => $recommend)
-        <a href="https://***REMOVED***.com/***REMOVED***/goods.php?id={{$recommend['goods_id']}}">
+        <a href="{{url('/show_goods/'.$recommend['goods_id'])}}">
         <div class='col-md-3 col-sm-4 col-xs-6 show_goods_box'>
 
             <div class="thumbnail">
                 
-                <img src="https://***REMOVED***.com/***REMOVED***/{{$recommend['goods_thumb']}}">
+                <img src="https://***REMOVED***.com/***REMOVED***/{{$recommend['goods_thumb']}}" alt="{{ $recommend['goods_name'] }},貨號:{{ $recommend['goods_sn'] }},價格:{{ $recommend['shop_price'] }}">
                 
                 <div class="caption">
                     <h4 class="goods_title">{{ $recommend['goods_name'] }}</h4>
                     <p class='goods_sn'>貨號:{{ $recommend['goods_sn'] }}</p>
                     <p class='goods_price'>價格:{{ $recommend['shop_price'] }}</p>
-                    <p><a  class="btn colorbtn add_to_cart" role="button" goods_id="{{$recommend['goods_id']}}">立即購買</a></p>
+                    <p><a  class="btn colorbtn add_to_cart" role="button" goods_id="{{$recommend['goods_id']}}" title="將{{ $recommend['goods_name'] }}加入購物車" >立即購買</a></p>
                 </div>
             </div>                
             

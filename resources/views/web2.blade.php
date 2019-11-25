@@ -8,7 +8,14 @@
     
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    
+    @if( isset($description) )
+    <meta name="description" content="{{$description}}">
+    @endif
+
+    @if( isset($keywords) )
+    <meta name="keywords" content="{{$keywords}}">
+    @endif    
+        
     <!-- Bootstrap 3.3.7 -->
     <link rel="stylesheet" href="{{url('/AdminLTE/bower_components/bootstrap/dist/css/bootstrap.min.css')}}">
     <!-- Font Awesome -->
@@ -41,6 +48,8 @@
 
 
 <div class='container-fluid'>
+
+<h1 class='page_more_desc'>@yield('page_header','')</h1>
 
 <div class='row'>
     <div class='col-md-12 col-sm-12 col-xs-12' id='menu_box'>
@@ -222,14 +231,15 @@
         </div> -->
         <!-- /購物車 -->
     </div>
-    <div class='col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2 col-xs-12' id="content_right">
+    <div class='col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-12' id="content_right">
+        
         @yield('content_right')
     </div>   
 </div>
 
 <div class='row' id='footer'>
         
-        <div class='col-md-4 col-md-offset-2 col-sm-4 col-sm-offset-2 col-xs-12' id='footer_left'>
+        <div class='col-md-5 col-md-offset-1 col-sm-8 col-sm-offset-2 col-xs-12' id='footer_left'>
             
             <div class='col-md-12 col-sm-12 col-xs-12' id="footer_left_center">
 
@@ -260,7 +270,7 @@
 
         </div>
 
-        <div class='col-md-4 col-sm-4 col-xs-12' id='footer_right'>
+        <div class='col-md-5 col-md-offset-0 col-sm-8 col-sm-offset-2 col-xs-12' id='footer_right'>
             <div class='col-md-12 col-sm-12 col-xs-12' id="footer_right_center">
                 <div class="col-md-12 col-sm-12 col-xs-12"> 
                     <img src="https://***REMOVED***.com/***REMOVED***/ecs_static/img/18.png" style='float:right'>                    

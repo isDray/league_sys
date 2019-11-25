@@ -16,8 +16,8 @@ class SearchController extends Controller
     |
     |
     */
-    public function search( Request $request ,$keyword='', $cat_sort_item = 'add_time' , $cat_sort_way = 'asc', $now_page = 1 , $per_page = 20 ){
-        
+    public function search( Request $request ,$keyword = " " , $cat_sort_item = 'add_time' , $cat_sort_way = 'asc', $now_page = 1 , $per_page = 20 ){
+    
         $keyword = !empty($request->keyword)? $request->keyword:$keyword;
 
         $CatSortItem = !empty( $request->cat_sort_item )? $request->cat_sort_item : $cat_sort_item;
@@ -27,7 +27,7 @@ class SearchController extends Controller
         $SortItemArr = ['add_time','shop_price'];
         
         $SortWayArr  = ['asc' , 'desc'];
-
+ 
         if( !in_array($CatSortItem, $SortItemArr) ){
             
             $CatSortItem = 'add_time';
@@ -50,15 +50,15 @@ class SearchController extends Controller
         
         if( $CatSortItem == 'add_time'){
             
-            $AddTimeURL = "/search/$request->keyword/add_time/$NextCatSortWay/$now_page/$per_page";
+            $AddTimeURL = "/search/$keyword/add_time/$NextCatSortWay/$now_page/$per_page";
 
-            $PriceUrl   = "/search/$request->keyword/shop_price/$CatSortWay/$now_page/$per_page";
+            $PriceUrl   = "/search/$keyword/shop_price/$CatSortWay/$now_page/$per_page";
 
         }elseif( $CatSortItem == 'shop_price'){
 
-            $AddTimeURL = "/search/$request->keyword/add_time/$CatSortWay/$now_page/$per_page";
+            $AddTimeURL = "/search/$keyword/add_time/$CatSortWay/$now_page/$per_page";
             
-            $PriceUrl   = "/search/$request->keyword/shop_price/$NextCatSortWay/$now_page/$per_page";
+            $PriceUrl   = "/search/$keyword/shop_price/$NextCatSortWay/$now_page/$per_page";
 
         }      
         // 起始筆數
@@ -68,18 +68,20 @@ class SearchController extends Controller
         $CondQuery = DB::table('xyzs_goods AS g')
                    ->select("g.*",DB::raw( "ROUND(shop_price) as shop_price" ))
                    ->where('g.is_on_sale','1')
+                   ->where('g.goods_number','>',0)
                    /*->where(function( $query  )use ($CatArr){
                        $query->whereIn('g.cat_id',$CatArr)
                              ->orWhereIn('c.cat_id',$CatArr);
                    })*/
                    ->where('g.goods_name','like', '%'.$keyword.'%')
                    ->groupBy('g.goods_id');
+
         $CondQuery->orderBy($CatSortItem,$CatSortWay);
         
         $TotalRow = $CondQuery->get();                   
         
         $TotalRow = count( $TotalRow );
-        
+   
         // 產生分頁
         $target = "/search/$keyword/$CatSortItem/$CatSortWay/";
 

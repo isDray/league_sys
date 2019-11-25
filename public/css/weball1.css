@@ -329,6 +329,7 @@
 }
 .footer_list{
 	list-style: none;
+	padding-left: 0px;
 }
 .footer_list > h4 {
     font-size: 20px;
@@ -360,7 +361,7 @@
 .only_m{
 	display: none;
 }
-@media(max-width:767px){
+@media(max-width:991px){
 	#footer{
 		margin-bottom: 40px;
 	}
@@ -372,7 +373,7 @@
     }	
 }
 /* 手機板選單 */
-@media(max-width:992px){
+@media(max-width:991px){
 .menulogo{
 	margin-left: 0px;
 }
@@ -560,7 +561,7 @@ a[aria-expanded=true]>h4>i:before{
 
 }
 /* rwd toolbar */
-@media(max-width: 767px){
+@media(max-width: 991px){
 #rwd_tool_bar{
 	position: fixed;
 	left:0px;
@@ -639,4 +640,8 @@ label[class="form_invalid"]:after{
 */
 #content_right{
     min-height: calc( 100vh - 540px );
+}
+
+.page_more_desc{
+	display: none;
 }

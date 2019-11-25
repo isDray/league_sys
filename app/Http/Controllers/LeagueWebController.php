@@ -63,7 +63,12 @@ class LeagueWebController extends Controller
         }  
         //$request->session()->forget('cart');
         
-        return view('web_index', [ 'CenterBlocks' => $CenterBlocks ]);
+        return view('web_index', [ 'CenterBlocks' => $CenterBlocks ,
+                                   'title'        => '情趣用品-情趣睡衣-情趣商品-成人情趣道具-線上購買',
+                                   'keywords'     => '情趣用品,情趣睡衣,情趣睡衣',
+                                   'description'  => '樣式最多的情趣用品線上購買的平台 , 精選跳蛋、變頻按摩棒、情趣睡衣、自慰飛機杯、情趣娃娃、潤滑液等多款情趣商品,想要找提升情趣的用品',
+                                   'page_header'  => "情趣用品首頁-推薦商品-熱銷商品-新品上市-各式情趣用品分類,",
+                                 ]);
     }
 
 
@@ -121,6 +126,36 @@ class LeagueWebController extends Controller
         /**
          * 開始使用優惠券
          **/
+        /*
+        $ori = 0;
+
+        $rt  = 1.10;
+
+        $switch = true;
+        
+        $totaly = 0;
+
+        $targ   = 5000;
+
+        while ( $switch ) {
+            
+            $ori += 20;
+            
+            $ori =  $rt * $ori;
+            
+            $totaly += 1;
+
+            if( $ori >= $targ ){
+            
+                $switch = false;
+            }
+        }
+        
+        echo $totaly;
+        */
+        
+
+    
 
         // 可折扣的金額
         $bonus_price = Lib_bonus::_useBonus( '1000018995' , 6 );

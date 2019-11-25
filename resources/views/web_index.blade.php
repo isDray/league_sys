@@ -4,8 +4,14 @@
 <link rel="stylesheet" href="{{url('/css/login.css')}}">
 @endsection
 
-@section('content_left')
+@if( isset( $page_header ) )
+    @section('page_header')
+        {{$page_header}}{{$LeagueData['store_name']}}
+    @endsection
+@endif
 
+@section('content_left')
+@parent
     @foreach( $LeftBlocks as $LeftBlockk => $LeftBlock)
         
         @includeIf('block_'. $LeftBlock)

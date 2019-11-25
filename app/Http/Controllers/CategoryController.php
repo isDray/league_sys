@@ -85,6 +85,7 @@ class CategoryController extends Controller
                    ->select("g.*",DB::raw( "ROUND(shop_price) as shop_price" ))
                    ->leftJoin('xyzs_goods_cat AS c', 'g.goods_id', '=', 'c.goods_id')
                    ->where('g.is_on_sale','1')
+                   ->where('g.goods_number','>',0)
                    ->where(function( $query  )use ($CatArr){
                        $query->whereIn('g.cat_id',$CatArr)
                              ->orWhereIn('c.cat_id',$CatArr);
