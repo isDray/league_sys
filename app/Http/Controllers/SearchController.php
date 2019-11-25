@@ -92,13 +92,20 @@ class SearchController extends Controller
         $Goods = $CondQuery->get(); 
 
         $Goods = json_decode( $Goods , true );
+        
+        $yearMonth = date('Y年n月');
 
         return view('web_category',[ 'Goods' => $Goods , 
                                      'Pages' => $Pages ,
                                      'CatSortItem' => $CatSortItem , 
                                      'CatSortWay'  => $CatSortWay  ,
                                      'AddTimeURL'  => $AddTimeURL  ,
-                                     'PriceUrl'    => $PriceUrl
+                                     'PriceUrl'    => $PriceUrl,
+                                     'title'        => "{$keyword}-搜尋{$keyword}-{$keyword}比較-情趣用品搜尋,{$yearMonth}",
+                                     'keywords'     => "{$keyword},情趣用品搜尋,搜尋{$keyword},{$keyword}比較",
+                                     'description'  => "情趣用品搜尋{$keyword}提供您最豐富的情趣用品種類及品牌,{$yearMonth}搜尋有關{$keyword}的資料共有{$TotalRow}筆,繼續使用搜尋探索更多關於{$keyword}的情趣用品",
+                                     'page_header'  => "{$yearMonth}{$keyword}在情趣用品搜尋中所有商品",   
+
                                     ]);              
     }
 }

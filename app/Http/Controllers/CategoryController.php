@@ -39,10 +39,12 @@ class CategoryController extends Controller
         $IfRoot->keywords = str_replace('愛戀99', '', $IfRoot->keywords);
         $IfRoot->keywords = str_replace('享愛網', '', $IfRoot->keywords);
         $IfRoot->keywords = str_replace('享愛', '', $IfRoot->keywords);
+        $IfRoot->keywords = str_replace('性易購', '', $IfRoot->keywords);
 
         $IfRoot->cat_desc = str_replace('愛戀99', '', $IfRoot->cat_desc);
         $IfRoot->cat_desc = str_replace('享愛網', '', $IfRoot->cat_desc);
-        $IfRoot->cat_desc = str_replace('享愛', '', $IfRoot->cat_desc);        
+        $IfRoot->cat_desc = str_replace('享愛', '', $IfRoot->cat_desc);     
+        $IfRoot->cat_desc = str_replace('性易購', '', $IfRoot->cat_desc);    
 
         $CatSortItem = !empty( $request->cat_sort_item )? $request->cat_sort_item : $cat_sort_item;
 
