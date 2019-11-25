@@ -22,7 +22,7 @@ class CategoryController extends Controller
 
         // 確認是否為母分類
         $IfRoot = DB::table('xyzs_category')->where('cat_id',$CatId)->first();
-        
+
         $CatArr = [ $CatId ];
 
         if( $IfRoot->parent_id == 0 ){
@@ -35,6 +35,14 @@ class CategoryController extends Controller
             }
 
         }
+        // 過濾不想要的字串
+        $IfRoot->keywords = str_replace('愛戀99', '', $IfRoot->keywords);
+        $IfRoot->keywords = str_replace('享愛網', '', $IfRoot->keywords);
+        $IfRoot->keywords = str_replace('享愛', '', $IfRoot->keywords);
+
+        $IfRoot->cat_desc = str_replace('愛戀99', '', $IfRoot->cat_desc);
+        $IfRoot->cat_desc = str_replace('享愛網', '', $IfRoot->cat_desc);
+        $IfRoot->cat_desc = str_replace('享愛', '', $IfRoot->cat_desc);        
 
         $CatSortItem = !empty( $request->cat_sort_item )? $request->cat_sort_item : $cat_sort_item;
 
@@ -108,13 +116,20 @@ class CategoryController extends Controller
         $Goods = $CondQuery->get(); 
         
         $Goods = json_decode( $Goods , true );
+        
+        $yearMonth = date('Y年n月');
 
         return view('web_category',[ 'Goods' => $Goods , 
         	                         'Pages' => $Pages ,
         	                         'CatSortItem' => $CatSortItem , 
         	                         'CatSortWay'  => $CatSortWay  ,
                                      'AddTimeURL'  => $AddTimeURL  ,
-                                     'PriceUrl'    => $PriceUrl
+                                     'PriceUrl'    => $PriceUrl,
+                                     'title'        => "{$IfRoot->cat_name}-情趣用品",
+                                     'keywords'     => "{$IfRoot->keywords}",
+                                     'description'  => "{$IfRoot->cat_desc}",
+                                     'page_header'  => "{$IfRoot->cat_name}-{$yearMonth}情趣用品精選推薦",                                     
+
         	                        ]);
     }
 

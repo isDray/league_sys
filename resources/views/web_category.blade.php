@@ -4,6 +4,10 @@
 <link rel="stylesheet" href="{{url('/css/login.css')}}">
 @endsection
 
+@if( isset( $page_header ) )
+    @section('page_header'){{$page_header}}@endsection
+@endif
+
 @section('content_left')
 
     @foreach( $LeftBlocks as $LeftBlockk => $LeftBlock)
@@ -52,14 +56,12 @@
     <div class="box-header with-border">
         
         <a class="btn @if( $CatSortItem == 'add_time')bg-yellow  @if( $CatSortWay == 'asc')sortup @else sortdown @endif @else btn-default @endif" 
-            href="{{url($AddTimeURL)}}"
-        >
+            href="{{url($AddTimeURL)}}" title="點擊改變排序為@if( $CatSortWay == 'asc')時間由大到小@else時間由小到大@endif">
             <i class="fa fa-calendar-times-o"></i> 上架時間 
         </a>
 
         <a class="btn @if( $CatSortItem == 'shop_price')bg-yellow  @if( $CatSortWay == 'asc')sortup @else sortdown @endif @else btn-default @endif" 
-            href="{{url($PriceUrl)}}"
-        >
+            href="{{url($PriceUrl)}}" title="點擊改變排序為@if( $CatSortWay == 'asc')價格由大到小@else價格由小到大@endif">
             <i class="fa fa-dollar"></i> 價格
         </a>
     </div>
@@ -67,18 +69,18 @@
     <!-- /.box-header -->
     <div class="box-body">
         @foreach( $Goods as $Goodk => $Good)
-        <a href="{{url('/show_goods/'.$Good['goods_id'])}}">
+        <a href="{{url('/show_goods/'.$Good['goods_id'])}}" title="查看商品:{{$Good['goods_name']}}詳細內容">
         <div class='col-md-3 col-sm-4 col-xs-6 show_goods_box'>
 
             <div class="thumbnail">
                 
-                <img src="https://***REMOVED***.com/***REMOVED***/{{$Good['goods_thumb']}}">
+                <img src="https://***REMOVED***.com/***REMOVED***/{{$Good['goods_thumb']}}" alt="{{ $Good['goods_name'] }},貨號:{{ $Good['goods_sn'] }},價格:{{ $Good['shop_price'] }}">
                 
                 <div class="caption">
                     <h4 class="goods_title">{{ $Good['goods_name'] }}</h4>
                     <p class='goods_sn'>貨號:{{ $Good['goods_sn'] }}</p>
                     <p class='goods_price'>價格:{{ $Good['shop_price'] }}</p>
-                    <p><a class="btn colorbtn add_to_cart" role="button" goods_id="{{$Good['goods_id']}}">立即購買</a></p>
+                    <p><a class="btn colorbtn add_to_cart" role="button" goods_id="{{$Good['goods_id']}}" title="將{{$Good['goods_name']}}加入購物車">立即購買</a></p>
                 </div>
             </div>                
             
