@@ -34,7 +34,20 @@
                         @if ($errors->has('sort'))
                         <label id="sort-error" class="form_invalid" for="sort">{{ $errors->first('sort') }}</label>
                         @endif                         
-                    </div>                    
+                    </div>
+
+                    <div class="form-group"> 
+                        <label for="url">banner連結</label>
+                        <input type="text" name="url" id="url" class="form-control">                           
+                    </div>                        
+
+                    <div class="form-group"> 
+                        <label for="des">banner描述</label>
+                        <input type="text" name="des" id="des" class="form-control" placeholder="確實填寫banner描述,有助於提升網站排名">
+                        @if ($errors->has('des'))
+                        <label id="des-error" class="form_invalid" for="des">{{ $errors->first('des') }}</label>
+                        @endif                            
+                    </div>              
 
                 </div>
               

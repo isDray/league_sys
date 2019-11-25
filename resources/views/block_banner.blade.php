@@ -23,13 +23,16 @@ $bannsers = Lib_block::banner();
             <div class="carousel-inner">
                 
                 @foreach( $bannsers as $bannserk => $bannser)
+                
                 <div class="item @if( $bannserk == 0) active @endif">
-                    <img src="{{url('/banner/'.$bannser['user_id'].'/'.$bannser['banner'])}}" alt="">
-
+                    <a href="{{$bannser['url']}}">
+                    <img src="{{url('/banner/'.$bannser['user_id'].'/'.$bannser['banner'])}}" alt="{{$bannser['des']}}">
+                    </a> 
                     <div class="carousel-caption">
                     
                     </div>
-                </div>                
+                </div>        
+                       
                 @endforeach
 
             </div>

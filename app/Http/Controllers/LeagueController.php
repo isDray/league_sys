@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Validator;
 use File;
 use App\Cus_lib\Lib_common;
 
+
 class LeagueController extends Controller
 {
     /*
@@ -545,7 +546,6 @@ class LeagueController extends Controller
 
 
 
-
     /*
     |--------------------------------------------------------------------------
     | banner 管理
@@ -608,21 +608,26 @@ class LeagueController extends Controller
         [
             'banner'     => 'required|mimes:jpeg,jpg,png',
             'sort'       => 'required|integer',
-
+            'des'        => 'required'
 
         ],
         [   'banner.required'=> 'banner圖片尚未選取',
             'banner.mimes'   => 'banner只接受 jpg 及 png 格式',
             'sort.integer'   => '排序只接受數字',
-            'sort.required'  => '排序為必填',            
+            'sort.required'  => '排序為必填',    
+            'des.required'   => 'banner描述為必填'
 
 
-        ])->validate();
-        
+        ]);
+
+        if ($validator->fails()) {
+            return back()->withErrors( $validator->errors() );
+        }
+
         $NowTime =  time() - date('Z');
 
 
-
+       
         DB::beginTransaction();
 
         try {
@@ -649,7 +654,9 @@ class LeagueController extends Controller
                     'banner'  => $NowTime.".".$request->banner->extension(),
                     'sort'    => $request->sort ,
                     'status'  => 1 ,
-                    'update_date'=>$NowTime
+                    'update_date'=>$NowTime,
+                    'des'     => $request->des ,
+                    'url'     => $request->url,                    
                 ]
             );
 
@@ -746,6 +753,7 @@ class LeagueController extends Controller
             'banner'     => 'nullable|mimes:jpeg,jpg,png',
             'sort'       => 'required|integer',
             'banner_id'  => 'required|exists:xyzs_league_banner,id',
+            'des'        => 'required',
 
 
         ],
@@ -755,9 +763,11 @@ class LeagueController extends Controller
             'sort.required'  => '排序為必填',
             'banner_id.required' => 'banner編號缺少',
             'banner_id.exists' => 'banner編號不存在',
-
+            'des.required'   => 'banner描述為必填'
         ]); 
         
+
+
         // 檢查banner 是否屬於加盟會員
         $BannerBelong = DB::table('xyzs_league_banner')->where('user_id',$LeagueId)->where('id',$request->banner_id)->first();
 
@@ -780,7 +790,9 @@ class LeagueController extends Controller
             $UpdateArr = [ 
                     'user_id' => $request->session()->get('user_id'),
                     'sort'    => $request->sort ,
-                    'update_date'=>$NowTime
+                    'update_date'=>$NowTime,
+                    'des'     => $request->des,
+                    'url'     => $request->url,
             ];
 
             // 先判斷是否有接收到新圖片
