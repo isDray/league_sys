@@ -645,3 +645,62 @@ label[class="form_invalid"]:after{
 .page_more_desc{
 	display: none;
 }
+
+/*
+| 麵包屑測試
+|
+|
+*/
+.breadcrumb_box {
+	width: 100%;
+    height: 30px;
+    display: inline-block;
+    margin-bottom: 10px;
+    white-space: nowrap;
+    overflow-x:scroll;
+}
+.breadcrumb_box::-webkit-scrollbar {
+    display: none;
+}
+.breadcrumb_box >a {
+    display: inline-block;
+}
+.breadcrumb_item{
+    float: left;
+	font-size: 16px;
+	line-height: 24px;
+	height: 24px;
+	display: inline-block;
+	color: white;
+/* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#545454+0,383838+100 */
+background: #545454; /* Old browsers */
+background: -moz-linear-gradient(left, #545454 0%, #383838 100%); /* FF3.6-15 */
+background: -webkit-linear-gradient(left, #545454 0%,#383838 100%); /* Chrome10-25,Safari5.1-6 */
+background: linear-gradient(to right, #545454 0%,#383838 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#545454', endColorstr='#383838',GradientType=1 ); /* IE6-9 */
+	padding-left: 10px;
+	padding-right: 10px;
+	position: relative;
+    width: 100%;
+
+}
+.breadcrumb_item:after{
+
+
+}
+.breadcrumb_arrow{
+    content: '';
+    display: inline-block;
+    top:0px;
+    height: 24px;
+    border-style: solid;
+    border-width: 12px 0 12px 6px;
+    border-color: #545454 transparent #545454 #383838;  
+}
+
+@media( max-width: 600px){
+    .breadcrumb_box{
+    	margin-bottom: 10px;
+    	width: 100%;
+    }
+}

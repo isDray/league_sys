@@ -49,11 +49,38 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#cb60b3', end
 }
 
 /* 標題相關 */
-.goods_title{
+.goods_title , .goods_sn , .goods_price{
 	color:#b1097f!important;
 }
 .caption > a > p {
 	color:#b1097f!important;
+}
+.goods_sn{
+	text-align: center;
+}
+.goods_title{
+	color: black!important;
+}
+.goods_price{
+	display: inline-block;
+	width: calc(50% - 2px);
+}
+.goods_add_btn{
+	text-align: right;
+    display: inline-block;
+    width: calc(50% - 2px);
+}
+@media screen and (max-width: 1439px){
+.goods_price{
+    display: block;
+    width: 100%;    
+    text-align: center;
+}
+.goods_add_btn{
+    display: block;
+    width: 100%;
+    text-align: center;    
+}	
 }
 /* 購物車按鈕 */
 .cart_btn.dropdown{

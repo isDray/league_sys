@@ -5,6 +5,7 @@
 @endsection
 
 @section('content_right')
+{!!$Breadcrum!!}
 <div class="box box-solid">
     
     <div class="box-header with-border">

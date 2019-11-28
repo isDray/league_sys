@@ -155,6 +155,10 @@
 
         <li><a href="{{url('/league_webset')}}"><i class="fa fa-fw fa-globe text-light-blue"></i> <span>網站設定</span></a></li>
         
+        <!-- 網站地圖 -->
+        <li><a href="{{url('/league_webset')}}"><i class="fa fa-fw fa-globe text-light-blue"></i> <span>網站地圖下載</span></a></li>
+        <!-- /網站地圖 -->
+
         <!-- 會員 -->
         <li class="header">會員管理</li>
         <li><a href="{{url('/league_member_list')}}"><i class="fa fa-fw fa-users text-light-blue"></i> <span>會員列表</span></a></li>

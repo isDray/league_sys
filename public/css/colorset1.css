@@ -34,7 +34,7 @@
 /* 按鈕相關 */
 .colorbtn , .colorbtn > a{
 	background-color: #ca195a!important;
-	border-color:#cd2b67!important;
+	border-color:#fff!important;
 	color:white!important;
 }
 .colorbtn:hover , .colorbtn:active{
@@ -43,13 +43,40 @@
 }
 
 /* 標題相關 */
-.goods_title{
-	color:#ca195a!important;
+.goods_title , .goods_sn , .goods_price{
+	color:#ca195a;
 }
 .caption > a > p {
+	/*color:#ca195a!important;*/
+}
+.goods_sn{
+	text-align: center;
 	color:#ca195a!important;
 }
-
+.goods_title{
+	color: black!important;
+}
+.goods_price{
+	display: inline-block;
+	width: calc(50% - 2px);
+}
+.goods_add_btn{
+	text-align: right;
+    display: inline-block;
+    width: calc(50% - 2px);
+}
+@media screen and (max-width: 1439px){
+.goods_price{
+    display: block;
+    width: 100%;    
+    text-align: center;
+}
+.goods_add_btn{
+    display: block;
+    width: 100%;
+    text-align: center;    
+}	
+}
 /* 購物車按鈕 */
 .cart_btn.dropdown{
 	background-color: #1c1c1c!important;

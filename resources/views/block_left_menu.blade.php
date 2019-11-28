@@ -92,10 +92,13 @@
 	color:#eeeeee;
 	font-family: "微軟正黑體";
 	font-weight: 900;
+    padding-top: 5px;
+    padding-bottom: 5px;
 }
 
 .block_leftmenu_childmenu .box-body{
-    background-color: rgba(44,44,44,1);
+    /*background-color: rgba(44,44,44,1);*/
+    background-color: #f2538e;
     position: absolute;
     right: calc( -100% + 60px );
     top:0px;
@@ -109,7 +112,7 @@
     padding: 0px;
 }
 .block_leftmenu_childmenu .box-body a li:hover{
-    background-color: #b1097f;
+    background-color: orange;
 }
 .left_menu_item_div:hover > .block_leftmenu_childmenu .box-body{
     display: inline-block;

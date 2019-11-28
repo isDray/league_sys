@@ -18,23 +18,25 @@ $hots = Lib_block::get_recommend('hot');
     <div class="box-body">
         
         @foreach( $hots as $hotk => $hot)
-        <a href="{{url('/show_goods/'.$hot['goods_id'])}}" title="查看商品:{{$hot['goods_name']}}詳細內容">
+        
         <div class='col-md-3 col-sm-4 col-xs-6 show_goods_box'>
 
             <div class="thumbnail">
-                
-                <img src="https://***REMOVED***.com/***REMOVED***/{{$hot['goods_thumb']}}" alt="{{ $hot['goods_name'] }},貨號:{{ $hot['goods_sn'] }},價格:{{ $hot['shop_price'] }}">
-                
+                <a href="{{url('/show_goods/'.$hot['goods_id'])}}" title="查看商品:{{$hot['goods_name']}}詳細內容">
+                <img lazysrc="https://***REMOVED***.com/***REMOVED***/{{$hot['goods_thumb']}}" data-holder-rendered="true" class="lazyload" alt="{{ $hot['goods_name'] }},貨號:{{ $hot['goods_sn'] }},價格:{{ $hot['shop_price'] }}">
+                </a>
                 <div class="caption">
-                    <h4 class="goods_title">{{ $hot['goods_name'] }}</h4>
                     <p class='goods_sn'>貨號:{{ $hot['goods_sn'] }}</p>
-                    <p class='goods_price'>價格:{{ $hot['shop_price'] }}</p>
-                    <p><a  class="btn colorbtn add_to_cart" role="button" goods_id="{{$hot['goods_id']}}" title="將{{ $hot['goods_name'] }}加入購物車">立即購買</a></p>
+                    <a href="{{url('/show_goods/'.$hot['goods_id'])}}" title="查看商品:{{$hot['goods_name']}}詳細內容">
+                    <h4 class="goods_title">{{ $hot['goods_name'] }}</h4></a>
+                    
+                    <p class='goods_price'><small>$</small>{{ $hot['shop_price'] }}</p>
+                    <p class='goods_add_btn'><a  class="btn colorbtn add_to_cart" role="button" goods_id="{{$hot['goods_id']}}" title="將{{ $hot['goods_name'] }}加入購物車">立即購買</a></p>
                 </div>
             </div>                
             
         </div>
-        </a>
+        
         @endforeach
 
     </div>

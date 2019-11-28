@@ -5,7 +5,7 @@
 @endsection
 
 @section('content_right')
-
+{!!$Breadcrum!!}
 @if ($errors->any())
 <div class="alert alert-danger alert-dismissible">
     

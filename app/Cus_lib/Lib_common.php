@@ -531,6 +531,157 @@ class Lib_common{
             return $total;
         }
     }
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | 網頁路徑連結產生器
+    |--------------------------------------------------------------------------
+    |
+    */
+    public static function _getBreadcrumb(){
+        
+        $breadcrumb = "<span class='breadcrumb_box'> <a href='".url('/')."' title='前往首頁' ><span class='breadcrumb_item'>首頁</span></a>";
+
+        $currentURl = parse_url( \Request::url() );
+        
+        $crumb2 = '';
+
+        if( array_key_exists('path', $currentURl) ){
+            
+            $crumb2 = explode('/', $currentURl['path'])[1];
+        
+        }
+        
+        // 依照url路徑的第一個值,去決定,導覽第二層要如何呈現
+        if( $crumb2 == 'category' ){
+
+            $categoryId = explode('/', $currentURl['path'])[2];
+
+            $categoryDatas = DB::table('xyzs_category')->where('cat_id',$categoryId)->first();
+            
+            if( $categoryDatas != NULL ){
+                // 如果有母類別就將母類別先寫進導覽中
+                if( $categoryDatas->parent_id != 0){
+
+                    $categoryMotherDatas = DB::table('xyzs_category')->where('cat_id',$categoryDatas->parent_id)->first();
+                
+                    if( $categoryMotherDatas != NULL){
+
+                        $categoryMotherName = $categoryMotherDatas->cat_name;
+
+                        $breadcrumb .= "<span class='breadcrumb_arrow'></span>";
+                        
+                        $breadcrumb .= "<a href='".url("/category/{$categoryDatas->parent_id}")."' title='前往商品分類:{$categoryMotherName}'><span class='breadcrumb_item'>{$categoryMotherName}</span></a>"; 
+
+                    }
+
+                }
+
+                $categoryName = $categoryDatas->cat_name;
+    
+                $breadcrumb .= "<span class='breadcrumb_arrow'></span>";
+    
+                $breadcrumb .= "<a href='".url("/category/{$categoryId}")."' title='前往商品分類:{$categoryName}'><span class='breadcrumb_item'>{$categoryName}</span></a>";                
+
+            }
+
+        }
+
+        if( $crumb2 == 'show_goods' ){
+
+            $goodsId = explode('/', $currentURl['path'])[2];
+
+            // 找出商品資料
+            $goodsDatas = DB::table('xyzs_goods')->where('goods_id',$goodsId)->first();
+            
+            // 如果有該商品的資料才呈現導覽
+            if( $goodsDatas != NULL ){
+                
+                $categoryDatas = DB::table('xyzs_category')->where('cat_id',$goodsDatas->cat_id)->first();
+            
+                if( $categoryDatas != NULL ){
+                    
+                    if( $categoryDatas->parent_id != 0){
+
+                        $categoryMotherDatas = DB::table('xyzs_category')->where('cat_id',$categoryDatas->parent_id)->first();
+                
+                        if( $categoryMotherDatas != NULL){
+
+                            $categoryMotherName = $categoryMotherDatas->cat_name;
+
+                            $breadcrumb .= "<span class='breadcrumb_arrow'></span>";
+                        
+                            $breadcrumb .= "<a href='".url("/category/{$categoryDatas->parent_id}")."' title='前往商品分類:{$categoryMotherName}'><span class='breadcrumb_item'>{$categoryMotherName}</span></a>"; 
+
+                        }
+          
+                    }                    
+                    
+                    $breadcrumb .= "<span class='breadcrumb_arrow'></span>";
+    
+                    $breadcrumb .= "<a href='".url("/category/{$categoryDatas->cat_id}")."' title='前往商品分類:{$categoryDatas->cat_name}'><span class='breadcrumb_item'>{$categoryDatas->cat_name}</span></a>";
+                }
+
+                $breadcrumb .= "<span class='breadcrumb_arrow'></span>";
+    
+                $breadcrumb .= "<a href='".url("/show_goods/{$goodsId}")."' title='前往查看商品:{$goodsDatas->goods_name}'><span class='breadcrumb_item'>{$goodsDatas->goods_name}</span></a>";   
+            }
+        }
+
+        if( $crumb2 == 'cart'){
+
+                $breadcrumb .= "<span class='breadcrumb_arrow'></span>";
+    
+                $breadcrumb .= "<a href='".url("/cart")."' title='前往察看購物車'><span class='breadcrumb_item'>購物車</span></a>";             
+        }
+
+        if( $crumb2 == 'checkout'){
+
+                $breadcrumb .= "<span class='breadcrumb_arrow'></span>";
+    
+                $breadcrumb .= "<a href='".url("/checkout")."' title='前往結帳'><span class='breadcrumb_item'>結帳頁面</span></a>";             
+        }
+        
+        if( $crumb2 == 'join_member'){
+
+                $breadcrumb .= "<span class='breadcrumb_arrow'></span>";
+    
+                $breadcrumb .= "<a href='".url("/join_member")."' title='加入會員'><span class='breadcrumb_item'>加入會員</span></a>";             
+        }        
+
+        if( $crumb2 == 'member_login'){
+
+                $breadcrumb .= "<span class='breadcrumb_arrow'></span>";
+    
+                $breadcrumb .= "<a href='".url("/member_login")."' title='會員登入'><span class='breadcrumb_item'>會員登入</span></a>";             
+        }      
+
+        if( $crumb2 == 'search'){
+                
+                if( array_key_exists('keyword', \Request::all()) ){
+                    
+                    $searchWord = \Request::all()['keyword'];
+
+                }else{
+
+                    $searchWord = urldecode( explode('/', $currentURl['path'])[2] );
+                }
+                //$searchWord = explode('/', $currentURl['path']);
+                
+                $breadcrumb .= "<span class='breadcrumb_arrow'></span>";
+    
+                $breadcrumb .= "<a href='".url("/search/{$searchWord}")."' title='商品搜尋-{$searchWord}'><span class='breadcrumb_item'>商品搜尋-{$searchWord}</span></a>";             
+        } 
+             
+        
+
+        $breadcrumb .= "</span>";
+
+        return $breadcrumb;
+    }
 }
 
 

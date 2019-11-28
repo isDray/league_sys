@@ -16,22 +16,33 @@ class LeagueWebController extends Controller
     |
     */
     public function index( Request $request ){
+  
+  //var_dump(\Request::fullUrl())      ;
+//dd($request::segments());
+        $indexUrl = explode('/', \Request::fullUrl());
         
-        $urlarr = explode('/',url()->previous());
-        
-
-        if( trim(end( $urlarr )) == 'over18' ){
+        if( end( $indexUrl) != 'index' ){
             
-            setcookie('over18',true,time()+86400);
+            $urlarr = explode('/',url()->previous());
+        
+        
+            if( trim(end( $urlarr )) == 'over18' ){
+            
+                setcookie('over18',true,time()+86400);
              
-        }else{
+            }else{
+        
             
-            if( !isset( $_COOKIE['over18'] )){
+                if( !isset( $_COOKIE['over18'] )){
 
-                return redirect('/over18');
-            }            
+                    return redirect('/over18');
+
+                }            
+            }
+
+        }else{
+            setcookie('over18',true,time()+86400);
         }
-    
 
 
 
@@ -64,8 +75,8 @@ class LeagueWebController extends Controller
         //$request->session()->forget('cart');
         
         return view('web_index', [ 'CenterBlocks' => $CenterBlocks ,
-                                   'title'        => '情趣用品-情趣睡衣-情趣商品-成人情趣道具-線上購買',
-                                   'keywords'     => '情趣用品,情趣睡衣,情趣睡衣',
+                                   'title'        => '情趣用品-飛機杯-跳蛋-按摩棒-情趣小物-線上購買',
+                                   'keywords'     => '情趣用品,電動飛機杯,仿真飛機杯,無線跳蛋,有線跳蛋,旋轉按摩棒,震動按摩棒,多段變頻按摩棒,情趣小怪獸,情趣小章魚,舌舔跳蛋',
                                    'description'  => '樣式最多的情趣用品線上購買的平台 , 精選跳蛋、變頻按摩棒、情趣睡衣、自慰飛機杯、情趣娃娃、潤滑液等多款情趣商品,想要找提升情趣的用品',
                                    'page_header'  => "情趣用品首頁-推薦商品-熱銷商品-新品上市-各式情趣用品分類,",
                                  ]);
@@ -109,7 +120,11 @@ class LeagueWebController extends Controller
         
         $LeagueId = $request->session()->get('league_id');
 
-        return view('over18');
+        return view('over18',[  'title'        => '情趣用品-情趣睡衣-情趣商品-成人情趣道具-線上購買',
+                                'keywords'     => '情趣用品,情趣睡衣,情趣睡衣,已滿18歲,18禁',
+                                'description'  => '確認18歲開始探索各式情趣用品 , 精選跳蛋、變頻按摩棒、情趣睡衣、自慰飛機杯、情趣娃娃、潤滑液等多款情趣商品, 等您來挖掘不一樣的成人情趣',
+                                'page_header'  => "確認您已滿18歲後,為您推薦各式情趣用品,讓您在眾多商品中找到最適合您的情趣小物",
+                            ]);
     }
     
 

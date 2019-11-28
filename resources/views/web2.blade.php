@@ -273,7 +273,7 @@
         <div class='col-md-5 col-md-offset-0 col-sm-8 col-sm-offset-2 col-xs-12' id='footer_right'>
             <div class='col-md-12 col-sm-12 col-xs-12' id="footer_right_center">
                 <div class="col-md-12 col-sm-12 col-xs-12"> 
-                    <img src="https://***REMOVED***.com/***REMOVED***/ecs_static/img/18.png" style='float:right'>                    
+                    <img lazysrc="https://***REMOVED***.com/***REMOVED***/ecs_static/img/18.png" style='float:right' class="lazyload">                    
                     <p id='footer_des'>
                         享愛網採全站情趣用品購物滿千免運，「包裝隱密」保護您的購物隱私，本購物網站支援－貨到付款－超商取貨－宅配到府，讓您購物輕鬆無負擔！本站提供數千種情趣用品批發、零售， 並有滿額贈品選擇，歡迎參觀選購
                     </p>
@@ -282,7 +282,7 @@
                 <div class="col-md-12 col-sm-12 col-xs-12" id='contact_box'>
                     <p><i class="fa fa-fw fa-headphones"></i>客服專線：(04)874-0413</p>
                     <p><i class="fa fa-fw fa-mobile-phone"></i>客服手機：0915-588-683</p>
-                    <p><i class="fa fa-fw fa-group"></i>客服Line ID： @enjoy-love</p>
+                    <p><i class="fa fa-fw fa-group"></i>客服Line ID： @***REMOVED***</p>
                     <p><i class="fa fa-fw fa-envelope-o"></i>聯絡信箱：mykk97956@yahoo.com.tw</p>
                 </div>
 
@@ -290,7 +290,7 @@
         </div>
 
         <div class='col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-12 text-center' id='footer_bottom' >
-            <img src="https://***REMOVED***.com/***REMOVED***/ecs_static/img/165_1160.png" style="max-width:100%;">
+            <img lazysrc="https://***REMOVED***.com/***REMOVED***/ecs_static/img/165_1160.png" style="max-width:100%;" class="lazyload">
         </div>
 
 
@@ -363,7 +363,7 @@
 <script src="{{url('/AdminLTE/dist/js/adminlte.min.js')}}"></script>
 <script src="{{url('/toastr-master/build/toastr.min.js')}}"></script>
 
-
+<script src="{{url('/js/lazyload.js')}}"></script>
 @yield('selfcss')
 
 @yield('selfjs')
@@ -374,6 +374,8 @@ $(function(){
     $(".rwd_search_btn").click(function(){
         $(".rwd_search_box").toggleClass( "active" );
     })
+
+    $("img.lazyload").lazyload();    
 })
 
 /*

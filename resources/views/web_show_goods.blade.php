@@ -15,12 +15,13 @@
 @endsection
 
 @section('content_right')
+{!!$Breadcrum!!}
 <div class="box box-solid">
     
-    <div class="box-header with-border">
+<!--     <div class="box-header with-border">
 
-        <h2 class="box-title show_goods_title">{{$GoodsData['goods_name']}}</h2>
-    </div>
+        <h1 class="box-title show_goods_title">{{$GoodsData['goods_name']}}</h1>
+    </div> -->
     
     <!-- /.box-header -->
     <div class="box-body">
@@ -34,6 +35,8 @@
     	</div>
         
         <div class="col-md-5 col-sm-5 col-xs-12 in_goods_info">    	
+            <h1 class="box-title show_goods_title">{{$GoodsData['goods_name']}}</h1>
+
             <h4>商品編號:{{ $GoodsData['goods_sn'] }}</h4>
             <h4>商品售價: <span style='color:ff4d4d;'>{{ round($GoodsData['shop_price']) }}</span></h4>
             <p><label for="in_goods_num">數量:</label>
@@ -70,6 +73,7 @@
             <img
                     
          src="https://***REMOVED***.com/***REMOVED***/{{$goodsImg['img_original']}}" class="lazyload" alt="{{$GoodsData['goods_name']}}-商品詳細圖-{{$goodsImgk+1}}"/>
+         <br>
             
          
         @endforeach
