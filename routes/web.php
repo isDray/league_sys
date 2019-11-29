@@ -238,6 +238,7 @@ Route::group(['middleware' => ['CheckLeague']], function () {
     // 搜尋頁面
     Route::match(['get', 'post'],'/search/{keyword?}/{cat_sort_item?}/{cat_sort_way?}/{now_page?}/{per_page?}','SearchController@search');
     
+    Route::get('/new_arrival/{now_page?}/{per_page?}','SearchController@new');
 
     // 加入購物車
     Route::post('/add_to_cart','CartController@add_to_cart');

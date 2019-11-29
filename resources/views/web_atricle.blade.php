@@ -22,7 +22,7 @@
     <div class="box-header with-border">
         <!-- <i class="fa fa-text-width"></i> -->
 
-        <h3 class="box-title">{{$article_title}}</h3>
+        <h1 class="box-title">{{$article_title}}</h1>
     </div>
     
     <!-- /.box-header -->

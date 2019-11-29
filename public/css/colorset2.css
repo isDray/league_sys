@@ -90,7 +90,10 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#cb60b3', end
 .num_in_cart{
 	background-color: #ff92ca;
 }
-
+/*子選單*/
+#sub_menu{
+	background-color: #7d055a!important;
+}
 /*
 #menu_box{
     margin-top: 40px;

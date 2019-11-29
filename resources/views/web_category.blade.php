@@ -21,41 +21,12 @@
 @section('content_right')
 {!!$Breadcrum!!}
 <!-- 設定區塊 -->
-<!-- <div class="box box-solid">
-    
-    <div class="box-header with-border">
-        
-        <i class="fa fa-fw fa-sort-amount-asc"></i>
-
-        <h3 class="box-title">排序</h3>
-    </div>
-    
-
-    <div class="box-body">
-        
-        <a class="btn btn-app @if( $CatSortItem == 'add_time')bg-yellow  @if( $CatSortWay == 'asc')sortup @else sortdown @endif @endif" 
-            href="{{url($AddTimeURL)}}"
-        >
-            <i class="fa fa-calendar-times-o"></i> 上架時間 
-        </a>
-
-        <a class="btn btn-app @if( $CatSortItem == 'shop_price')bg-yellow  @if( $CatSortWay == 'asc')sortup @else sortdown @endif @endif" 
-            href="{{url($PriceUrl)}}"
-        >
-            <i class="fa fa-dollar"></i> 價格
-        </a>
-
-    </div>
-
-
-</div> -->
-<!-- /設定區塊 -->
 
 <!-- 呈現區塊 -->
 <div class="box box-solid">
     
     <div class="box-header with-border">
-        
+        @if( !isset($new_arrival) )
         <a class="btn @if( $CatSortItem == 'add_time')bg-yellow  @if( $CatSortWay == 'asc')sortup @else sortdown @endif @else btn-default @endif" 
             href="{{url($AddTimeURL)}}" title="點擊改變排序為@if( $CatSortWay == 'asc')時間由大到小@else時間由小到大@endif">
             <i class="fa fa-calendar-times-o"></i> 上架時間 
@@ -65,6 +36,7 @@
             href="{{url($PriceUrl)}}" title="點擊改變排序為@if( $CatSortWay == 'asc')價格由大到小@else價格由小到大@endif">
             <i class="fa fa-dollar"></i> 價格
         </a>
+        @endif
     </div>
     
     <!-- /.box-header -->

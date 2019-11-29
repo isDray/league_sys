@@ -658,6 +658,14 @@ class Lib_common{
     
                 $breadcrumb .= "<a href='".url("/member_login")."' title='會員登入'><span class='breadcrumb_item'>會員登入</span></a>";             
         }      
+        
+        if( $crumb2 == 'new_arrival'){
+
+                $breadcrumb .= "<span class='breadcrumb_arrow'></span>";
+    
+                $breadcrumb .= "<a href='".url("/new_arrival")."' title='查看最新情趣商品'><span class='breadcrumb_item'>最新商品</span></a>";           
+
+        }
 
         if( $crumb2 == 'search'){
                 
@@ -670,6 +678,7 @@ class Lib_common{
                     $searchWord = urldecode( explode('/', $currentURl['path'])[2] );
                 }
                 //$searchWord = explode('/', $currentURl['path']);
+                //var_dump($searchWord);
                 
                 $breadcrumb .= "<span class='breadcrumb_arrow'></span>";
     

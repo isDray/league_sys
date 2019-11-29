@@ -32,10 +32,13 @@
 	min-width: 180px;
 }
 #content_left{
-	margin-top: 82px;
+	margin-top: 20px;
 }
 #content_right{
-	margin-top: 82px;
+	margin-top: 20px;
+}
+.web_nav1{
+	height: 60px;
 }
 .web_nav1 ul:not(.dropdown-menu){
 	display: inline-block;
@@ -703,4 +706,30 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#545454', end
     	margin-bottom: 10px;
     	width: 100%;
     }
+}
+/*
+| 非下拉選單menu css 
+|
+*/
+#sub_menu{
+	height: 40px;
+	margin-top: 60px;
+	background-color: #444444;
+}
+#sub_menu_main{
+	height: 40px;
+	border-bottom-right-radius: 20px;
+	border-bottom-left-radius: 20px;
+}
+#sub_menu_main > a {
+	font-family: '微軟正黑體';
+	color:white;
+	line-height: 40px;
+	font-size: 16px;	
+	font-weight: 900;
+}
+.sub_menu_item:hover{
+    background-color: white;
+    color: black;
+    transition: 0.1s linear;
 }

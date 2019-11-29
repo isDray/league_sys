@@ -108,4 +108,54 @@ class SearchController extends Controller
 
                                     ]);              
     }
+
+    /*
+    |--------------------------------------------------------------------------
+    | 最新商品
+    |--------------------------------------------------------------------------
+    |
+    */
+    public function new( Request $request , $now_page = 1 , $per_page = 20){
+        
+        $CatSortItem = 'add_time';
+        $CatSortWay  = 'desc';
+
+        $StartRow = ( $now_page - 1 ) * $per_page;
+
+        $CondQuery = DB::table('xyzs_goods AS g')
+                   ->select("g.*",DB::raw( "ROUND(shop_price) as shop_price" ))
+                   ->where('g.is_on_sale','1')
+                   ->where('g.goods_number','>',0)
+                   ->groupBy('g.goods_id');
+
+        $CondQuery->orderBy($CatSortItem,$CatSortWay);
+        
+        $TotalRow = $CondQuery->get();                   
+        
+        $TotalRow = count( $TotalRow );    
+
+        // 產生分頁
+        $target = "/new_arrival/";
+
+        $Pages = Lib_common::create_page(  $target , $TotalRow , $now_page , $per_page , 5 );
+
+        $CondQuery->skip( $StartRow )->take( $per_page );
+
+        $Goods = $CondQuery->get(); 
+
+        $Goods = json_decode( $Goods , true );
+        
+        $yearMonth = date('Y年n月');
+
+        return view('web_category',[ 'Goods' => $Goods , 
+                                     'Pages' => $Pages ,
+                                     'CatSortItem' => $CatSortItem , 
+                                     'CatSortWay'  => $CatSortWay  ,
+                                     'title'        => "最新情趣用品推薦-{$yearMonth}",
+                                     'keywords'     => "{$yearMonth}最新情趣用品,最新上市,新發售情趣用品,第一手情趣用品資訊",
+                                     'description'  => "最新最刺激的情趣用品清單,讓您直接掌握所有最新上市的情趣用品",
+                                     'page_header'  => "最新情趣商品推薦-{$yearMonth}",   
+                                     'new_arrival'  => true,
+                                    ]);             
+    }
 }
