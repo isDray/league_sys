@@ -276,8 +276,23 @@ class LeagueWebController extends Controller
         $orderDatas = (array)$order;
         
         $orderDatas['order_status'] = $osArr[ $orderDatas['order_status'] ];
+        
+        $orderDatas['shipping_statusN2'] = $orderDatas['shipping_status'];
 
         $orderDatas['shipping_status'] = $ssArr[ $orderDatas['shipping_status'] ];
+
+        $orderDatas['add_time'] = date( 'Y-m-d H:i:s' , $orderDatas['add_time'] - date('Z') );
+
+        $orderDatas['shipping_time'] = date( 'Y-m-d H:i:s' , $orderDatas['shipping_time'] - date('Z') );
+        
+        $orderDatas['out_date'] = date( 'Y-m-d H:i:s' , $orderDatas['out_date'] - date('Z') );
+        
+        $orderDatas['st_date'] = date( 'Y-m-d H:i:s' , $orderDatas['st_date'] - date('Z') );
+        
+        $orderDatas['back_date'] = date( 'Y-m-d H:i:s' , $orderDatas['back_date'] - date('Z') );
+
+        $orderDatas['tk_date'] = date( 'Y-m-d H:i:s' , $orderDatas['tk_date'] - date('Z') );
+
         /**
          * 取出訂單商品資料
          **/
@@ -295,7 +310,7 @@ class LeagueWebController extends Controller
                 $orderGoodsDatas = json_decode($order_goods,true);
                 
                 foreach ($orderGoodsDatas as $orderGoodsDatak => $orderGoodsData) {
-                    
+
                     $orderGoodsDatas[ $orderGoodsDatak ]['goods_price'] = floor( $orderGoodsData['goods_price'] );
 
                 }

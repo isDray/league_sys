@@ -19,6 +19,145 @@
 @endif
     
 @if( $type == 1)
+<!-------------------------->
+    @if( $orderDatas['shipping_id'] == 17 || $orderDatas['shipping_id'] == 18 || $orderDatas['shipping_id'] == 19 )
+    <div class="table-responsive">
+        @if( $orderDatas['add_time'] )
+        <div class='fourBox fourBoxActive fourBoxActiveF col-md-2 col-md-offset-1 col-sm-12 col-xs-12 text-center' style='height:100%;'>
+        @else
+        <div class='fourBox col-md-2 col-md-offset-1 col-sm-12 col-xs-12 text-center' style='height:100%;'>
+        @endif
+            <div class='outBall'>
+                <div class='inBall'>
+                </div>
+            </div>  
+
+            <span class='_m' align='left'>
+            訂單成立
+            <br>
+            {{ $orderDatas['add_time'] }}
+            </span>
+        </div>
+
+        @if( $orderDatas['shipping_statusN2'] == 1 || $orderDatas['shipping_statusN2'] == 2 || $orderDatas['shipping_statusN2'] == 4 || $orderDatas['shipping_statusN2'] == 6)
+        <div class='fourBox fourBoxActive col-md-2 col-sm-12 col-xs-12 text-center' style='height:100%;'>
+        @else
+        <div class='fourBox col-md-2 col-sm-12 col-xs-12 text-center' style='height:100%;'>
+        @endif
+            <div class='outBall'>
+                <div class='inBall'>
+                </div>
+            </div>  
+
+            <span class='_m' align='left'>
+            已出貨
+            <br>
+            {{ $orderDatas['shipping_time'] }}
+            </span>
+        </div>
+
+
+        @if ( $orderDatas['out_date'] || $orderDatas['st_date'] )
+        <div class='fourBox fourBoxActive col-md-2 col-sm-12 col-xs-12 text-center' style='height:100%;'>
+        @else
+        <div class='fourBox col-md-2 col-sm-12 col-xs-12 text-center' style='height:100%;'>
+        @endif
+            <div class='outBall'>
+                <div class='inBall'>
+                </div>
+            </div>  
+
+            <span class='_m' align='left'>
+            物流處理中  
+            <br>
+            {{ $orderDatas['out_date'] }}                
+            </span>            
+        </div>      
+        @if( $orderDatas['st_date'] || $orderDatas['tk_date'] )
+        <div class='fourBox fourBoxActive col-md-2 col-sm-12 col-xs-12 text-center' style='height:100%;'>
+        @else
+        <div class='fourBox col-md-2 col-sm-12 col-xs-12 text-center' style='height:100%;'>
+        @endif
+            <div class='outBall'>
+                <div class='inBall'>
+                </div>
+            </div>  
+
+            <span class='_m' align='left'>
+            已送達門市  
+            <br>
+            {{ $orderDatas['st_date'] }}                 
+            </span>            
+        </div>
+
+        @if( $orderDatas['tk_date'] || $orderDatas['back_date'] )
+        <div class='fourBox fourBoxActive col-md-2 col-sm-12 col-xs-12 text-center' style='height:100%;'>
+        @else
+        <div class='fourBox col-md-2 col-sm-12 col-xs-12 text-center' style='height:100%;'>
+        @endif
+            <div class='outBall'>
+                <div class='inBall'>
+                </div>
+            </div> 
+
+            <span class='_m' align='left'>
+            @if( $orderDatas['back_date'] )
+            未取退貨  
+            @else
+            已取貨
+            @endif  
+            <br>
+            @if($orderDatas['back_date'])
+                {{ $orderDatas['back_date'] }}
+            @else
+                {{ $orderDatas['tk_date'] }}
+            @endif
+            </span>             
+        </div>                              
+    </div>
+    <div class='table-responsive _w'>
+        
+        <div class='col-md-2 col-md-offset-1 col-sm-3 col-xs-3 text-center' style='height:100%;'>
+
+            訂單成立
+            <br>
+            {{ $orderDatas['add_time'] }}
+
+        </div>
+        <div class='col-md-2 col-sm-3 col-xs-3 text-center' style='height:100%;'>
+
+            已出貨  
+            <br>
+            {{ $orderDatas['shipping_time'] }}
+        </div>        
+        <div class='col-md-2 col-sm-3 col-xs-3 text-center' style='height:100%;'>
+
+            物流處理中  
+            <br>
+            {{ $orderDatas['out_date'] }}
+        </div>
+        <div class='col-md-2 col-sm-3 col-xs-3 text-center' style='height:100%;'>
+          
+            已送達門市  
+            <br>
+            {{ $orderDatas['st_date'] }}              
+        </div>
+        <div class='col-md-2 col-sm-3 col-xs-3 text-center' style='height:100%;'>
+            @if( $orderDatas['back_date'] )
+            未取退貨  
+            @else
+            已取貨
+            @endif  
+            <br>
+            @if( $orderDatas['back_date'] )
+                {{ $orderDatas['back_date'] }}
+            @else
+                {{ $orderDatas['tk_date'] }}
+            @endif             
+        </div>                                              
+    </div>    
+    @endif
+<!-------------------------->
 <div class="table-responsive">
 <p class="bg-primary order_query_title">訂單狀態</p>
 <table class="table table-hover">
@@ -76,4 +215,106 @@
     font-family: '微軟正黑體';
 }
 </style>
+
+    <style type="text/css">
+    @media (max-width: 991px) {
+        .outBall{
+            width: 30px;
+            height: 30px;
+            border-radius: 20px;
+            background-color: #969696;
+            float:left;
+            position: relative;
+        }
+        .inBall{
+            width: 20px;
+            height: 20px;
+            border-radius: 20px;
+            background-color: #eaeaf1;
+            margin: 0 auto;  
+            left:5px;
+            top:5px;
+            position: absolute;
+
+        }
+        .fourBox{
+            height: 80px!important;
+            z-index: 2;
+            position: relative;
+
+        }
+        .fourBoxActive > .outBall > .inBall{
+            background-color: #ff4899;
+            z-index: 4;
+        }
+        .fourBoxActive:after{
+            display: block;
+            content: " ";
+            width: 6px;
+            height: 80px;
+            background-color: #ff4899;
+            position: absolute;
+            left:27px;
+            top:-60px;
+            z-index: 1;
+
+        }
+        .fourBoxActiveF:after{
+            display: none!important;
+        }
+        ._m{
+            float: left;
+            margin-left: 20px;
+        }
+        ._w{
+            display: none!important;
+        }
+    }
+    @media (min-width: 992px ){
+        .outBall{
+            width: 40px;
+            height: 40px;
+            border-radius: 20px;
+            background-color: #969696;
+            margin: 0 auto;
+        }
+        .inBall{
+            width: 30px;
+            height: 30px;
+            border-radius: 20px;
+            background-color: #eaeaf1;
+            margin: 0 auto;  
+            left:calc(50% - 15px);
+            top:5px;
+            position: absolute;
+
+        }
+        .fourBox{
+            z-index: 2;
+
+        }
+        .fourBoxActive > .outBall > .inBall{
+            background-color: #ff4899;
+            z-index: 4;
+        }
+        .fourBoxActive:after{
+            display: block;
+            content: "";
+            width: 100%;
+            height: 10px;
+            background-color: #ff4899;
+            position: absolute;
+            left: -50%;
+            top:calc(50% - 5px);
+            z-index: 1;
+
+        }
+        .fourBoxActiveF:after{
+            display: none!important;
+        }
+        ._m{
+            display: none!important;
+        }
+    }
+    </style>
 @endif
