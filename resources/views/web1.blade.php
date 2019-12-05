@@ -245,7 +245,7 @@
             <a href="{{url('/register')}}">
                 <span class="col-md-3 col-sm-3 col-xs-0 text-center sub_menu_item">批發辦法</span>
             </a>
-            <a href="{{url('/')}}">
+            <a href="{{url('/check_order')}}">
                 <span class="col-md-3 col-sm-3 col-xs-0 text-center sub_menu_item">訂單查詢</span>
             </a>            
             <a href="{{url('/article/49')}}">

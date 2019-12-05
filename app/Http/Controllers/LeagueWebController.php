@@ -178,5 +178,142 @@ class LeagueWebController extends Controller
         
         
     }
+    
 
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | 訂單查詢介面
+    |--------------------------------------------------------------------------
+    |
+    */
+    public function check_order( Request $request ){
+
+        //$LeagueId = $request->session()->get('league_id');
+
+        return view('league_check_order',[ 'title'        => '訂單查詢',
+                                    'keywords'     => '訂單查詢,付費狀態查詢,物流狀態查詢,到貨查詢',
+                                    'description'  => '查詢指定訂單編號之訂單狀態,追蹤情趣用品訂單是是否依照確認訂單,理貨,配送,通知取貨等流程執行',
+                                    'page_header'  => "訂單查詢",
+        ]);        
+
+    }
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | 訂單查詢實作
+    |--------------------------------------------------------------------------
+    |
+    */
+    public function check_order_act( Request $request ){
+        
+        /**
+         * 避免快速查詢
+         **/
+        if ( $request->session()->has('last_order_query') ) 
+        {
+
+            if( time() - $request->session()->get('last_order_query') <= 10)
+            {
+                
+                $html = view('league_check_order_res', ['type'=>0 , 'msg'=>'查詢頻率過高 , 請稍後再查詢'])->render();
+
+                return json_encode( $html );
+            }
+        }
+
+        $request->session()->put('last_order_query', time() );
+        
+        /**
+         * 驗證查詢的號碼
+         *
+         **/
+        if( empty( $_POST['order_sn'] ) ){
+
+            $html = view('league_check_order_res', ['type'=>0 , 'msg'=>'請填寫要查詢的訂單編號'])->render();
+
+            return json_encode( $html );            
+        }
+
+        if( !preg_match("/^\d{13}$/", $_POST['order_sn'])) {
+
+            $html = view('league_check_order_res', ['type'=>0 , 'msg'=>'訂單編號格式錯誤'])->render();
+
+            return json_encode( $html );             
+        }
+
+        $osArr = [ 0 => '未確認',
+                   1 => '已確認',
+                   2 => '已取消',
+                   3 => '無效',
+                   4 => '退貨',
+                   5 => '已出貨'
+                 ];
+
+        $ssArr = [ 0 => '未出貨',
+                   1 => '已出貨',
+                   2 => '已收貨',
+                   3 => '備貨中',
+                   4 => '已出貨',
+                   5 => '出貨中'
+                 ];
+
+        
+        /**
+         * 取出訂單及出貨單資料
+         **/
+        $order = DB::table('xyzs_order_info as o')
+               ->leftJoin('xyzs_delivery_order as d', 'o.order_id', '=', 'd.order_id')
+               ->where('o.order_sn',$request->order_sn)
+               ->select('o.order_id' , 'o.order_sn' ,  'o.order_status' , 'o.shipping_status', 'o.pay_status', 'o.postscript' , 'o.add_time' , 'o.shipping_time' , 'o.shipping_id' , 
+                         'o.invoice_no' , 'o.user_id' , 'o.goods_amount' , 'o.shipping_fee' , 'o.order_amount' , 'd.out_date' , 'd.st_date' , 'd.tk_date' , 'd.back_date')
+               ->first();
+        
+        $orderDatas = (array)$order;
+        
+        $orderDatas['order_status'] = $osArr[ $orderDatas['order_status'] ];
+
+        $orderDatas['shipping_status'] = $ssArr[ $orderDatas['shipping_status'] ];
+        /**
+         * 取出訂單商品資料
+         **/
+        if( $order != NULL ){
+
+            // 如果訂單有資料 , 接著將商品也抓出來
+            $order_goods = DB::table('xyzs_order_goods as og')
+                           ->leftJoin('xyzs_goods as g', 'g.goods_id', '=', 'og.goods_id')
+                           ->where('og.order_id', $order->order_id )
+                           ->select('og.goods_name','og.goods_number','og.goods_price','og.goods_sn','g.goods_thumb')
+                           ->get();
+
+            if( $order_goods != NULL ){
+                 
+                $orderGoodsDatas = json_decode($order_goods,true);
+                
+                foreach ($orderGoodsDatas as $orderGoodsDatak => $orderGoodsData) {
+                    
+                    $orderGoodsDatas[ $orderGoodsDatak ]['goods_price'] = floor( $orderGoodsData['goods_price'] );
+
+                }
+
+
+                $html = view('league_check_order_res', ['type'=>1 ,
+                                                        'orderDatas' => $orderDatas,
+                                                        'orderGoodsDatas' =>$orderGoodsDatas,
+                                                       ])->render();
+
+                return json_encode( $html );
+                //return  json_encode( [ "res"=>true, "msg"=>(array)$order_goods ] );
+
+            }
+
+            //return json_encode( [ "res"=>true, "msg"=>(array)$order ] );
+
+        }
+
+    }
 }

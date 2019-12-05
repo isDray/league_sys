@@ -231,6 +231,25 @@
         </div> -->
         <!-- /購物車 -->
     </div>
+
+    <div class='col-md-12 col-sm-12 col-xs-12 over_m' id="sub_menu">
+        <div class='col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1 col-xs-12 over_m' id='sub_menu_main'>
+            
+            <a href="{{url('/new_arrival')}}">
+                <span class="col-md-3 col-sm-3 col-xs-0 text-center sub_menu_item">最新商品</span>
+            </a>
+            <a href="{{url('/register')}}">
+                <span class="col-md-3 col-sm-3 col-xs-0 text-center sub_menu_item">批發辦法</span>
+            </a>
+            <a href="{{url('/check_order')}}">
+                <span class="col-md-3 col-sm-3 col-xs-0 text-center sub_menu_item">訂單查詢</span>
+            </a>            
+            <a href="{{url('/article/49')}}">
+                <span class="col-md-3 col-sm-3 col-xs-0 text-center sub_menu_item">反詐騙宣導</span>
+            </a>            
+        </div>
+    </div>
+        
     <div class='col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-12' id="content_right">
         
         @yield('content_right')

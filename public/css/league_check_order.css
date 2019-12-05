@@ -1,0 +1,23 @@
+#check_formbox{
+	margin-top: 40px;
+    width:30%;
+    margin:0 auto;
+}
+#check_formbox > form > button{
+	width: 80px;
+}
+#check_formbox > form > input{
+	width: calc(100% - 80px);
+	float: left;
+	display: inline-block!important;
+}
+@media( max-width: 992px){
+	#check_formbox{
+		width: 50%;
+	}
+}
+@media( max-width: 768px){
+	#check_formbox{
+		width: 90%;
+	}
+}
