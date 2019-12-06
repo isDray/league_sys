@@ -16,9 +16,7 @@ class LeagueWebController extends Controller
     |
     */
     public function index( Request $request ){
-  
-  //var_dump(\Request::fullUrl())      ;
-//dd($request::segments());
+        /*
         $indexUrl = explode('/', \Request::fullUrl());
         
         if( end( $indexUrl) != 'index' ){
@@ -41,9 +39,10 @@ class LeagueWebController extends Controller
             }
 
         }else{
+
             setcookie('over18',true,time()+86400);
         }
-
+        */
 
 
         $LeagueId = $request->session()->get('league_id');

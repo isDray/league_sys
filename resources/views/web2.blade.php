@@ -45,7 +45,17 @@
 </head>
 
 <body class="" style="background-color:{{$LeagueData['back_color']}};">
-
+@if( $over18 == false )
+<div id='over18'>
+    <table id='table18'>
+        <tr>
+            <td align="right" id='over_no'><img src="{{url('over18_pic/0/ml.png')}}" alt="未滿18歲,離開本站"></td>
+            <td id='over_yes'><img src="{{url('over18_pic/0/mr.png')}}" alt="已滿18歲開始探索情趣用品"></td>
+        </tr>
+    </table>
+      
+</div>
+@endif
 
 <div class='container-fluid'>
 
@@ -576,6 +586,22 @@ $('body').on('click', '.rmbtn', function() {
 $(document).on('click', '.dropdown-menu', function (e) {
     e.stopPropagation();
 });
+
+@if( $over18 == false )
+$("#over_no").click(function(){
+
+    window.location.href = "https://google.com";
+});
+
+$("#over_yes").click(function(){
+    var ms = new Date().getTime() + 86400000;
+    var exd = new Date(ms);
+    document.cookie = "over18=true; expires="+ exd;
+ 
+    //console.log (new Date("2012-02-29"));
+    $("#over18").hide();
+});
+@endif
 </script>
 </body>
 </html>
