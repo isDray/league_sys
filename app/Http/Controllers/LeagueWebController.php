@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Cus_lib\Lib_bonus;
 use DB;
-
+use App\Cus_lib\hctTool;
 
 class LeagueWebController extends Controller
 {
@@ -292,6 +292,108 @@ class LeagueWebController extends Controller
         $orderDatas['back_date'] = date( 'Y-m-d H:i:s' , $orderDatas['back_date'] - date('Z') );
 
         $orderDatas['tk_date'] = date( 'Y-m-d H:i:s' , $orderDatas['tk_date'] - date('Z') );
+        
+        /**
+         * 如果是特定配送方式 , 就嘗試去撈取物流狀態
+         ***********************************************************/
+        if( in_array($orderDatas['shipping_id'], ['14','20','21','22','32']) && !empty($orderDatas['invoice_no']) ){
+            
+
+            $text=file_get_contents("https://www.t-cat.com.tw/Inquire/TraceDetail.aspx?BillID={$orderDatas['invoice_no']}&ReturnUrl=Trace.aspx");
+        
+            $xml = new \domDocument('1.0', 'utf-8'); 
+ 
+            $xml->validateOnParse = true;
+            
+            libxml_use_internal_errors(true);
+
+            $xml->loadHTML($text);
+
+            $xpath = new \DOMXPath($xml);
+        
+            $table =$xpath->query("//*[@class='tablelist']")->item(0);
+
+            $tcats = $table->getElementsByTagName("tr");
+
+            $tcatFlow = [];
+
+            foreach ($tcats as $tcatk => $tcat) {
+            
+                $cells = $tcat -> getElementsByTagName('td');
+            
+                if( $tcatk != 0 ){
+                
+                    $tmpFlow = [];
+        
+                if( $tcatk == 1){
+                    
+                    foreach ($cells as $cellk=>$cell) {
+        
+                        if( $cellk == 1 ){
+        
+                            $tmpFlow['status'] = trim($cell->nodeValue);
+                        }
+                        if( $cellk == 2 ){
+                            
+                            $tmpFlow['date']   = trim($cell->nodeValue);
+                        }
+                        if( $cellk == 3 ){
+                            
+                            $tmpFlow['station'] = trim($cell->nodeValue);
+                        }                            
+        
+                    }
+        
+                    array_push($tcatFlow, $tmpFlow);
+        
+                }else{
+        
+                    foreach ($cells as $cellk=>$cell) {
+        
+                        if( $cellk == 0 ){
+        
+                            $tmpFlow['status'] = trim($cell->nodeValue);
+                        }
+                        if( $cellk == 1 ){
+                            
+                            $tmpFlow['date']   = trim($cell->nodeValue);
+                        }
+                        if( $cellk == 2 ){
+                            
+                            $tmpFlow['station'] = trim($cell->nodeValue);
+                        }                            
+        
+                    }
+        
+                    array_push($tcatFlow, $tmpFlow);
+                }
+                }
+            }
+
+            if( count( $tcatFlow ) > 0 ){
+            
+                $orderDatas['tcatflow'] = $tcatFlow;
+            }
+        }         
+        
+        /**
+         * 如果是新竹物流 ,
+         **/
+        if( ($orderDatas['shipping_id'] == '23' || $orderDatas['shipping_id'] == '24') &&  !empty($orderDatas['invoice_no']) ){
+            
+            $HCT = new hctTool(1);
+
+            $datas = $HCT->orderQuery([ $orderDatas['invoice_no'] ]);
+            
+            if( $datas != false ){
+            
+                $orderDatas['hctflow'] = $datas[$orderDatas['invoice_no']]['@datas'];
+            }
+            
+            //var_dump( $orderDatas );
+            
+        }
+
 
         /**
          * 取出訂單商品資料

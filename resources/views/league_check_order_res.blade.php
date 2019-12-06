@@ -158,9 +158,60 @@
     </div>    
     @endif
 <!-------------------------->
+
+<!-- 宅急便狀態 -->
+@if( isset($orderDatas['tcatflow']) )
 <div class="table-responsive">
-<p class="bg-primary order_query_title">訂單狀態</p>
+
+<table class="table table-hover">    
+    <tr>
+        <td colspan='3' class='title_td'><p class="bg-primary order_query_title">宅急便配送狀態</p></td>
+    </tr>
+    <tr>
+        <th>時間</th>
+        <th>流程</th>
+        <th>負責站所</th>
+    </tr>
+    
+    @foreach ($orderDatas['tcatflow'] as $tcatflow )
+    <tr>
+        <td>{{ $tcatflow['date'] }}</td>
+        <td>{{ $tcatflow['status'] }}</td>
+        <td>{{ $tcatflow['station'] }}</td>
+    </tr>
+    @endforeach
+</table>    
+</div>
+@endif
+<!-- /宅急便狀態 -->
+
+<!-- 新竹貨運狀態 -->
+@if( isset($orderDatas['hctflow'] ) )
+<div class="table-responsive">
 <table class="table table-hover">
+    <tr>
+        <td colspan='2' class='title_td'><p class="bg-primary order_query_title">新竹物流配送狀態</p></td>
+    </tr>
+    <tr>
+        <th>時間</th>
+        <th>流程</th>
+    </tr>
+    
+    @foreach( $orderDatas['hctflow'] as $hctflow )
+        <tr>
+        <td>{{ $hctflow['time2'] }}</td>
+        <td>{{ $hctflow['flow'] }}</td>
+        </tr>
+    @endforeach
+    </table>
+@endif
+<!-- 新竹貨運狀態 -->
+<div class="table-responsive">
+
+<table class="table table-hover">
+<tr>
+    <td colspan='2' class='title_td'><p class="bg-primary order_query_title">訂單狀態</p></td>
+</tr>
 <tr>
     <td>訂單編號</td>
     <td>{{$orderDatas['order_sn']}}</td>
@@ -178,8 +229,11 @@
 
 
 <div class="table-responsive">
-<p class="bg-primary order_query_title">商品列表</p>
+
 <table class="table table-hover">
+<tr>
+    <td colspan='5' class='title_td'><p class="bg-primary order_query_title">商品列表</p></td>
+</tr>
 <tr>
     <td>商品編號</td>
     <td>商品名稱</td>
@@ -206,13 +260,32 @@
     </td>
 </tr>
 @endforeach
+<tr>
+    <td colspan='5'>商品總價:{{ floor($orderDatas['goods_amount']) }} + 運費: {{ floor($orderDatas['shipping_fee']) }}<br>應付金額 {{ ( $orderDatas['goods_amount'] + $orderDatas['shipping_fee'] )}}</td>
+</tr>
 </table>
+
 </div>
 <style type="text/css">
 .order_query_title{
     font-size: 20px;
     font-weight: 900;
     font-family: '微軟正黑體';
+    width: 100%;
+}
+.title_td{
+    padding-left: 0px!important;
+    padding-right: 0px!important;
+    padding-top: 0px!important;
+}
+.table.table-hover{
+    font-size: 16px;
+}
+@media (max-width: 991px) {
+.table.table-hover{
+    font-size: 20px;
+    font-weight: 600;
+}
 }
 </style>
 
