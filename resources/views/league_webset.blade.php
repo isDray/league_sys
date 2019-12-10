@@ -19,6 +19,12 @@
 .colorsetbox>div>label{
     line-height: 36px;  
 }
+.stuff{
+    height: 540px;
+    width: 192px;
+    background-color: red;
+    display: block;
+}
 </style>
 @endsection
 
@@ -80,14 +86,39 @@
 
                 <div class="form-group">                        
                     <label for="logo">logo圖檔( 建議為 60 * 180 )</label>
-                    <input type="file" id="logo" name="logo" onchange="readURL(this);">
+                    <input type="file" id="logo" name="logo" onchange="readURL(this , 'blah');">
                     @if ($errors->has('logo'))
                     <label id="logo-error" class="form_invalid" for="logo">{{ $errors->first('logo') }}</label>
                     @endif  
                     @if( !empty($WebData['logo']) )
                     <img src="{{url('/league_logo/'.$WebData['logo'])}}" id='blah' style='width:180px;max-width:100%'>    
                     @endif
-                </div>                               
+                </div>  
+
+                <div class="form-group">
+                    <div style='display:inline-block; width:30%;'>
+                        <label>過橋頁離開圖(384*1080)</label>
+                        <input type="file" id="mlimg" name="mlimg" onchange="readURL(this , 'ml' , 'mlimg');">
+                        
+                        @if( !empty($WebData['ml']) )
+                            <img src="{{url('/over18_pic/'.$WebData['user_id'].'/'.$WebData['ml'])}}" id='ml' style='width:180px;max-width:100%'>    
+                        @else
+                            <img src="{{url('/over18_pic/0/ml.png')}}" id='ml' style='width:180px;max-width:100%'>  
+                        @endif 
+
+                    </div>
+
+                    <div style='display:inline-block; width:30%;'>
+                        <label>過橋頁進入圖(384*1080)</label>
+                        <input type="file" id="mrimg" name="mrimg" onchange="readURL(this , 'mr' , 'mrimg' );">
+
+                        @if( !empty($WebData['mr']) )
+                            <img src="{{url('/over18_pic/'.$WebData['user_id'].'/'.$WebData['mr'])}}" id='mr' style='width:180px;max-width:100%'>    
+                        @else
+                            <img src="{{url('/over18_pic/0/mr.png')}}" id='mr' style='width:180px;max-width:100%'> 
+                        @endif                  
+                    </div>
+                </div>     
 
             </div>
             
@@ -105,9 +136,9 @@
 
 @section('selfjs')
 <script>
-function readURL(input) { 
+function readURL( input , imgshow = 'blah' ,  afterid = 'logo' ) { 
 
-    $("#blah").remove();
+    $("#"+imgshow ).remove();
 
     if (input.files && input.files[0]) {
 
@@ -115,12 +146,23 @@ function readURL(input) {
 
         reader.onload = function (e) {
 
-            $("#logo").after( "<img src='' id='blah'>" );
+            $( "#"+afterid ).after( "<img src='' id='"+imgshow+"'>" );
+            
+            if( imgshow == 'blah')
+            {
+                $('#'+imgshow)
+                .attr('src', e.target.result)
+                .height(60);
+            }
+            else
+            {
+                $('#'+imgshow)
+                .attr('src', e.target.result)
+                .width(192)
+                .height(540);
 
-            $('#blah')
-            .attr('src', e.target.result)
-       
-            .height(60);
+            }
+
         };
 
         reader.readAsDataURL(input.files[0]);

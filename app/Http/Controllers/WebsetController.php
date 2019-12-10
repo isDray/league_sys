@@ -60,6 +60,8 @@ class WebsetController extends Controller
             'webname' => 'required|',
             'webback' => 'required','regex:/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/',
             'logo'    => 'mimes:jpeg,jpg,png',
+            'mlimg'   => 'mimes:jpeg,jpg,png',
+            'mrimg'   => 'mimes:jpeg,jpg,png',
 
             
         ],
@@ -67,6 +69,8 @@ class WebsetController extends Controller
             'webback.required'        => '網站背景色為必填',
             'webback.regex'           => '網站背景色格式錯誤',
             'logo.mimes'              => '網站logo圖只接受 jpeg,jpg,png格式',
+            'mlimg.mimes'             => '過橋頁離開圖只接受 jpeg,jpg,png格式',
+            'mrimg.mimes'             => '過橋頁進入圖只接受 jpeg,jpg,png格式',
 
         ])->validate();       
         
@@ -100,6 +104,48 @@ class WebsetController extends Controller
                     ]
                 );
             }
+
+            /**
+             * 針對過橋頁圖片做處理
+             **/   
+            if( isset( $request->mlimg ) )
+            {   
+                // 如果過橋頁資料夾不存在 , 就產生一個資料夾
+                if( !file_exists( public_path("over18_pic/$LeagueId") ) ){
+
+                    File::makeDirectory( public_path("over18_pic/$LeagueId") , 755 );
+                }
+
+                Image::make( $request->file('mlimg'))->resize(384, 1080)->save("over18_pic/{$LeagueId}/ml.{$request->mlimg->extension()}");
+
+                DB::table('xyzs_league_web')
+                ->updateOrInsert(
+                    [ 'user_id' => $LeagueId ],
+                    ['ml' => 'ml'.".".$request->mlimg->extension(),
+                     'update_date'  => time() - date('Z') 
+                    ]
+                );                
+            }
+
+            if( isset( $request->mrimg ) )
+            {   
+                // 如果過橋頁資料夾不存在 , 就產生一個資料夾
+                if( !file_exists( public_path("over18_pic/$LeagueId") ) ){
+
+                    File::makeDirectory( public_path("over18_pic/$LeagueId") , 755 );
+                }
+
+                Image::make( $request->file('mrimg'))->resize(384, 1080)->save("over18_pic/{$LeagueId}/mr.{$request->mrimg->extension()}");
+                
+                DB::table('xyzs_league_web')
+                ->updateOrInsert(
+                    [ 'user_id' => $LeagueId ],
+                    ['mr' => 'mr'.".".$request->mrimg->extension(),
+                     'update_date'  => time() - date('Z') 
+                    ]
+                );                
+            }            
+
 
             DB::table('xyzs_league')
               ->where('user_id', $LeagueId )

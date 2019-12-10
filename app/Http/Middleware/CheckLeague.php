@@ -30,7 +30,7 @@ class CheckLeague
 
         }else{
             
-            $current_league = '';
+            $current_league = '2610';
         }
         
         // 判斷加盟會員是否還處於可以使用之狀態
@@ -78,7 +78,7 @@ class CheckLeague
 
         //var_dump( $LeagueData );
         View::share('categorys', $categorys); 
-
+        
         View::share('LeagueData' , $LeagueData);
         
         // 左側區塊
@@ -120,6 +120,44 @@ class CheckLeague
         }
         
         View::share('num_in_cart' , $num_in_cart );  
+
+        // 產生麵包屑
+        
+        
+        View::share('Breadcrum' , Lib_common::_getBreadcrumb() );
+
+        /**
+         * 判斷是否驗證過18歲
+         **/
+        if( !isset( $_COOKIE['over18'] ))
+        {   
+            if( !empty($LeagueData['ml']) && file_exists( public_path("over18_pic/{$LeagueData['user_id']}/{$LeagueData['ml']}") ) )
+            {
+                
+                View::share('over18_l' , "over18_pic/{$LeagueData['user_id']}/{$LeagueData['ml']}" ); 
+
+            }else{
+
+                View::share('over18_l' , "over18_pic/0/ml.png" ); 
+            }
+
+            if( !empty($LeagueData['mr']) && file_exists( public_path("over18_pic/{$LeagueData['user_id']}/{$LeagueData['mr']}") ) )
+            {
+                View::share('over18_r' , "over18_pic/{$LeagueData['user_id']}/{$LeagueData['mr']}" ); 
+
+            }else{
+                
+                View::share('over18_r' , "over18_pic/0/mr.png" );
+            }            
+
+            View::share('over18' , false );  
+
+        }
+        else
+        {
+            
+            View::share('over18' , true );
+        }
 
         return $next($request);
     }

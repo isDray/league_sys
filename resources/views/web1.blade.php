@@ -49,8 +49,8 @@
 <div id='over18'>
     <table id='table18'>
         <tr>
-            <td align="right" id='over_no'><img src="{{url('over18_pic/0/ml.png')}}" alt="未滿18歲,離開本站"></td>
-            <td id='over_yes'><img src="{{url('over18_pic/0/mr.png')}}" alt="已滿18歲開始探索情趣用品"></td>
+            <td align="right" id='over_no'><img src="{{url($over18_l)}}" alt="未滿18歲,離開本站"></td>
+            <td id='over_yes'><img src="{{url($over18_r)}}" alt="已滿18歲開始探索情趣用品"></td>
         </tr>
     </table>
       
