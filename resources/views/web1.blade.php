@@ -416,9 +416,35 @@
 <script src="{{url('/AdminLTE/bower_components/fastclick/lib/fastclick.js')}}"></script>
 <!-- AdminLTE App -->
 <script src="{{url('/AdminLTE/dist/js/adminlte.min.js')}}"></script>
+
 <script src="{{url('/toastr-master/build/toastr.min.js')}}"></script>
 
 <script src="{{url('/js/lazyload.js')}}"></script>
+<!-- 判斷匯入 -->
+@if( isset($owl) )
+<script src="{{url('/js/owl.carousel.min.js')}}"></script>
+<script type="text/javascript">
+$( document ).ready(function() {
+$('.owl-carousel').owlCarousel({
+    loop:true,
+    margin:10,
+    nav:true,
+    responsive:{
+        0:{
+            items:1
+        },
+        600:{
+            items:3
+        },
+        1000:{
+            items:5
+        }
+    }
+})
+});
+</script>
+@endif
+<!-- /判斷匯入 -->
 
 
 @yield('selfcss')

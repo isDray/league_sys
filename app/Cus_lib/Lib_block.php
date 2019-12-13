@@ -54,6 +54,10 @@ class Lib_block{
         }elseif( $_type == 'new' ){
             
             $RecommendType = 3;
+
+        }elseif( $_type =='video'){
+
+            $RecommendType = 4;
         }
 
         $ExcludeCat = DB::table('xyzs_league_recommend')->where('user_id', $LeagueId )->where('recommmand_type',$RecommendType)->first();
@@ -69,7 +73,7 @@ class Lib_block{
         
 
         // 如果傳入的推薦種類不存在 , 直接回傳空字串
-        if( !in_array( $_type , [ 'new' , 'best' , 'hot' ]) ){
+        if( !in_array( $_type , [ 'new' , 'best' , 'hot' , 'video' ]) ){
 
             return array();
         }
@@ -172,6 +176,10 @@ class Lib_block{
             $recommendDB->orderBy('sort_order','ASC');
         }
         
+        if( $_type == 'video' ){
+
+            $recommendDB->whereNotNull('video_name');
+        }
 
         $returnDatas = $recommendDB->limit(8)->offset(0)->orderBy('add_time','DESC')->get();
         
@@ -196,5 +204,8 @@ class Lib_block{
         }
         
     }
+
+
+
 }
 ?>
