@@ -139,21 +139,28 @@ $(function(){
                 $(".cart_list_area").empty();
                 
                 var num_in_cart = 0;
-
+                
+                var cartTotal = 0;
+                
                 $.each( res['data'] , function( listk , listv ){
-                    
+                    cartTotal += listv['subTotal'];                    
                     var tmp_goods = "<table class='cart_table' width='100%'>";
                     /*tmp_goods += "<tr><td colspan='4' class='cart_item_title'>"+listv['name']+"</td></tr>";*/
                     
                     num_in_cart += parseInt(listv['num']);
 
-                    tmp_goods += "<tr><td class='tableimg'><img src='https://***REMOVED***.com/***REMOVED***/"+listv['thumbnail']+"'></td>"+
-                                      "<td width='30%'>×"+listv['num']+"="+listv['subTotal']+"</td>"+
-                                      "<td width='30%'><span class='btn bg-maroon btn-flat margin rmbtn' goods_id='"+listv['id']+"'><i class='fa fa-fw fa-remove'></i></span></td></tr>";
+                    tmp_goods += '<tr><table>';
+                    tmp_goods += "<tr><td class='tableimg cart_img_box' colspan='2' ><img src='https://***REMOVED***.com/***REMOVED***/"+listv['thumbnail']+"'><span>"+listv['name']+"</span></td></tr>"+
+                                              "<tr><td>$"+listv['goodsPrice']+"×"+listv['num']+"="+listv['subTotal']+"</td>"+
+                                              "<td align='right' ><span class='btn bg-maroon btn-flat margin rmbtn' goods_id='"+listv['id']+"'>刪除</span></td></tr>";
+        
+                    tmp_goods += '<table><tr>';
                     tmp_goods += "</table>";
-                    
+                            
                     $(".cart_list_area").append( tmp_goods );
                 });
+
+                $(".cart_list_area").append( '<p>小計'+cartTotal+'</p>' );
 
                 $(".num_in_cart").empty();
                 $(".num_in_cart").append(num_in_cart);                

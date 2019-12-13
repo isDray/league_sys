@@ -224,15 +224,32 @@
             <ul id='cart_list' class="dropdown-menu" aria-labelledby="dLabel">                    
                 <li class="cart_list_area">
                     @if( isset( $Carts) )
-
+                        @php
+                            $cartTotal = 0;
+                        @endphp
                         @foreach( $Carts as $Cartk => $Cart)
+                        @php
+                            $cartTotal += $Cart['subTotal'];
+                        @endphp
                         <table class='cart_table' width='100%'>
-                            <tr><td class='tableimg'><img src="https://***REMOVED***.com/***REMOVED***/{{$Cart['thumbnail']}}"></td>
-                                <td width='30%'>×{{$Cart['num']}}={{$Cart['subTotal']}}</td>
-                                <td width='30%'><span class='btn bg-maroon btn-flat margin rmbtn' goods_id="{{$Cart['id']}}"><i class='fa fa-fw fa-remove'></i></span></td></tr>
+                            <tr>
+                                <table>
+                                    <tr >
+                                        <td class='tableimg cart_img_box' colspan='2'>
+                                            <img src="https://***REMOVED***.com/***REMOVED***/{{$Cart['thumbnail']}}">
+                                            <span>{{$Cart['name']}}</span>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td width='30%'>${{$Cart['goodsPrice']}}×{{$Cart['num']}}={{$Cart['subTotal']}}</td>
+                                        <td width='30%' align='right'><span class='btn bg-maroon btn-flat margin rmbtn' goods_id="{{$Cart['id']}}">刪除</span></td>
+                                    </tr>
+                                </table>
+                            </tr>
                         </table>
                         @endforeach
-
+                        <p>小計:{{$cartTotal}}</p>
                     @endif
                 </li>
                 <li class="cart_btn_area">
@@ -499,20 +516,26 @@ $(function(){
                 $(".cart_list_area").empty();
                 
                 var num_in_cart = 0;
-
+                
+                var cartTotal = 0;
+                
                 $.each( res['data'] , function( listk , listv ){
-                    
+                    cartTotal += listv['subTotal'];
                     var tmp_goods = "<table class='cart_table' width='100%'>";
                     /*tmp_goods += "<tr><td colspan='4' class='cart_item_title'>"+listv['name']+"</td></tr>";*/
                     num_in_cart += parseInt(listv['num']);
+                    tmp_goods += '<tr><table>';
+                    tmp_goods += "<tr><td class='tableimg cart_img_box' colspan='2' ><img src='https://***REMOVED***.com/***REMOVED***/"+listv['thumbnail']+"'><span>"+listv['name']+"</span></td></tr>"+
+                                      "<tr><td>$"+listv['goodsPrice']+"×"+listv['num']+"="+listv['subTotal']+"</td>"+
+                                      "<td align='right' ><span class='btn bg-maroon btn-flat margin rmbtn' goods_id='"+listv['id']+"'>刪除</span></td></tr>";
 
-                    tmp_goods += "<tr><td class='tableimg'><img src='https://***REMOVED***.com/***REMOVED***/"+listv['thumbnail']+"'></td>"+
-                                      "<td width='30%'>×"+listv['num']+"="+listv['subTotal']+"</td>"+
-                                      "<td width='30%'><span class='btn bg-maroon btn-flat margin rmbtn' goods_id='"+listv['id']+"'><i class='fa fa-fw fa-remove'></i></span></td></tr>";
+                    tmp_goods += '<table><tr>';
                     tmp_goods += "</table>";
                     
                     $(".cart_list_area").append( tmp_goods );
                 });
+                
+                $(".cart_list_area").append( '<p>小計'+cartTotal+'</p>' );
 
                 $(".num_in_cart").empty();
                 $(".num_in_cart").append(num_in_cart);
@@ -558,21 +581,26 @@ $('body').on('click', '.rmbtn', function() {
         $(".cart_list_area").empty();
         
         var num_in_cart = 0;
-
+        var cartTotal = 0;
         $.each( res['data'] , function( listk , listv ){
-                    
+            cartTotal += listv['subTotal'];
             var tmp_goods = "<table class='cart_table' width='100%'>";
             /*tmp_goods += "<tr><td colspan='4' class='cart_item_title'>"+listv['name']+"</td></tr>";*/
             
             num_in_cart += parseInt(listv['num']);
 
-            tmp_goods += "<tr><td class='tableimg'><img src='https://***REMOVED***.com/***REMOVED***/"+listv['thumbnail']+"'></td>"+
-                             "<td width='30%'>×"+listv['num']+"="+listv['subTotal']+"</td>"+
-                             "<td width='30%'><span class='btn bg-maroon btn-flat margin rmbtn' goods_id='"+listv['id']+"'><i class='fa fa-fw fa-remove'></i></span></td></tr>";
+            tmp_goods += '<tr><table>';
+            tmp_goods += "<tr><td class='tableimg cart_img_box' colspan='2' ><img src='https://***REMOVED***.com/***REMOVED***/"+listv['thumbnail']+"'><span>"+listv['name']+"</span></td></tr>"+
+                                      "<tr><td>$"+listv['goodsPrice']+"×"+listv['num']+"="+listv['subTotal']+"</td>"+
+                                      "<td align='right' ><span class='btn bg-maroon btn-flat margin rmbtn' goods_id='"+listv['id']+"'>刪除</span></td></tr>";
+
+            tmp_goods += '<table><tr>';
             tmp_goods += "</table>";
                     
             $(".cart_list_area").append( tmp_goods );
         });
+
+        $(".cart_list_area").append( '<p>小計'+cartTotal+'</p>' );
 
         $(".num_in_cart").empty();
         $(".num_in_cart").append(num_in_cart);        
