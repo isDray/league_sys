@@ -16,7 +16,7 @@ $bannsers = Lib_block::banner();
             
             <ol class="carousel-indicators">
                 @foreach( $bannsers as $bannserk => $bannser)
-                <li data-target="#carousel-example-generic" data-slide-to="{$bannserk}}" class="@if( $bannserk == 0) active @endif"></li>              
+                <li data-target="#carousel-example-generic" data-slide-to="{{$bannserk}}" class="@if( $bannserk == 0) active @endif"></li>              
                 @endforeach                
             </ol>
             

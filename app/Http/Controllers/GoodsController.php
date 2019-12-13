@@ -32,6 +32,9 @@ class GoodsController extends Controller
    
         $goodsImgs = json_decode($goodsImg,True);
 
-        return view('web_show_goods',[ 'GoodsData' => $GoodsData ,'goodsImgs' => $goodsImgs ]);
+        return view('web_show_goods',[ 'GoodsData' => $GoodsData ,
+                                       'goodsImgs' => $goodsImgs ,
+                                       'title'     => $GoodsData['goods_name']
+                                     ]);
     }
 }

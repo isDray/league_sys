@@ -37,6 +37,11 @@
 #content_right{
 	margin-top: 20px;
 }
+@media( max-width: 991px){
+	#content_right{
+        margin-top:80px;
+    }
+}
 .web_nav1{
 	height: 60px;
 }

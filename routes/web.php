@@ -239,7 +239,7 @@ Route::group(['middleware' => ['CheckLeague']], function () {
     Route::match(['get', 'post'],'/search/{keyword?}/{cat_sort_item?}/{cat_sort_way?}/{now_page?}/{per_page?}','SearchController@search');
     
     // 新品
-    Route::get('/new_arrival/{now_page?}/{per_page?}','SearchController@new');
+    Route::get('/new_arrival/{now_page?}/{per_page?}','SearchController@newest');
 
     // 訂單查詢頁面
     Route::get('/check_order' , 'LeagueWebController@check_order');

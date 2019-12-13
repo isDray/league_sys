@@ -115,7 +115,7 @@ class SearchController extends Controller
     |--------------------------------------------------------------------------
     |
     */
-    public function new( Request $request , $now_page = 1 , $per_page = 20){
+    public function newest( Request $request , $now_page = 1 , $per_page = 20){
         
         $CatSortItem = 'add_time';
         $CatSortWay  = 'desc';

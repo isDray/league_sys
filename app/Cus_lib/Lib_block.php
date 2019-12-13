@@ -20,7 +20,7 @@ class Lib_block{
     public static function banner(){
 
         
-        $LeagueId = Session::get( 'user_id' );
+        $LeagueId = Session::get( 'league_id' );
 
         $banners  = DB::table('xyzs_league_banner')->where('user_id',$LeagueId)->orderBy('sort','DESC')->orderBy('update_date')->get();
 
@@ -40,7 +40,7 @@ class Lib_block{
     */
     public static function get_recommend( $_type ){
 
-        $LeagueId = Session::get( 'user_id' );
+        $LeagueId = Session::get( 'league_id' );
 
         // 取出要排除的類別
         if( $_type == 'hot' ){

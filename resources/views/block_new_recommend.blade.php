@@ -34,7 +34,7 @@ $recommends = Lib_block::get_recommend('new');
                     </a>
                     
                     <p class='goods_price'><small>$</small>{{ $recommend['shop_price'] }}</p>
-                    <p><a  class="btn colorbtn add_to_cart" role="button" goods_id="{{$recommend['goods_id']}}" title="將{{ $recommend['goods_name'] }}加入購物車" >立即購買</a></p>
+                    <p class='goods_add_btn'><a  class="btn colorbtn add_to_cart" role="button" goods_id="{{$recommend['goods_id']}}" title="將{{ $recommend['goods_name'] }}加入購物車" >立即購買</a></p>
                 </div>
             </div>                
             
