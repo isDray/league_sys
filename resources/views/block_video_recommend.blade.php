@@ -7,11 +7,18 @@ $recommends = Lib_block::get_recommend('video');
 @endphp
 @if( count($recommends) > 0 )
 <div class='block_video box box-solid'>
+
+    <div class="box-header with-border">
+
+        <h2 class="box-title recommend_title">影音商品</h2>
+        <h3 class="page_more_desc">附有使用及清潔影片的情趣用品,讓你更容易上手,成為情趣達人</h3>
+
+    </div>    
     <!-- /.box-header -->
     <div class="box-body owl-carousel owl-theme ">
         @foreach( $recommends as $recommendk => $recommend)
        
-        <div class='col-md-3 col-sm-4 col-xs-6 show_goods_box item'>
+        <div class='show_goods_box item'>
 
             <div class="thumbnail">
                 <a href="{{url('/show_goods/'.$recommend['goods_id'])}}" title="查看商品:{{$recommend['goods_name']}}詳細內容">
@@ -37,7 +44,32 @@ $recommends = Lib_block::get_recommend('video');
 <link rel="stylesheet" href="{{url('/css/owl.carousel.min.css')}}">
 <link rel="stylesheet" href="{{url('/css/owl.theme.default.min.css')}}">
 
-<script type="text/javascript">
+<style type="text/css">
+.show_goods_box.item{
+    padding-left: 15px;
+    padding-right: 15px;
 
-</script>
+}
+.show_goods_box.item > .thumbnail > a > img{
+    width: auto;
+    height: auto;
+}
+.glyphicon.glyphicon-chevron-left , .glyphicon.glyphicon-chevron-right{
+    text-align: center;
+    width: 40px;
+    height: 40px;
+    position: absolute;
+    top:calc( 50% - 45px );    
+    background-color: rgba( 0 , 0 , 0 , 0.2);
+    line-height: 40px;
+}
+.glyphicon.glyphicon-chevron-left{
+    left: 0px;
+}
+.glyphicon.glyphicon-chevron-right{
+    right: 0px;
+}
+
+
+</style>
 @endif       

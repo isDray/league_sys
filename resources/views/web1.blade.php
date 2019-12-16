@@ -75,7 +75,7 @@
 
         @if( !empty($LeagueData['logo']) )
         <a href="{{url('/')}}">
-        <img src="{{url('/league_logo/'.$LeagueData['logo'])}}" class='menulogo only_m' >
+        <img src="{{url('/league_logo/'.$LeagueData['logo'])}}" class='menulogo only_m' alt="{{$LeagueData['store_name']}}logo">
         </a>
         @endif
 
@@ -83,7 +83,7 @@
         <nav class='web_nav1'>
             @if( !empty($LeagueData['logo']) )
             <a href="{{url('/')}}">
-            <img src="{{url('/league_logo/'.$LeagueData['logo'])}}" class='menulogo over_m' >
+            <img src="{{url('/league_logo/'.$LeagueData['logo'])}}" class='menulogo over_m' alt="{{$LeagueData['store_name']}}logo">
             </a>
             @endif
             <!-- 電腦版用 -->
@@ -328,7 +328,7 @@
         <div class='col-md-5 col-md-offset-0 col-sm-8 col-sm-offset-2 col-xs-12' id='footer_right'>
             <div class='col-md-12 col-sm-12 col-xs-12' id="footer_right_center">
                 <div class="col-md-12 col-sm-12 col-xs-12"> 
-                    <img lazysrc="https://***REMOVED***.com/***REMOVED***/ecs_static/img/18.png" style='float:right' class="lazyload">                    
+                    <img lazysrc="https://***REMOVED***.com/***REMOVED***/ecs_static/img/18.png" style='float:right' class="lazyload" alt="禁止未滿18歲進行購買">                    
                     <p id='footer_des'>
                         享愛網採全站情趣用品購物滿千免運，「包裝隱密」保護您的購物隱私，本購物網站支援－貨到付款－超商取貨－宅配到府，讓您購物輕鬆無負擔！本站提供數千種情趣用品批發、零售， 並有滿額贈品選擇，歡迎參觀選購
                     </p>
@@ -345,7 +345,7 @@
         </div>
 
         <div class='col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-12 text-center' id='footer_bottom' >
-            <img lazysrc="https://***REMOVED***.com/***REMOVED***/ecs_static/img/165_1160.png" style="max-width:100%;" class="lazyload">
+            <img lazysrc="https://***REMOVED***.com/***REMOVED***/ecs_static/img/165_1160.png" style="max-width:100%;" class="lazyload" alt="反詐騙宣導,接到要求轉帳分期等相關操作的電話皆為詐騙 , 歡迎來電(04)874-0413求證">
         </div>
 
 
@@ -427,17 +427,21 @@
 $( document ).ready(function() {
 $('.owl-carousel').owlCarousel({
     loop:true,
-    margin:10,
+    margin:0,
     nav:true,
+    navElement:'span',
+    navText: ["", ""],
+    autoplay:true,
+    navClass:['glyphicon glyphicon-chevron-left','glyphicon glyphicon-chevron-right'],
     responsive:{
         0:{
-            items:1
+            items:2
         },
-        600:{
+        768:{
             items:3
         },
-        1000:{
-            items:5
+        992:{
+            items:4
         }
     }
 })
