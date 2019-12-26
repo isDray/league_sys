@@ -73,7 +73,7 @@
                 <div class="wrappers video_wrapper">
                  
                     <video class='video self_video' id='self_video' controls controlsList='nodownload'>
-                        <source src="http://127.0.0.1/***REMOVED***2/video/{{$GoodsData['video_name']}}#t=0.01" type='video/mp4'>
+                        <source src="https://***REMOVED***.com/***REMOVED***/video/{{$GoodsData['video_name']}}#t=0.01" type='video/mp4'>
                     </video>
 
                     <div class="playpause">
@@ -119,6 +119,7 @@
                 
 
                 </div>
+                <br>
                 @endif        
         <!------- -->
         @foreach( $goodsImgs as $goodsImgk => $goodsImg )

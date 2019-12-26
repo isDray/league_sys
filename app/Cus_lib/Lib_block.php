@@ -179,6 +179,8 @@ class Lib_block{
         if( $_type == 'video' ){
 
             $recommendDB->whereNotNull('video_name');
+
+            $recommendDB->where('video_name','!=','');
         }
 
         $returnDatas = $recommendDB->limit(8)->offset(0)->orderBy('add_time','DESC')->get();
