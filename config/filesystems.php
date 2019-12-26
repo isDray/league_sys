@@ -43,10 +43,14 @@ return [
 
     'disks' => [
 
-'banner' => [
-    'driver' => 'local',
-    'root'   => public_path() . '/banner',
-],
+    'banner' => [
+        'driver' => 'local',
+        'root'   => public_path() . '/banner',
+    ],
+    'ezpub' => [
+        'driver' => 'local',
+        'root'   => public_path(),
+    ],    
         'local' => [
             'driver' => 'local',
             'root' => storage_path('app'),
