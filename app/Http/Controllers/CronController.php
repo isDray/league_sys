@@ -49,7 +49,7 @@ class CronController extends Controller
                ->where('g.is_on_sale',1)
                ->select('g.*', DB::raw('SUM(og.goods_number) AS totalsale') )
                ->groupBy('g.goods_id')
-               ->orderBy('totalsale')
+               ->orderBy('totalsale','desc')
                ->offset(0)
                ->limit(3)
                ->get();

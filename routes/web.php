@@ -323,4 +323,4 @@ Route::group(['middleware' => ['CheckLeague']], function () {
     
 });
 
-Route::get('/getTop3','CronConTroller@getTop3');
+Route::get('/getTop3','CronController@getTop3');

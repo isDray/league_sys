@@ -77,7 +77,7 @@ $hots =  json_decode($hots,true);
                         貨號:{{ $hot['goods_sn'] }}
                     </div>
                     <div class='top_recommend_price'>
-                        {{ $hot['shop_price'] }}<small>元</small>
+                        {{ floor($hot['shop_price']) }}<small>元</small>
                     </div>
                 </div>
 
@@ -92,6 +92,9 @@ $hots =  json_decode($hots,true);
 <!-- 輪播banner -->   
 @endif
 <style type="text/css">
+.left.carousel-control>.fa , .right.carousel-control>.fa{
+    left:calc(50% - 7px);
+}
 #topbuy{
     min-height:100%;
     border:1px solid black;    
