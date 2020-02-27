@@ -282,6 +282,58 @@
         </div>
     </div>
 
+    <!-- 快速menu區塊 -->
+    <div id='fast_cat_box'>
+        <div id='fast_cat_box_left'>
+            @foreach( $categorys as $categoryk => $category)<input type='checkbox' class='fast_cat_root' id='fast_cat_root_{{$category["rcat"]}}'><label class='fast_cat_root_label' for='fast_cat_root_{{$category["rcat"]}}' refor='fast_cat_root_{{$category["rcat"]}}' >{{$category['rcat_name']}}</label>@endforeach
+        </div>
+
+        <div id='fast_cat_box_right'>
+            <input type='checkbox' id='all_cat_root'><label id='all_cat_root_label' for='all_cat_root'></label>
+        </div>
+
+        <div id='fast_cat_box_show'>
+            @foreach( $categorys as $categoryk => $category)
+            <div class='fast_cat_box_child' id="fast_cat_root_{{$category["rcat"]}}_child_box">
+
+            @if( count($category['child']) > 0 )
+                @foreach( $category['child'] as $categorykc => $categoryc)<a href=""><div class='fast_cat_box_child_item'>{{$categoryc['ccat_name']}}</div></a>@endforeach
+            @else
+
+            @endif
+            </div>
+            @endforeach
+
+            <!-- 全選單-->
+            <div id='all_cat_box'>
+                
+                @foreach( $categorys as $categoryk => $category)
+                <input type='checkbox' id='all_cat_{{$category["rcat"]}}' class='all_cat_check'><label class='all_cat_label' for='all_cat_{{$category["rcat"]}}' backfor='all_cat_{{$category["rcat"]}}'><span class='return_cat'></span>{{$category['rcat_name']}}</label>
+                <div class='all_cat_child_box' id='all_cat_child_box_{{$category["rcat"]}}'>
+                    @if( count($category['child'] > 0) )
+                        
+                        @foreach( $category['child'] as $categorykc => $categoryc)
+                            <a href="">
+                                <div>
+                                    {{$categoryc['ccat_name']}}
+                                </div>
+                            </a>
+                        @endforeach
+
+                    @else
+
+                    @endif
+                </div>
+                @endforeach
+
+            </div>
+                
+            <!-- /全選單-->   
+
+        </div>
+    </div>
+    <!-- /快速menu區塊 -->
+
     <div class='col-md-2 col-md-offset-1 col-sm-4 col-sm-offset-0 col-xs-12 over_m' id='content_left'>
         @yield('content_left')
     </div>
@@ -670,6 +722,123 @@ $("#over_yes").click(function(){
     $("#over18").hide();
 });
 @endif
+
+
+
+
+/*
+|--------------------------------------------------------------------------
+| 左側快速分類選單
+|--------------------------------------------------------------------------
+|
+*/
+$(".fast_cat_root").click(function(){
+    
+    // 先將當前選取id存入變數    
+    var selectId = $(this).attr('id');
+
+    // 取消選取所有checkbox母分類
+    $(".fast_cat_root").prop('checked',false);
+
+    $("#"+selectId).prop('checked',true);
+    
+    var selectDisplay = $("#"+selectId+"_child_box").css('display');
+    
+    /*// 隱藏所有子分類
+    $(".fast_cat_box_child").slideUp();
+    */
+    if( selectDisplay == 'none')
+    {   
+        
+        $("#all_cat_box").hide();
+        $("#all_cat_root").prop('checked',false);
+        
+        if( $(".fast_cat_box_child:visible").length > 0 )
+        {    
+            $(".fast_cat_box_child").hide();
+
+            // 呈現選取的子分類
+            $("#"+selectId+"_child_box").fadeIn();
+        }
+        else
+        {    
+            $(".fast_cat_box_child").hide();
+
+            // 呈現選取的子分類
+            $("#"+selectId+"_child_box").slideDown();
+        }
+
+
+    }
+    else
+    {   // 隱藏選取的子分類
+        $("#"+selectId+"_child_box").slideUp(); 
+    }
+
+});
+
+
+
+
+/*
+|--------------------------------------------------------------------------
+|
+|--------------------------------------------------------------------------
+|
+*/
+$("#all_cat_root").click(function(){
+    
+    if( $("#all_cat_root:checked").length > 0 )
+    {   
+        $(".fast_cat_box_child").hide();
+        $("#all_cat_box").slideDown();
+    }
+    else{
+        
+        $("#all_cat_box").slideUp();
+    }
+
+})
+
+
+
+/*
+|--------------------------------------------------------------------------
+| 全選快速選單
+|--------------------------------------------------------------------------
+|
+*/
+$(".all_cat_check").click(function(){
+    
+    if( $(".all_cat_check:checked").length > 0)
+    {
+        var selectAllCat = $(this).attr('id');
+         
+        $(".all_cat_check").removeClass('checkroot');
+        $(".all_cat_check").addClass('uncheckroot');
+    
+        $("#"+selectAllCat).addClass('checkroot');
+        $("#"+selectAllCat).removeClass('uncheckroot');
+        
+        $(".all_cat_label").prop('for','');
+    }
+
+})
+
+
+
+$(".return_cat").click(function(){
+
+    $(".all_cat_check").removeClass('checkroot');
+    $(".all_cat_check").removeClass('uncheckroot');
+
+    $(".all_cat_label").each(function(k,i){
+        
+        tmpfor = i.getAttribute('backfor');
+
+        $(this).prop('for',tmpfor);
+    })
+})
 </script>
 </body>
 </html>
