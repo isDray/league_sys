@@ -7,6 +7,7 @@ use Validator;
 use DB;
 use File;
 use App\Cus_lib\Lib_common;
+use App\Cus_lib\Lib_commission;
 
 class ReportController extends Controller
 {
@@ -20,6 +21,8 @@ class ReportController extends Controller
     */
     public function league_report_order( Request $request ){
         
+
+
         $NoteMsgs = [];
         
         $Before7Day = time() -  date('Z') - ( 7 * 24 * 60 * 60 );
@@ -295,22 +298,21 @@ class ReportController extends Controller
         // 本月最後一天
         $NowMonthLasted = strtotime( date('Y-m-t 23:59:59') );
         
-        // 如果沒有接收到月份相關的參數 , 就已最近期可以查詢的日期作為查詢條件
+        // 如果沒有接收到月份相關的參數 , 就以最近期可以查詢的日期作為查詢條件
         if( empty( $request->start ) ){
             
             // 由於每月超過15號才能夠查詢上個月的獎金 , 所以當下日期如果沒有超過15號就只能查上上個月
             if( $NowDate >= 15 ){
-          
-                $StartDate = strtotime("-1 month", $NowMonth01 )- date('Z');
 
-                $EndDate   = strtotime( "-1 month", $NowMonthLasted )- date('Z');
+                $StartDate = strtotime("first day of last month", $NowMonth01 )- date('Z');
+                
+                $EndDate   = strtotime( "last day of last month", $NowMonthLasted )- date('Z');
 
             }else{
-    
-                // 如果小於15號 , 表示還不能查詢上個月的獎金 , 只能查上上個月的
-                $StartDate = strtotime("-2 month", $NowMonth01) -date('Z')  ;
 
-                $EndDate   = strtotime( "-2 month", $NowMonthLasted )- date('Z');
+                $StartDate = strtotime("first day of -2 month", $NowMonth01 )- date('Z');
+
+                $EndDate   = strtotime("last day of -2 month", $NowMonthLasted )- date('Z');
 
             }
 
@@ -323,11 +325,11 @@ class ReportController extends Controller
 
             if( $NowDate >= 15 ){
                 
-                $LatestDray   = strtotime( "-1 month", $NowMonthLasted )- date('Z');
+                $LatestDray   = strtotime( "last day of -1 month", $NowMonthLasted )- date('Z');
 
             }else{
 
-                $LatestDray   = strtotime( "-2 month", $NowMonthLasted )- date('Z');
+                $LatestDray   = strtotime( "last day of -2 month", $NowMonthLasted )- date('Z');
             }
             
             $EndDate = date( 'Y-m-t 23:59:59'   , strtotime( $request->start )  );
@@ -337,13 +339,23 @@ class ReportController extends Controller
             // 如果使用者所選取的查訊日 , 小於最後可以查詢日期 , 表示此日期可以查詢 , 否則則需要強制替其變換日期
             if( $LatestDray > $EndDate ) {
                 
-                $StartDate = strtotime("-1 month", $EndDate ) - 57599 - date('Z');
+                $StartDate = strtotime(date("Y-m-01 00:00:00", $EndDate )) - date('Z');
 
             }else{
-
-                $StartDate = strtotime("-1 month", $NowMonth01 )- date('Z');
-
-                $EndDate   = strtotime( "-1 month", $NowMonthLasted )- date('Z');
+           
+                if( $NowDate >= 15 ){
+    
+                    $StartDate = strtotime("first day of last month", $NowMonth01 )- date('Z');
+                    
+                    $EndDate   = strtotime( "last day of last month", $NowMonthLasted )- date('Z');
+    
+                }else{
+    
+                    $StartDate = strtotime("first day of -2 month", $NowMonth01 )- date('Z');
+    
+                    $EndDate   = strtotime("last day of -2 month", $NowMonthLasted )- date('Z');
+    
+                }
             }
 
         }
@@ -402,10 +414,58 @@ class ReportController extends Controller
                               ->where('shipping_status','2');
 
                   })                  
-                  ->select(DB::raw("(".Lib_common::_GetTotalFee().") as total_fee"),"add_time","order_sn" , DB::raw("(ROUND( (".Lib_common::_GetTotalFee().") * 0.2 ) ) as commission"),'league_pay')
+                  ->orderBy('order_id','ASC')
+                  ->select(DB::raw("(".Lib_common::_GetTotalFee().") as total_fee"),"add_time","order_sn",'league_pay')
                   ->get();
 
         $Orders = json_decode( $Orders , true) ;
+        
+
+        $commission_type =  DB::table('xyzs_league_setting')->select('commission_type')->where('id',1)->first();
+
+        if($commission_type){
+            
+            $_type = $commission_type->commission_type;
+        }
+        else
+        {
+            $_type = 0;
+        }
+
+        
+        // 臨時訂單加總，用來計算訂單獎金
+        $tmp_total = 0;
+
+        if( !$_type ){
+
+            foreach ($Orders as $Orderk => $Order) {
+                
+                $tmp_total += $Order['total_fee'];
+            }
+            
+            foreach ($Orders as $Orderk => $Order) {
+
+                $tmp_commission = Lib_commission::CalculateCommissionList( $tmp_total , $Order['total_fee'] );
+
+                $Orders[$Orderk]['commission'] = $tmp_commission;
+            }
+        } 
+        else
+        {
+            $tmp_total = 0;
+
+            foreach ($Orders as $Orderk => $Order) {
+
+               $tmp_commission = Lib_commission::CalculateCommissionList( $tmp_total , $Order['total_fee']);
+
+               $tmp_total += $Order['total_fee'];
+
+               $Orders[$Orderk]['commission'] = $tmp_commission;
+
+            }
+
+        }  
+
         
         /*
         |--------------------------------------------------------------------------
@@ -415,17 +475,18 @@ class ReportController extends Controller
         */
         $RangeDateArrs = [];
         
+        // 產生一組key值為本月每天日期的陣列
         for ( $i = $StartDate ; $i <= $EndDate ; $i += 86400) { 
             
             $RangeDateArrs[ date('Ymd' , $i+date('Z') ) ] = 0;
 
         }
         
-
+        // 取出當下月份中每一天的"已完成訂單"的 數量 & 金額
         $DayCommissions = DB::table('xyzs_order_info')
         ->select( DB::raw( "DATE_FORMAT(FROM_UNIXTIME(add_time+28800),'%Y%m%d') as order_date") ,
                   DB::raw( "COUNT(order_id) as day_order" ) ,
-                  DB::raw( "SUM(ROUND( (".Lib_common::_GetTotalFee().") * 0.2)) as commission"),
+                  DB::raw( "SUM((".Lib_common::_GetTotalFee().")) as day_price"),
                   'order_id' )
         ->where('league',$LeagueId)
         ->where('add_time','>=',$StartDate)
@@ -439,16 +500,62 @@ class ReportController extends Controller
         ->groupBy( DB::raw( "DAY(FROM_UNIXTIME(add_time + 28800) )"))
         ->get();
         
-
+        
         $DayCommissions = json_decode( $DayCommissions , true );
+        
+        // 根據系統設定 , 決定是要採最高 or 階段算獎金
+        $commission_type =  DB::table('xyzs_league_setting')->select('commission_type')->where('id',1)->first();
 
-        foreach ($DayCommissions as $DayCommissionk => $DayCommission) {
+        if($commission_type){
             
-            if( array_key_exists( $DayCommission['order_date'] , $RangeDateArrs) ){
+            $_type = $commission_type->commission_type;
+        }
+        else
+        {
+            $_type = 0;
+        }
+
+        $commission_type = $_type;
+        
+        // 最高算法
+        if( !$commission_type )
+        {   
+            // 訂單金額加總
+            $tmp_total = 0;
+
+            foreach ($DayCommissions as $DayCommissionk => $DayCommission ) {
                 
-                $RangeDateArrs[ $DayCommission['order_date'] ] = (int)$DayCommission['commission'];
+                $tmp_total += $DayCommission['day_price'];
+            }
+            
+            foreach ($DayCommissions as $DayCommissionk => $DayCommission) {
+            
+                if( array_key_exists( $DayCommission['order_date'] , $RangeDateArrs) ){
+
+
+                    $RangeDateArrs[ $DayCommission['order_date'] ] = Lib_commission::CalculateCommissionList( $tmp_total , $DayCommission['day_price']);
+
+                }
             }
         }
+        // 階段
+        else
+        {   
+            $tmp_total = 0;
+
+            foreach ($DayCommissions as $DayCommissionk => $DayCommission) {
+            
+                if( array_key_exists( $DayCommission['order_date'] , $RangeDateArrs) ){
+
+
+                    $RangeDateArrs[ $DayCommission['order_date'] ] = Lib_commission::CalculateCommissionList( $tmp_total , $DayCommission['day_price']);
+                    
+                    $tmp_total += $DayCommission['day_price'];
+                }
+            }            
+        }
+        
+
         
         $DateX = json_encode( array_keys($RangeDateArrs) );
         
@@ -467,22 +574,55 @@ class ReportController extends Controller
                 $DayCommissions[$DayCommissionk] = $DayCommission;
             }
         }
-        $ThisMonthCommission = end( $DayCommissions );
+        
+        $ThisMonthCommission = round( end( $DayCommissions ) );
         $DayCommissions = json_encode( $DayCommissions );
 
         // 取出指定月份前尚未撥款獎金總和
+        /*
         $Unpay = DB::table('xyzs_order_info')
-        ->select( DB::raw( "SUM(ROUND( (".Lib_common::_GetTotalFee().") * 0.2)) as commission" ) )
+        //->select( DB::raw( "SUM(ROUND( (".Lib_common::_GetTotalFee().") * 0.2)) as commission" ) )
+        ->select( DB::raw( "SUM(".Lib_common::_GetTotalFee().") as commission" ) )
         ->where('league',$LeagueId)
         ->where('add_time','<',$StartDate)
-        ->whereIn('league_pay',$CommissionStatus)
+        ->whereIn('league_pay',[0])
         ->where(function( $query ){
             $query->where('order_status','5')
                   ->where('pay_status','2')
                   ->where('shipping_status','2');
         })
-        /*->groupBy( DB::raw( "DAY(FROM_UNIXTIME(add_time + 28800) )"))*/
+        ->groupBy( DB::raw( "DAY(FROM_UNIXTIME(add_time + 28800) )"))
+        ->get();*/
+        
+        // 取出未領取獎金之訂單，並且依照每個月區分
+        $Unpays = DB::table('xyzs_order_info')
+        ->select( DB::raw( "DATE_FORMAT(FROM_UNIXTIME(add_time+28800),'%Y%m') as order_date") ,
+                  DB::raw( "COUNT(order_id) as month_order" ) ,
+                  DB::raw( "SUM((".Lib_common::_GetTotalFee().")) as month_price"),
+                  'order_id' )  
+        ->where('league',$LeagueId)
+        ->where('add_time','<',$StartDate)
+        ->whereIn('league_pay',[0])
+        ->where(function( $query ){
+            $query->where('order_status','5')
+                  ->where('pay_status','2')
+                  ->where('shipping_status','2');
+        })            
+        ->groupBy( DB::raw( "MONTH(FROM_UNIXTIME(add_time + 28800) )"))            
         ->get();
+        
+        $Unpays = json_decode( $Unpays , true );
+        // 每個月個別計算獎金
+        $Unpay_price = 0;
+        foreach ($Unpays as $Unpayk => $Unpay) {
+            //$Unpay['month_price'];
+
+            $Unpay_price += Lib_commission::CalculateCommission($Unpay['month_price']);
+        }
+
+        $Unpay_price = round( $Unpay_price );
+        /*
+        Lib_commission::CalculateCommission($Unpay[0]->commission);
         
         $Unpay = $Unpay[0]->commission;
         
@@ -491,6 +631,8 @@ class ReportController extends Controller
             $Unpay = 0;
 
         }
+        */
+        $Unpay = 0;// 除錯用
         //echo date("Ymd H:i:s");
         return view('league_report_commission',[ 'PageTitle'=>$PageTitle,
                                                  'start' => date('Y-m' , $StartDate +date('Z')),
@@ -502,7 +644,7 @@ class ReportController extends Controller
                                                  'DayCommissions'=>$DayCommissions,
                                                  'PerDayCommissions'=>$PerDayCommissions,
                                                  'tree'=>'report',
-                                                 'Unpay' => $Unpay,
+                                                 'Unpay' => $Unpay_price,
                                                  'ThisMonthCommission' =>$ThisMonthCommission
                                                ]);
 

@@ -206,7 +206,41 @@ class Lib_block{
         }
         
     }
+    
 
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | 
+    |--------------------------------------------------------------------------
+    |
+    */
+    public static function get_categorys(){
+        /*
+        $LeagueId = Session::get( 'league_id' );
+
+        $banners  = DB::table('xyzs_league_banner')->where('user_id',$LeagueId)->orderBy('sort','DESC')->orderBy('update_date')->get();
+
+        $banners  = json_decode( $banners , true );
+        */
+
+        $categorys = DB::table('xyzs_category')->where('parent_id','!=',0)->orderBy('cat_id','DESC')->limit(3)->get();
+        
+        $categorys  = json_decode( $categorys , true );
+        
+
+        foreach ($categorys as $categoryk => $category) {
+
+            $tmpGoods = DB::table('xyzs_goods')->where(['cat_id'=>$category['cat_id']])->orderBy('cat_id','ASC')->limit(4)->offset(10)->get();
+
+            //$categorys[$categoryk]['goodsDatas'] = $tmpGoods;
+
+            $categorys[$categoryk]['goodsDatas'] = json_decode( $tmpGoods , true );
+        }
+        return $categorys;        
+    }
 
 
 }

@@ -535,4 +535,30 @@ class RecommendController extends Controller
 
         return redirect('/league_message');
     }
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | 類別推薦介面
+    |--------------------------------------------------------------------------
+    |
+    |
+    */
+    public function league_module_recommend_category( Request $request ){
+        
+        $LeagueId = $request->session()->get('user_id');     
+        $PageTitle = "類別商品管理功";  
+
+        //$Categorys = DB::table('xyzs_category')->get();
+        
+        //$Categorys = Lib_common::GetCategorys();
+        $Categorys = Lib_common::GetSpecificCategorys("AAAA");
+
+        return view('/league_module_category_recommend',[ 'PageTitle' => $PageTitle ,
+                                                          'Categorys' => $Categorys,
+                                                        ]);
+        
+    }
+    
 }

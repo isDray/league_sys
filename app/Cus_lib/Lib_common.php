@@ -52,6 +52,24 @@ class Lib_common{
 
     }
 
+    // 取指定類別的子類別
+    public static  function GetSpecificCategorys( $_cat = 0 ){
+        
+
+        $Categorys = DB::table('xyzs_category')->whereNotIn('cat_id',[42,153])->where('parent_id',$_cat)->orderBy('parent_id', 'asc')->orderBy('sort_order', 'asc')->get();
+        
+        if( $Categorys )
+        {
+            $Categorys = json_decode( $Categorys , true );
+        }
+        
+        return $Categorys;
+
+    }
+
+
+
+
     public static function mobileEncode( $_key , $_num ){
     
       $_key = '1992';

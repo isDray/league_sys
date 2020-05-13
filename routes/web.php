@@ -92,7 +92,7 @@ Route::group(['middleware' => ['CheckLogin']], function () {
     Route::get('/league_test','LeagueController@league_test');
     
 
-
+    
 
     /*
     |--------------------------------------------------------------------------
@@ -167,6 +167,9 @@ Route::group(['middleware' => ['CheckLogin']], function () {
     // 新品模組功能
     Route::post('/league_module_recommend_new_act','RecommendController@league_module_recommend_new_act');
     
+    // 類別模組
+    Route::get('/league_module_recommend_category','RecommendController@league_module_recommend_category');
+
     // 網站設定
     Route::get('/league_webset','WebsetController@league_webset');
     
@@ -207,6 +210,14 @@ Route::group(['middleware' => ['CheckLogin']], function () {
         Route::post('/league_profile_password_act','LeagueInfoController@league_profile_password_act');
 
     });
+
+    /*
+    |--------------------------------------------------------------------------
+    | 工具相關
+    |--------------------------------------------------------------------------
+    |
+    */
+    Route::post('/backtool','BackToolController@ajax_get_category');
     
 });
 

@@ -10,7 +10,7 @@
         <div  class='label_box' label='加盟優勢' >
             <p>&nbsp; <span class="label pull-left bg-orange">免成本</span><br/> 免加盟金 ， 免壓年金 ， 免囤貨 </p>
             <p>&nbsp; <span class="label pull-left bg-orange">高度自由</span><br/> 不論在家或者咖啡廳都能輕鬆完成</p>
-            <p>&nbsp; <span class="label pull-left bg-orange">專業協助</span><br/> 訂單處理 、 商品包裝配送 、 售後服務退換貨 ，所有關於商品問題皆由享愛完成</p>
+            <p>&nbsp; <span class="label pull-left bg-orange">專業協助</span><br/> 訂單處理 、 商品包裝配送 、 售後服務退換貨 ，所有關於商品問題皆由本公司完成</p>
             <p>&nbsp; <span class="label pull-left bg-orange">貨源充足</span><br/> 享愛加盟平台定期依照銷售曲線預估貨量 , 確保您的訂單都能夠順利出貨</p>
             <p>&nbsp; <span class="label pull-left bg-orange">優渥獎金</span><br/> 提供高比例獎金 ， 銷售輛與獎金成正比</p>
             <p>&nbsp; <span class="label pull-left bg-orange">專屬品牌</span><br/> 網頁上的曝光讓客群更認識屬於您的專屬品牌 ， 讓品牌名聲與獎金形成良性循環</p>

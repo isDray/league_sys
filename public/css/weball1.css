@@ -1049,3 +1049,12 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#545454', end
     }
 }    
 }
+
+
+
+.box[cus_title] .box-header h2{
+    display: none!important;
+}
+.box[cus_title] {
+    margin-top: 60px!important;
+}
