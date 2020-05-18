@@ -140,13 +140,22 @@
                         <th>訂單金額</th>
                         <th>獎金</th>
                     </tr>
-                    @foreach( $Orders as $Order )
+                    @foreach( $Orders as $Orderk => $Order )
+                    @if( $Orderk == count($Orders) - 1)
+                    <tr>
+                        <td></td>
+                        <td align='right'> 小計 </td>
+                        <td>{{ ROUND($Order['total_fee']) }}</td>
+                        <td>{{ $Order['commission'] }}</td>
+                    </tr>
+                    @else
                     <tr>
                         <td>{{ $Order['order_sn'] }}</td>
                         <td >@if( $Order['league_pay'] == 0 )<small class="label pull-left bg-green">未領取</small> @else <small class="label pull-left bg-gray">已領取</small> @endif</td>
                         <td>{{ ROUND($Order['total_fee']) }}</td>
                         <td>{{ $Order['commission'] }}</td>
                     </tr>
+                    @endif
                     @endforeach
                 </tbody>
 

@@ -465,8 +465,19 @@ class ReportController extends Controller
             }
 
         }  
-
         
+        // 訂單加總 
+        $tmpOrderPrice = 0;
+        $tmpOrderCommission = 0;
+
+        foreach ($Orders as $Orderk => $Order ) {
+
+            $tmpOrderPrice += $Order['total_fee'];
+            
+            $tmpOrderCommission += $Order['commission'];
+        }
+        
+        array_push($Orders, ['total_fee'=>$tmpOrderPrice,'commission'=>$tmpOrderCommission]);
         /*
         |--------------------------------------------------------------------------
         | 獎金成長曲線圖

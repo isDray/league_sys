@@ -213,33 +213,67 @@ class Lib_block{
 
     /*
     |--------------------------------------------------------------------------
-    | 
+    | 類別推薦功能
     |--------------------------------------------------------------------------
     |
     */
     public static function get_categorys(){
-        /*
+        
         $LeagueId = Session::get( 'league_id' );
-
-        $banners  = DB::table('xyzs_league_banner')->where('user_id',$LeagueId)->orderBy('sort','DESC')->orderBy('update_date')->get();
-
-        $banners  = json_decode( $banners , true );
-        */
-
-        $categorys = DB::table('xyzs_category')->where('parent_id','!=',0)->orderBy('cat_id','DESC')->limit(3)->get();
         
-        $categorys  = json_decode( $categorys , true );
+        $is_exist = DB::table('xyzs_league_category_recommend')->where('user_id',$LeagueId)->first();
         
+        $is_exist = (array)$is_exist;
+        
+$is_exist = 0;
+        if( $is_exist )
+        {
+            $categorys = DB::table('xyzs_category')->whereIn('cat_id',[$is_exist['cate_name1'],$is_exist['cate_name2'],$is_exist['cate_name3']])->orderBy('cat_id','DESC')->get();
+            
+            $categorys = json_decode( $categorys , true);
 
-        foreach ($categorys as $categoryk => $category) {
 
-            $tmpGoods = DB::table('xyzs_goods')->where(['cat_id'=>$category['cat_id']])->orderBy('cat_id','ASC')->limit(4)->offset(10)->get();
+            for ($i=0; $i < 3; $i++) { 
 
-            //$categorys[$categoryk]['goodsDatas'] = $tmpGoods;
+                $tmpGoods = unserialize($is_exist['cate_goods'.($i+1)]);
 
-            $categorys[$categoryk]['goodsDatas'] = json_decode( $tmpGoods , true );
+                $tmpGoods[$i] = json_decode( DB::table('xyzs_goods')->whereIn('goods_sn',$tmpGoods)->limit(4)->get() , true );
+                
+
+                //$tmpGoods[$i][0]['cat_id'];
+                //echo '<br>';
+                for ($j=0; $j < 3 ; $j++) { 
+                    
+                    if( $categorys[$j]['cat_id'] == $tmpGoods[$i][0]['cat_id']){
+
+                        $categorys[$j]['goodsDatas'] = $tmpGoods[$i];
+                    }
+                }
+            }
+            
+            //var_dump($categorys);
+
+
         }
-        return $categorys;        
+        else
+        {
+
+            $categorys = DB::table('xyzs_category')->where('parent_id','!=',0)->where('is_show',1)->orderByRaw("RAND()")->limit(3)->get();
+            
+            $categorys  = json_decode( $categorys , true );
+            
+    
+            foreach ($categorys as $categoryk => $category) {
+    
+                $tmpGoods = DB::table('xyzs_goods')->where(['cat_id'=>$category['cat_id']])->orderByRaw("RAND()")->limit(4)->offset(10)->get();
+    
+                //$categorys[$categoryk]['goodsDatas'] = $tmpGoods;
+    
+                $categorys[$categoryk]['goodsDatas'] = json_decode( $tmpGoods , true );
+            }
+        }
+//$categorys=[];
+        return $categorys;
     }
 
 
