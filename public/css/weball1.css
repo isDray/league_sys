@@ -1058,3 +1058,8 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#545454', end
 .box[cus_title] {
     margin-top: 60px!important;
 }
+
+/* 必填提示訊息 */
+.input_request_span{
+    color:#ff4646;
+}

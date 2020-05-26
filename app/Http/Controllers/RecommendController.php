@@ -764,11 +764,10 @@ class RecommendController extends Controller
             $Categorys[$tmpdata['cat_id']] = $tmpdata['cat_name'];
         }
         
-        
         $goods_arr1 = [];
         $goods_arr2 = [];
         $goods_arr3 = [];
-
+        
         // 迴圈將貨號打包成文字
         foreach ($request->goods1 as $key => $value) {
             
@@ -820,6 +819,7 @@ class RecommendController extends Controller
 
             $$tmpgoods = serialize( $$tmpgoods );
         }
+
 
         // 新增
         if( !$is_exist)
@@ -894,5 +894,218 @@ class RecommendController extends Controller
         }
 
         return redirect('/league_message');
+    }
+
+
+
+    
+    /*
+    |--------------------------------------------------------------------------
+    | 堆疊商品輪播清單
+    |--------------------------------------------------------------------------
+    |
+    |
+    */
+    
+    public function league_module_recommend_stack_list( Request $request ){
+        
+        // 加盟會員id
+        $LeagueId = $request->session()->get('user_id');         
+
+        $stacks   = DB::table('xyzs_league_stack')->select('*')->where('league_id',$LeagueId)->get();
+
+        $stacks   = json_decode( $stacks , true );
+
+        $PageTitle = '堆疊商品輪播管理';
+              
+        return view('/league_module_recommend_stack_list',[ 
+                                                              'PageTitle' => $PageTitle ,
+                                                              'stacks'    => $stacks
+                                                          ]);
+    }
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | 堆疊商品輪播編輯(介面)
+    |--------------------------------------------------------------------------
+    |
+    | 
+    */
+    public function league_module_recommend_stack_list_edit( Request $request ){
+        
+        $LeagueId = $request->session()->get('user_id');  
+
+        $PageTitle = '堆疊商品輪播編輯';
+
+        $stack_id   = '';
+
+        $stack_datas = [];
+
+        if( !empty($request->stack_id) )
+        {
+           
+            $stack_datas = DB::table('xyzs_league_stack')->where('id',$request->stack_id)->where('league_id',$LeagueId)->first();
+            
+            if( $stack_datas === NULL )
+            {
+                return redirect('/league_module_recommend_stack');
+                exit;
+            }
+            
+            $stack_id = trim( $request->stack_id );
+            
+            // 取出對應堆疊資料
+            $stack_datas = (array)$stack_datas;
+
+            $stack_datas['goods'] = unserialize($stack_datas['goods']);
+
+            if( count($stack_datas['goods']) < 5 ){
+
+                $j = 5 - count($stack_datas['goods']);
+                
+                for ($j ; $j > 0 ; $j--) { 
+
+                   $stack_datas['goods'][5-$j] = '';
+                }
+            }
+        }
+
+        return view('/league_module_recommend_stack_edit',[ 
+                                                              'PageTitle'   => $PageTitle ,
+                                                              'stack_id'    => $stack_id,
+                                                              'stack_datas' => $stack_datas,
+                                                          ]);        
+
+    }
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | 堆疊商品輪播編輯(功能)
+    |--------------------------------------------------------------------------
+    |
+    |
+    */
+    public function league_module_recommend_stack_edit_act( Request $request ){
+        
+        // 加盟會員id
+        $LeagueId = $request->session()->get('user_id');  
+        
+        // 製作驗證訊息array
+        for( $i = 0 ; $i < 5 ;$i++ )
+        {   
+            $tmp_str = "第".($i+1)."筆商品,不存在或已停售";
+            
+            $goods_msg['goods_sn.'.($i)."."."exists"] =  $tmp_str ;
+             
+        }
+    
+        // 驗證動作
+        $validator = Validator::make( $request->all() ,
+        [ 
+            'title' => 'required|string|max:16',
+            'goods_sn.*' => ['nullable',
+                            Rule::exists('xyzs_goods','goods_sn')->where(function ($query){
+                                $query->where('is_on_sale', 1);
+                            }),
+                          ],
+            'stack_id' => ['nullable',
+                            Rule::exists('xyzs_league_stack','id')->where(function ($query) use ( $LeagueId ){
+                                $query->where('league_id', $LeagueId);
+                            }),
+                          ],
+        ],
+        [   'title.required' => '堆疊標題為必填',
+            'title.string'   => '堆疊標題必須為字串',
+            'title.max'      => '堆疊標題最多16個字',
+            'stack_id.exists'=> '此堆疊商品不存在',
+        ]+$goods_msg)->validate();   
+        
+        // 整理能寫入的sn
+        $editGoodsSn = [];
+
+        foreach ($request->goods_sn as $key => $value) {
+            
+            if( !empty($value) )
+            {
+                array_push($editGoodsSn, trim($value) );
+            }
+        
+        }        
+        
+        $editGoodsSn = serialize( $editGoodsSn );
+
+        // 寫入資料庫 , 如果有指定id 表示要執行更新
+        if( !empty( $request->stack_id ) )
+        {
+            try {
+                
+                $res = DB::table('xyzs_league_stack')
+                ->where('id', $request->stack_id)
+                ->update([
+                    'title'     => $request->title,
+                    'note'      => '',
+                    'goods'     => $editGoodsSn,
+                    'edit_time' => time() - date('Z'),
+                ]);  
+
+                $res = 1;
+
+            } catch (Exception $e) {
+                
+                $res = 0;
+            }
+        }
+        // 無指定編號 , 表示為新增
+        else
+        {
+            try {
+                $res = DB::table('xyzs_league_stack')->insert(
+                      [
+                     'league_id' => $LeagueId,
+                     'title'     => $request->title,
+                     'note'      => '',
+                     'goods'     => $editGoodsSn,
+                     'edit_time' => time() - date('Z'),
+                    ]
+                );   
+
+                $res = 1;
+
+            } catch (Exception $e) {
+
+                $res = 0;
+            }
+        }
+
+        if( $res )
+        {
+            $league_message =   [ '1',
+                                  "編輯堆疊商品推薦成功",
+                                  [ ['operate_text'=>'回堆疊商品管理','operate_path'=>'/league_module_recommend_stack'] ],
+                                  3
+                                ];
+
+            $request->session()->put('league_message', $league_message);  
+        }
+        else
+        {   
+
+            $league_message =   [ '0',
+                                  "編輯堆疊商品推薦成功",
+                                  [ ['operate_text'=>'回堆疊商品管理','operate_path'=>'/league_module_recommend_stack'] ],
+                                  3
+                                ];
+
+            $request->session()->put('league_message', $league_message); 
+        }        
+
+        return redirect('/league_message');
+        //var_dump( $request->all() );
     }
 }

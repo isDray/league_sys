@@ -129,6 +129,14 @@
         <br>
             
         @endforeach
+
+        <img src="https://***REMOVED***.com/***REMOVED***/images/pc/Pro_PC_01.png">
+        <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <img src="https://***REMOVED***.com/***REMOVED***/data/afficheimg/1504796410465776293.png">
+        <br>
+        <img src="https://***REMOVED***.com/***REMOVED***/images/pc/Pro_PC_03.png">
+        <br>
+        <img src="https://***REMOVED***.com/***REMOVED***/images/pc/Pro_PC_04.png">
         {!!$GoodsData['goods_desc']!!}
     </div>
     <!-- /.box-body -->

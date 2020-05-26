@@ -57,7 +57,7 @@ class MemberController extends Controller
             'name'     => 'required|min:2|max:16',
             'email'    => 'required|email|unique:xyzs_league_member,email,NULL,id,league_id,'.$LeagueId,
             'phone'    => 'required|regex:/^[09]{2}[0-9]{8}$/',
-            'tel'      => 'required|regex:/^[0-9]*$/',
+            'tel'      => 'nullable|regex:/^[0-9]*$/',
         ],
         [   'account.required'   =>'帳號為必填',
             'account.alpha_dash' =>'帳號只能包含字母、數字、底線',
@@ -77,7 +77,6 @@ class MemberController extends Controller
             'email.unique'   =>'信箱已使用過',
             'phone.required' =>'手機為必填',
             'phone.regex'    =>'手機格式錯誤',
-            'tel.required' =>'電話為必填',
             'tel.regex' =>'電話格式錯誤'
  
 

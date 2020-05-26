@@ -172,7 +172,16 @@ Route::group(['middleware' => ['CheckLogin']], function () {
     
     // 類別推薦模組功能
     Route::post('/league_module_recommend_category_act','RecommendController@league_module_recommend_category_act');
-
+    
+    // 堆疊商品輪播功能管理
+    Route::get('league_module_recommend_stack','RecommendController@league_module_recommend_stack_list');
+    
+    // 堆疊商品輪播編輯
+    Route::get('league_module_recommend_stack_edit/{stack_id?}','RecommendController@league_module_recommend_stack_list_edit');
+    
+    // 堆疊商品輪播編輯功能
+    Route::post('league_module_recommend_stack_edit_act','RecommendController@league_module_recommend_stack_edit_act');
+    
     // 網站設定
     Route::get('/league_webset','WebsetController@league_webset');
     

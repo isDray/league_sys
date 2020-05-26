@@ -21,7 +21,7 @@
         <div class="box-body">
             
             <div class="form-group">               
-                <label for="account" class="col-sm-2 control-label">帳號</label>
+                <label for="account" class="col-sm-2 control-label">帳號 <span class='input_request_span'>(必填*)</span> </label>
 
                 <div class="col-sm-10">
                     <input type="text" class="form-control" id="account" name="account" placeholder="" value="{{old('account')}}">
@@ -35,7 +35,7 @@
             </div>
             
             <div class="form-group">
-                <label for="password" class="col-sm-2 control-label">密碼</label>
+                <label for="password" class="col-sm-2 control-label">密碼 <span class='input_request_span'>(必填*)</span></label>
                 <div class="col-sm-10">
                   <input type="password" class="form-control" id="password" name="password" placeholder="" value="{{ old('password') }}">
                     @if( $errors->has('password') )
@@ -47,7 +47,7 @@
             </div>
 
             <div class="form-group">
-                <label for="password_confirm" class="col-sm-2 control-label">密碼確認</label>
+                <label for="password_confirm" class="col-sm-2 control-label">密碼確認 <span class='input_request_span'>(必填*)</span></label>
                 <div class="col-sm-10">
                   <input type="password" class="form-control" id="password_confirm" name="password_confirm" placeholder="" value="{{ old('password_confirm') }}">
                     @if( $errors->has('password_confirm') )
@@ -59,7 +59,7 @@
             </div>
 
             <div class="form-group">               
-                <label for="name" class="col-sm-2 control-label">姓名</label>
+                <label for="name" class="col-sm-2 control-label">姓名 <span class='input_request_span'>(必填*)</span></label>
 
                 <div class="col-sm-10">
                     <input type="text" class="form-control" id="name" name="name" placeholder="" value="{{ old('name') }}">
@@ -72,7 +72,7 @@
             </div>
 
             <div class="form-group">               
-                <label for="email" class="col-sm-2 control-label">信箱</label>
+                <label for="email" class="col-sm-2 control-label">信箱 <span class='input_request_span'>(必填*)</span></label>
 
                 <div class="col-sm-10">
                     <input type="email" class="form-control" id="email" name="email" placeholder=""  value="{{ old('email') }}">
@@ -85,7 +85,7 @@
             </div>
 
             <div class="form-group">               
-                <label for="phone" class="col-sm-2 control-label">手機</label>
+                <label for="phone" class="col-sm-2 control-label">手機 <span class='input_request_span'>(必填*)</span></label>
 
                 <div class="col-sm-10">
                     <input type="text" class="form-control" id="phone" name="phone" placeholder="" value="{{ old('phone') }}">
@@ -99,7 +99,7 @@
             </div>
 
             <div class="form-group">               
-                <label for="tel" class="col-sm-2 control-label">電話</label>
+                <label for="tel" class="col-sm-2 control-label">電話 <span class='input_request_span'>(必填*)</span> </label>
 
                 <div class="col-sm-10">
                     <input type="text" class="form-control" id="tel" name="tel" placeholder="" value="{{ old('tel') }}">
@@ -161,8 +161,15 @@ $(function(){
             return true;
 
         }else{
-        
-            return false;
+            
+            if( value.length === 0 )
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
 
         }
     });    
@@ -204,7 +211,6 @@ $(function(){
                 check_phone:true,
             },
             tel:{
-                required: true,
                 check_tel:true,                
             },
             email:{
@@ -251,7 +257,7 @@ $(function(){
                 check_phone: "手機格式錯誤",
             },
             tel:{
-                required:"電話為必填",
+                /*required:"電話為必填",*/
                 check_tel:"電話格式錯誤",                
             },      
             email:{

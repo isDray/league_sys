@@ -74,6 +74,7 @@ class SearchController extends Controller
                              ->orWhereIn('c.cat_id',$CatArr);
                    })*/
                    ->where('g.goods_name','like', '%'.$keyword.'%')
+                   ->orWhere('g.goods_sn','like', '%'.$keyword.'%')
                    ->groupBy('g.goods_id');
 
         $CondQuery->orderBy($CatSortItem,$CatSortWay);
