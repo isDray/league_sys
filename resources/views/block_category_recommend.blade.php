@@ -1,7 +1,7 @@
 @php
 use App\Cus_lib\Lib_block;
 use Illuminate\Http\Request;
-$categorys = Lib_block::get_categorys();
+$categorys = Lib_block::get_categorys( $id );
 
 @endphp
 <link href="{{ asset('css/block_category_recommend.css') }}" rel="stylesheet">
@@ -21,15 +21,15 @@ $categorys = Lib_block::get_categorys();
         <li class='switch_label' id="label2" >女性用品</li>
         <li class='switch_label' id="label3" >SM用品</li> -->
         @foreach($categorys as $categoryk => $category)
-            <li class='switch_label @if($categoryk == 0) active @endif' id="label{{$categoryk}}" >{{ $category['cat_name'] }}</li>       
+            <li class='switch_label{{$id}} @if($categoryk == 0) active @endif' id="label{{$categoryk}}" >{{ $category['cat_name'] }}</li>       
         @endforeach        
     </div>
 
     <div class="box-body switch_content_box">       
         @foreach($categorys as $categoryk => $category)
-            <div class='@if($categoryk == 0) active @endif switch_content' for='label{{$categoryk}}'>
+            <div class='@if($categoryk == 0) active @endif switch_content{{$id}}' for='label{{$categoryk}}'>
                 <div class='categoory_ribbon'>{{ $category['cat_name'] }}</div>
-                <div class='categoory_desc'>{{ $category['cat_desc'] }}</div>
+                <div class='categoory_desc'>{{ $category['cus_des'] }}</div>
                     
                     <div class='col-md-12 col-sm-12 col-xs-12 cat_main_box_out'>
 
@@ -70,20 +70,20 @@ $categorys = Lib_block::get_categorys();
 
 <script type="text/javascript">
 document.addEventListener("DOMContentLoaded", function(event) { 
-    $(".switch_label").click(function(){
+    $(".switch_label{{$id}}").click(function(){
 
         choose_label = $(this).attr('id');
         
         // 選擇與目前顯示的不同才需要做切換
-        if( $(".switch_content.active").attr('for') != choose_label )
+        if( $(".switch_content{{$id}}.active").attr('for') != choose_label )
         {
-            $(".switch_content.active").hide();
-            $(".switch_content.active").removeClass('active');
+            $(".switch_content{{$id}}.active").hide();
+            $(".switch_content{{$id}}.active").removeClass('active');
 
-            $(".switch_content[for="+choose_label+"]").fadeIn();
-            $(".switch_content[for="+choose_label+"]").addClass('active');
+            $(".switch_content{{$id}}[for="+choose_label+"]").fadeIn();
+            $(".switch_content{{$id}}[for="+choose_label+"]").addClass('active');
 
-            $(".switch_label").removeClass('active');
+            $(".switch_label{{$id}}").removeClass('active');
             $(this).addClass('active');
         }
 

@@ -297,7 +297,7 @@
             <div class='fast_cat_box_child' id="fast_cat_root_{{$category["rcat"]}}_child_box">
 
             @if( count($category['child']) > 0 )
-                @foreach( $category['child'] as $categorykc => $categoryc)<a href=""><div class='fast_cat_box_child_item'>{{$categoryc['ccat_name']}}</div></a>@endforeach
+                @foreach( $category['child'] as $categorykc => $categoryc)<a href="{{url('/category')}}/{{$categoryc['ccat']}}"><div class='fast_cat_box_child_item'>{{$categoryc['ccat_name']}}</div></a>@endforeach
             @else
 
             @endif
@@ -306,14 +306,14 @@
 
             <!-- 全選單-->
             <div id='all_cat_box'>
-                
+            
                 @foreach( $categorys as $categoryk => $category)
                 <input type='checkbox' id='all_cat_{{$category["rcat"]}}' class='all_cat_check'><label class='all_cat_label' for='all_cat_{{$category["rcat"]}}' backfor='all_cat_{{$category["rcat"]}}'><span class='return_cat'></span>{{$category['rcat_name']}}</label>
                 <div class='all_cat_child_box' id='all_cat_child_box_{{$category["rcat"]}}'>
                     @if( count($category['child'] > 0) )
                         
                         @foreach( $category['child'] as $categorykc => $categoryc)
-                            <a href="">
+                            <a href="{{url('/category')}}/{{$categoryc['ccat']}}">
                                 <div>
                                     {{$categoryc['ccat_name']}}
                                 </div>
@@ -410,7 +410,7 @@
         <a href="{{url('/')}}">
         <i class="fa fa-fw fa-home"></i>
         <br>
-        首頁
+        首頁 <span id='mydemo'>@{{counter}}</span>
         </a>
     </div>
     <div class='col-md-3 col-sm-3 col-xs-3 rwd_search_btn'>
@@ -472,6 +472,17 @@
 <script src="{{url('/toastr-master/build/toastr.min.js')}}"></script>
 
 <script src="{{url('/js/lazyload.js')}}"></script>
+
+<script src="https://vuejs.org/js/vue.min.js"></script> 
+
+<script type="text/javascript">
+var demo = new Vue({
+    el:mydemo,
+    data:{
+        counter:20
+    }
+});
+</script>
 <!-- 判斷匯入 -->
 @if( isset($owl) )
 <script src="{{url('/js/owl.carousel.min.js')}}"></script>
@@ -733,10 +744,15 @@ $("#over_yes").click(function(){
 |
 */
 $(".fast_cat_root").click(function(){
-    
+
+    //$( "fast_cat_box_left" ).scrollLeft( 300 );
+
+    //console.log( $(this).attr('id') );
+
+
     // 先將當前選取id存入變數    
     var selectId = $(this).attr('id');
-
+    
     // 取消選取所有checkbox母分類
     $(".fast_cat_root").prop('checked',false);
 
@@ -747,6 +763,25 @@ $(".fast_cat_root").click(function(){
     /*// 隱藏所有子分類
     $(".fast_cat_box_child").slideUp();
     */
+    //console.log( $("label[for="+selectId+"]").outerWidth() );
+    
+    //var paretnsLeft = $("#fast_cat_box_left").offset();
+    //var selfLeft    = $("label[for="+selectId+"]").offset();
+    
+    var moveDistance = 0;
+    $(".fast_cat_root_label").each(function(){
+
+        if( $(this).prop('for') == selectId )
+        {
+            return false;
+        }
+
+        moveDistance += $(this).outerWidth();
+    });
+
+    $('#fast_cat_box_left').animate({scrollLeft:moveDistance}, 200);
+    console.log( moveDistance );
+
     if( selectDisplay == 'none')
     {   
         

@@ -167,8 +167,11 @@ Route::group(['middleware' => ['CheckLogin']], function () {
     // 新品模組功能
     Route::post('/league_module_recommend_new_act','RecommendController@league_module_recommend_new_act');
     
+    // 類別推薦模組列表
+    Route::get('league_module_recommend_category_list','RecommendController@league_module_recommend_category_list');
+
     // 類別推薦模組
-    Route::get('/league_module_recommend_category','RecommendController@league_module_recommend_category');
+    Route::get('/league_module_recommend_category/{recommend_id?}','RecommendController@league_module_recommend_category');
     
     // 類別推薦模組功能
     Route::post('/league_module_recommend_category_act','RecommendController@league_module_recommend_category_act');

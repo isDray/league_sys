@@ -39,24 +39,24 @@
                         
 
                         <div class="form-group">
-                            堆疊標題:<input type='text' class='form-control' name="title" placeholder="請輸入堆疊輪播標題，EX:飛機杯-5月份新貨" value="{{old('title', $stack_datas['title'])}}">
+                            堆疊標題:<input type='text' class='form-control' name="title" placeholder="請輸入堆疊輪播標題，EX:飛機杯-5月份新貨" value="@if($act == 'edit'){{old('title', $stack_datas['title'])}}@else{{old('title')}}@endif">
                         </div>
 
                         <div class="form-group">
                             商品編號:            
-                            <input type='text' class='form-control' name="goods_sn[]" placeholder="請輸入商品編號，例:NO.570337" value="{{old('goods_sn.0', $stack_datas['goods'][0])}}">
+                            <input type='text' class='form-control' name="goods_sn[]" placeholder="請輸入商品編號，例:NO.570337" value="@if($act == 'edit'){{old('goods_sn.0', $stack_datas['goods'][0])}}@else{{old('goods_sn.0')}}@endif">
                         </div>
                         <div class="form-group">
-                            <input type='text' class='form-control' name="goods_sn[]" placeholder="請輸入商品編號，例:NO.570337" value="{{old('goods_sn.1', $stack_datas['goods'][1])}}">
+                            <input type='text' class='form-control' name="goods_sn[]" placeholder="請輸入商品編號，例:NO.570337" value="@if($act == 'edit'){{old('goods_sn.1', $stack_datas['goods'][1])}}@else{{old('goods_sn.1')}}@endif">
                         </div>
                         <div class="form-group">
-                            <input type='text' class='form-control' name="goods_sn[]" placeholder="請輸入商品編號，例:NO.570337" value="{{old('goods_sn.2', $stack_datas['goods'][2])}}">
+                            <input type='text' class='form-control' name="goods_sn[]" placeholder="請輸入商品編號，例:NO.570337" value="@if($act == 'edit'){{old('goods_sn.2', $stack_datas['goods'][2])}}@else{{old('goods_sn.2')}}@endif">
                         </div>
                         <div class="form-group">
-                            <input type='text' class='form-control' name="goods_sn[]" placeholder="請輸入商品編號，例:NO.570337" value="{{old('goods_sn.3', $stack_datas['goods'][3])}}">
+                            <input type='text' class='form-control' name="goods_sn[]" placeholder="請輸入商品編號，例:NO.570337" value="@if($act == 'edit'){{old('goods_sn.3', $stack_datas['goods'][3])}}@else{{old('goods_sn.3')}}@endif">
                         </div>
                         <div class="form-group">
-                            <input type='text' class='form-control' name="goods_sn[]" placeholder="請輸入商品編號，例:NO.570337" value="{{old('goods_sn.4', $stack_datas['goods'][4])}}">
+                            <input type='text' class='form-control' name="goods_sn[]" placeholder="請輸入商品編號，例:NO.570337" value="@if($act == 'edit'){{old('goods_sn.4', $stack_datas['goods'][4])}}@else{{old('goods_sn.4')}}@endif">
                         </div>                                                                                                
                 </div>
             

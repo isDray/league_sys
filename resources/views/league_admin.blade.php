@@ -149,7 +149,7 @@
                 <li><a href="{{url('/league_module_recommend_hot')}}"><i class="fa fa-fw fa-angle-right"></i>熱銷商品功能管理</a></li>
                 <li><a href="{{url('/league_module_recommend_recommend')}}"><i class="fa fa-fw fa-angle-right"></i>推薦商品功能管理</a></li>
                 <li><a href="{{url('/league_module_recommend_new')}}"><i class="fa fa-fw fa-angle-right"></i>新品上市功能管理</a></li>
-                <li><a href="{{url('/league_module_recommend_category')}}"><i class="fa fa-fw fa-angle-right"></i>類別商品功能管理</a></li>
+                <li><a href="{{url('/league_module_recommend_category_list')}}"><i class="fa fa-fw fa-angle-right"></i>類別商品功能管理</a></li>
                 <li><a href="{{url('/league_module_recommend_stack')}}"><i class="fa fa-fw fa-angle-right"></i>堆疊商品輪播功能管理</a></li>
             </ul>                
         </li>

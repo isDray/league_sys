@@ -302,13 +302,40 @@ class LeagueController extends Controller
         $TmpModules = json_decode( $TmpModules , true );
 
         $ToolModules = [];
+        
+        $ExtensionModules = [];
 
         foreach ($TmpModules as $TmpModulek => $TmpModule ) {
 
-            $ToolModules[ $TmpModule['id'] ] = $TmpModule['block_name'];
+            //$ToolModules[ $TmpModule['id'] ] = $TmpModule['block_name'];
+
+            // 非擴張群組
+            if( $TmpModule['extension'] == 0 )
+            {
+                $ToolModules[ $TmpModule['id'] ] = $TmpModule['block_name'];
+            }
+            else
+            {
+                $ExtensionModules[ $TmpModule['id'] ] = $TmpModule['ex_table'];
+            }
         }
 
+        // 如果有擴張模組則需要將其重新組合
+        if( count($ExtensionModules) > 0 )
+        {
+            foreach ($ExtensionModules as $ExtensionModulek => $ExtensionModule ) {
+                
+                $tmpExtensions = DB::table( $ExtensionModule)->where('league_id',$request->session()->get('user_id'))->get();
 
+                $tmpExtensions = json_decode( $tmpExtensions , true );
+
+                foreach ($tmpExtensions as $tmpExtensionk => $tmpExtension ) {
+
+                    $ToolModules[ $ExtensionModulek.'_'.$tmpExtension['id'] ] = $tmpExtension['title'];
+                }
+            }
+        }
+         
         // 取出會員的中央排序
         $TmpLeagueCenterSort = DB::table('xyzs_league_block_sort')->where('user_id',$request->session()->get('user_id'))->where('block_id',1)->first();
         
@@ -325,7 +352,13 @@ class LeagueController extends Controller
 
         foreach( $TmpOnModules as $TmpOnModulek => $TmpOnModule ) {
             
-            $OnModules[$TmpOnModule] = $ToolModules[$TmpOnModule] ;
+            //$OnModules[$TmpOnModule] = $ToolModules[$TmpOnModule] ;
+
+            if( array_key_exists($TmpOnModule, $ToolModules) ){
+            
+                $OnModules[$TmpOnModule] = $ToolModules[$TmpOnModule] ;
+
+            }            
 
             unset($ToolModules[$TmpOnModule]);
         }
@@ -431,11 +464,37 @@ class LeagueController extends Controller
 
         $ToolModules = [];
         
-        foreach ($TmpModules as $TmpModulek => $TmpModule ) {
+        $ExtensionModules = [];
 
-            $ToolModules[ $TmpModule['id'] ] = $TmpModule['block_name'];
+        foreach ($TmpModules as $TmpModulek => $TmpModule ) {
+            
+            // 非擴張群組
+            if( $TmpModule['extension'] == 0 )
+            {
+                $ToolModules[ $TmpModule['id'] ] = $TmpModule['block_name'];
+            }
+            else
+            {
+                $ExtensionModules[ $TmpModule['id'] ] = $TmpModule['ex_table'];
+            }
+        }
+        
+        if( count($ExtensionModules) > 0 )
+        {
+            foreach ($ExtensionModules as $ExtensionModulek => $ExtensionModule ) {
+                
+                $tmpExtensions = DB::table( $ExtensionModule)->where('league_id',$request->session()->get('user_id'))->get();
+
+                $tmpExtensions = json_decode( $tmpExtensions , true );
+
+                foreach ($tmpExtensions as $tmpExtensionk => $tmpExtension ) {
+
+                    $ToolModules[ $ExtensionModulek.'_'.$tmpExtension['id'] ] = $tmpExtension['title'];
+                }
+            }
         }
 
+        
         // 取出會員的左側排序
         $TmpLeagueCenterSort = DB::table('xyzs_league_block_sort')->where('user_id',$request->session()->get('user_id'))->where('block_id',2)->first();
         
@@ -448,6 +507,7 @@ class LeagueController extends Controller
             $TmpOnModules = unserialize( $TmpLeagueCenterSort->sort );
         }
         
+
         $OnModules = [];
 
         foreach( $TmpOnModules as $TmpOnModulek => $TmpOnModule ) {

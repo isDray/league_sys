@@ -541,6 +541,37 @@ class RecommendController extends Controller
 
 
 
+
+    /*
+    |--------------------------------------------------------------------------
+    | 類別推薦模組清單
+    |--------------------------------------------------------------------------
+    |
+    */
+    public function league_module_recommend_category_list( Request $request ){
+
+        $LeagueId  = $request->session()->get('user_id');
+        
+        $PageTitle = '類別推薦列表';
+
+        // 取出當下加盟會員的分類推薦清單
+        $cate_recommends = DB::table('xyzs_league_category_recommend')->where('league_id',$LeagueId)->get();
+        
+        $cate_recommends = json_decode( $cate_recommends , true);
+        
+        // 重新換算時間
+
+
+        return view('league_module_recommend_category_list', [ 
+                                                                 'PageTitle' => $PageTitle,
+                                                                 'datas'     => $cate_recommends
+                                                             ]);
+        
+    }
+
+
+
+
     /*
     |--------------------------------------------------------------------------
     | 類別推薦介面
@@ -549,19 +580,23 @@ class RecommendController extends Controller
     |
     */
     public function league_module_recommend_category( Request $request ){
-      
-        $LeagueId = $request->session()->get('user_id');     
-        $PageTitle = "類別商品管理功";  
-
-        //$Categorys = DB::table('xyzs_category')->get();
         
-        //$Categorys = Lib_common::GetCategorys();
+        // 當下加盟會員id
+        $LeagueId = $request->session()->get('user_id');     
+        
+        $PageTitle = "類別商品管理功能";  
         
         $child_category = [];
-
-        // 取出資料
-        $is_exist = DB::table('xyzs_league_category_recommend')->where('user_id',$LeagueId)->first();
         
+        // 取出資料
+        $is_exist = DB::table('xyzs_league_category_recommend')->where('league_id',$LeagueId)->where('id',$request->recommend_id)->first();
+        
+        $cate_recommend_id = '';
+
+        $cate_recommend_name = '';
+
+        $cate_recommend_des = [0=>'',1=>'',2=>''];
+
         if( $is_exist && count($request->old()) == 0 )
         {   
             // 取出全部類別
@@ -570,7 +605,12 @@ class RecommendController extends Controller
             
             $is_exist = (array)$is_exist;
             
-            
+            $cate_recommend_id = $is_exist['id'];
+            $cate_recommend_name = $is_exist['title'];
+
+            $cate_recommend_des[0] = $is_exist['cat_des1'];
+            $cate_recommend_des[1] = $is_exist['cat_des2'];
+            $cate_recommend_des[2] = $is_exist['cat_des3'];
 
             for ($i=1; $i <= 3; $i++) { 
 
@@ -630,7 +670,13 @@ class RecommendController extends Controller
             $c_cate1 = $request->old()['c_cate1'];
             $c_cate2 = $request->old()['c_cate2'];
             $c_cate3 = $request->old()['c_cate3'];
+
+            $cate_recommend_des[0] = $request->old()['cat_des1'];
+            $cate_recommend_des[1] = $request->old()['cat_des2'];
+            $cate_recommend_des[2] = $request->old()['cat_des3'];
             
+            $cate_recommend_name = $request->old()['cate_recommend_name'];
+
             $child_category[0] = Lib_common::GetSpecificCategorys( $p_cate1 );
             $child_category[1] = Lib_common::GetSpecificCategorys( $p_cate2 );
             $child_category[2] = Lib_common::GetSpecificCategorys( $p_cate3 );
@@ -648,10 +694,12 @@ class RecommendController extends Controller
 
             $c_cate1 = 0;
             $c_cate2 = 0;
-            $c_cate3 = 0;
-            
+            $c_cate3 = 0; 
+
             $cate_goods = [];
             $child_category = [];
+
+
         }
 
         $Categorys = Lib_common::GetSpecificCategorys();
@@ -666,6 +714,9 @@ class RecommendController extends Controller
                                                           'c_cate2' => $c_cate2,
                                                           'c_cate3' => $c_cate3,
                                                           'cate_goods'=> $cate_goods,
+                                                          'cate_recommend_id'=>$cate_recommend_id,
+                                                          'cate_recommend_name'=>$cate_recommend_name,
+                                                          'cate_recommend_des'=>$cate_recommend_des,
                                                         ]);
         
     }
@@ -690,7 +741,7 @@ class RecommendController extends Controller
 
         // 驗證動作
         $validator = Validator::make($request->all(), 
-        [ 
+        [   'cate_recommend_name' => 'required',
             'p_cate1' => 'nullable|exists:xyzs_category,cat_id',
             'p_cate2' => 'nullable|exists:xyzs_category,cat_id',
             'p_cate3' => 'nullable|exists:xyzs_category,cat_id',
@@ -698,7 +749,8 @@ class RecommendController extends Controller
             'c_cate2' => 'nullable|exists:xyzs_category,cat_id',
             'c_cate3' => 'nullable|exists:xyzs_category,cat_id',
         ],
-        [   'p_cate1.exists' => '第一組所選的商品母分類不存在',
+        [   'cate_recommend_name.required'=>'類別推薦名稱為必填',
+            'p_cate1.exists' => '第一組所選的商品母分類不存在',
             'p_cate2.exists' => '第二組所選的商品母分類不存在',
             'p_cate3.exists' => '第三組所選的商品母分類不存在',
             'c_cate1.exists' => '第一組所選的商品子分類不存在',
@@ -706,7 +758,7 @@ class RecommendController extends Controller
             'c_cate3.exists' => '第三組所選的商品子分類不存在',
 
         ])->validate();
-        
+         
         // 類別統驗證完，就先將類別整理出來 
         $cat1 = empty( $request->c_cate1 )? empty( $request->p_cate1 )? 0 : $request->p_cate1 : $request->c_cate1;
 
@@ -796,9 +848,8 @@ class RecommendController extends Controller
         
         }
         
+        $is_exist = DB::table('xyzs_league_category_recommend')->where('league_id',$LeagueId)->where('id',$request->cate_recommend_id)->first();
 
-        $is_exist = DB::table('xyzs_league_category_recommend')->where('user_id',$LeagueId)->first();
-        
         
         for ($i=1; $i <= 3 ; $i++) { 
             
@@ -806,17 +857,6 @@ class RecommendController extends Controller
             
             $tmpgoods = "goods_arr{$i}";
             
-            /*
-            if( $$tmpname == 0 )
-            {
-                $$tmpname = '';
-            }
-            else
-            {
-                $$tmpname = $Categorys[$$tmpname];
-            }
-            */
-
             $$tmpgoods = serialize( $$tmpgoods );
         }
 
@@ -825,18 +865,24 @@ class RecommendController extends Controller
         if( !$is_exist)
         {   
             try {
-                $res = DB::table('xyzs_league_category_recommend')->insert(
+                $res = DB::table('xyzs_league_category_recommend')->insertGetId(
                       [
-                     'user_id' => $LeagueId,
+                     'title'=>$request->cate_recommend_name,
+                     'league_id' => $LeagueId,
                      'cate_name1'  => $cat1,
                      'cate_name2'  => $cat2,
                      'cate_name3'  => $cat3,
+                     'cat_des1'    => trim($request->cat_des1),
+                     'cat_des2'    => trim($request->cat_des2),
+                     'cat_des3'    => trim($request->cat_des3),
                      'cate_goods1' => $goods_arr1,
                      'cate_goods2' => $goods_arr2,
                      'cate_goods3' => $goods_arr3,
+                     'edit_time'   => time()-date('Z'),
                     ]
                 );   
-
+                
+                $returnid = $res;
                 $res = 1;
 
             } catch (Exception $e) {
@@ -851,15 +897,23 @@ class RecommendController extends Controller
             try {
                 
                 $res = DB::table('xyzs_league_category_recommend')
-                ->where('user_id', $LeagueId)
+                ->where('league_id', $LeagueId)
+                ->where('id' , $request->cate_recommend_id )
                 ->update([
+                 'title'=>$request->cate_recommend_name,
                  'cate_name1'  => $cat1,
                  'cate_name2'  => $cat2,
                  'cate_name3'  => $cat3,
+                 'cat_des1'    => trim($request->cat_des1),
+                 'cat_des2'    => trim($request->cat_des2),
+                 'cat_des3'    => trim($request->cat_des3),                 
                  'cate_goods1' => $goods_arr1,
                  'cate_goods2' => $goods_arr2,    
                  'cate_goods3' => $goods_arr3,
-                ]);  
+                 'edit_time'   => time()-date('Z'),
+                ]); 
+
+                $returnid = $request->cate_recommend_id;
 
                 $res = 1;
 
@@ -875,7 +929,7 @@ class RecommendController extends Controller
         {
             $league_message =   [ '1',
                                   "編輯類別推薦成功",
-                                  [ ['operate_text'=>'回類別推薦管理','operate_path'=>'/league_module_recommend_category'] ],
+                                  [ ['operate_text'=>'回類別推薦管理','operate_path'=>'/league_module_recommend_category/'.$returnid] ],
                                   3
                                 ];
 
@@ -886,7 +940,7 @@ class RecommendController extends Controller
 
             $league_message =   [ '0',
                                   "編輯類別推薦失敗",
-                                  [ ['operate_text'=>'回類別推薦管理','operate_path'=>'/league_module_recommend_category'] ],
+                                  [ ['operate_text'=>'回類別推薦管理','operate_path'=>'/league_module_recommend_category_list'] ],
                                   3
                                 ];
 
@@ -971,10 +1025,17 @@ class RecommendController extends Controller
                    $stack_datas['goods'][5-$j] = '';
                 }
             }
+
+            $act = 'edit';
+        }
+        else
+        {
+            $act = 'new';
         }
 
-        return view('/league_module_recommend_stack_edit',[ 
+        return view('/league_module_recommend_stack_edit',[   
                                                               'PageTitle'   => $PageTitle ,
+                                                              'act'         => $act,
                                                               'stack_id'    => $stack_id,
                                                               'stack_datas' => $stack_datas,
                                                           ]);        

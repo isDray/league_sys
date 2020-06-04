@@ -217,15 +217,14 @@ class Lib_block{
     |--------------------------------------------------------------------------
     |
     */
-    public static function get_categorys(){
-        
+    public static function get_categorys( $id ){
+
         $LeagueId = Session::get( 'league_id' );
         
-        $is_exist = DB::table('xyzs_league_category_recommend')->where('user_id',$LeagueId)->first();
+        $is_exist = DB::table('xyzs_league_category_recommend')->where('league_id',$LeagueId)->where('id',$id)->first();
         
         $is_exist = (array)$is_exist;
         
-$is_exist = 0;
         if( $is_exist )
         {
             $categorys = DB::table('xyzs_category')->whereIn('cat_id',[$is_exist['cate_name1'],$is_exist['cate_name2'],$is_exist['cate_name3']])->orderBy('cat_id','DESC')->get();
@@ -243,14 +242,21 @@ $is_exist = 0;
                 //$tmpGoods[$i][0]['cat_id'];
                 //echo '<br>';
                 for ($j=0; $j < 3 ; $j++) { 
-                    
-                    if( $categorys[$j]['cat_id'] == $tmpGoods[$i][0]['cat_id']){
 
-                        $categorys[$j]['goodsDatas'] = $tmpGoods[$i];
+                    
+                    if(  isset($categorys[$j]) && isset($tmpGoods[$i][0]) ){
+
+                        if( $categorys[$j]['cat_id'] == $tmpGoods[$i][0]['cat_id']){
+    
+                            $categorys[$j]['goodsDatas'] = $tmpGoods[$i];
+
+                            $categorys[$j]['cus_des']    = $is_exist['cat_des'.($i+1)];
+    
+                        }
                     }
+                  
                 }
             }
-            
             //var_dump($categorys);
 
 
@@ -272,10 +278,47 @@ $is_exist = 0;
                 $categorys[$categoryk]['goodsDatas'] = json_decode( $tmpGoods , true );
             }
         }
-//$categorys=[];
+
         return $categorys;
     }
 
 
+
+    
+    /*
+    |--------------------------------------------------------------------------
+    | 取堆疊資料
+    |--------------------------------------------------------------------------
+    |
+    */
+    public static function get_stack( $id ){
+        
+        $LeagueId = Session::get( 'league_id' );
+        $stacks =  DB::table('xyzs_league_stack')
+                        ->where('league_id',$LeagueId)
+                        ->where('id',$id)
+                        ->first();
+
+        $stacks = (array)$stacks;
+        
+        $stacks['goods'] = unserialize($stacks['goods']);
+        
+        $stacks['goods_data'] = [];
+
+
+        foreach ($stacks['goods'] as $goods ) {
+            
+            //$tmp = explode('.', $goods)[1];
+            
+            $goodimg = DB::table('xyzs_goods')->where('goods_sn',$goods)->select('goods_thumb','goods_id')->first();
+            
+
+            array_push($stacks['goods_data'], ['img'=>$goodimg->goods_thumb , 'goods_id'=>$goodimg->goods_id]);
+
+
+        }
+        
+        return $stacks;
+    }
 }
 ?>

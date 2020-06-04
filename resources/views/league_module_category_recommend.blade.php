@@ -34,6 +34,14 @@
             {{ csrf_field() }}
 
             <div class="box-body ">
+            
+                <div class='col-md-12 col-sm-6 col-xs-6'>
+                    <div class="form-group" style='width:calc(33.3% - 15px)!important'>
+                        自訂名稱:
+                        <input type='text' class='form-control' name="cate_recommend_name" placeholder="請輸入類別推薦名稱" value='{{$cate_recommend_name}}'>
+                    </div>
+                </div>
+
             	@for($i = 0 ; $i<3 ; $i ++)
                 @php
                     $tmpp = "p_cate".($i+1);
@@ -59,7 +67,7 @@
 
             			<select  id='c_cate{{$i+1}}' name='c_cate{{$i+1}}' class="form-control">
             				<option value='' >請選擇</option>
-                            @if( count($child_category[$i]) > 0 )
+                            @if( isset($child_category[$i]) && count($child_category[$i]) > 0 )
                             @foreach($child_category[$i] as $child_categoryk => $child_categoryv )
                             <option value="{{$child_categoryv['cat_id']}}" 
                                  @if($$tmpc == $child_categoryv['cat_id'])
@@ -72,7 +80,7 @@
             		</div>
             	</div>
             	<div class='col-md-8 col-sm-12 col-xs-12 goods_input_div'>
-                    @if( count($cate_goods[$i]) > 0)
+                    @if( isset($cate_goods[$i]) && count($cate_goods[$i]) > 0)
 
                         @foreach( $cate_goods[$i] as $cate_goodk => $cate_good)
                         <div class="form-group">
@@ -84,9 +92,21 @@
                         <input type='text' class='form-control' name="goods{{$i+1}}[]" placeholder="請輸入商品編號，例:NO.570337">
                     </div>
                     @endif 
-                    <span type="button" class="btn btn-success add_input add_input{{$i+1}}" >+ 新增</span>                    
+                    <span type="button" class="btn btn-success add_input add_input{{$i+1}}" >+ 新增</span>  
+                    <br><br>
+
+
             	</div>
+
+                <div class='col-md-8 col-md-offset-4 col-sm-12 col-xs-12 goods_input_div'>
+                    <div class="form-group">
+                        <textarea class='form-control' name='cat_des{{$i+1}}' placeholder='請輸入類別描述' >{{$cate_recommend_des[$i]}}</textarea>
+                    </div>                    
+                </div>
+
                 @endfor
+                
+                <input type='hidden' name='cate_recommend_id' value="{{$cate_recommend_id}}">
 
                 <div class='col-md-12 col-sm-12 col-xs-12'>
                     <input type='submit' value='確定' class='btn btn-primary'>
@@ -118,8 +138,6 @@
 </script>
 <script type="text/javascript">
 $(function(){
-
-       
 
     toastr.options = {
       "closeButton": true,

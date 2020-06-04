@@ -16,6 +16,7 @@ class LeagueWebController extends Controller
     |
     */
     public function index( Request $request ){
+        
         /*
         $indexUrl = explode('/', \Request::fullUrl());
         
@@ -67,7 +68,14 @@ class LeagueWebController extends Controller
 
             if( $BlockName != NULL ){
 
-                $CenterBlocks[$CenterBlockk] = $BlockName->name;
+                if( !empty(explode('_', $CenterBlock)[1]) )
+                {
+                    $CenterBlocks[$CenterBlockk] = [ 0=>$BlockName->name , 1 => explode('_', $CenterBlock)[1] ];
+                }
+                else
+                {
+                    $CenterBlocks[$CenterBlockk] = $BlockName->name;
+                }
 
             }
         }

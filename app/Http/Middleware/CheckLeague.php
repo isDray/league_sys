@@ -94,17 +94,28 @@ class CheckLeague
 
             $LeftBlocks = $LeftBlock;
         }
-        
+
         foreach ($LeftBlocks as $LeftBlockk => $LeftBlock) {
             
-            $BlockName = DB::table('xyzs_league_block')->where('id',$LeftBlock)->first();
+            //echo explode('_', $LeftBlock)[0];
+
+        
+
+            $BlockName = DB::table('xyzs_league_block')->where('id',explode('_', $LeftBlock)[0])->first();
 
             if( $BlockName != NULL ){
-
-                $LeftBlocks[$LeftBlockk] = $BlockName->name;
+                
+                if( !empty(explode('_', $LeftBlock)[1]) )
+                {
+                    $LeftBlocks[$LeftBlockk] = [ 0=>$BlockName->name , 1 => explode('_', $LeftBlock)[1] ];
+                }
+                else
+                {
+                    $LeftBlocks[$LeftBlockk] = $BlockName->name;
+                }
 
             }
-        }   
+        }
 
         View::share('LeftBlocks' , $LeftBlocks);     
         

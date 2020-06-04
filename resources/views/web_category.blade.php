@@ -12,7 +12,11 @@
 
     @foreach( $LeftBlocks as $LeftBlockk => $LeftBlock)
         
-        @includeIf('block_'. $LeftBlock)
+        @if( is_array($LeftBlock) )
+            @includeIf('block_'. $LeftBlock[0],['id'=>$LeftBlock[1]])
+        @else
+            @includeIf('block_'. $LeftBlock)
+        @endif
 
     @endforeach
 

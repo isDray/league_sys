@@ -14,7 +14,12 @@
 @parent
     @foreach( $LeftBlocks as $LeftBlockk => $LeftBlock)
         
-        @includeIf('block_'. $LeftBlock)
+        @if( is_array($LeftBlock) )
+            @includeIf('block_'. $LeftBlock[0],['id'=>$LeftBlock[1]])
+        @else
+            @includeIf('block_'. $LeftBlock)
+        @endif
+            
 
     @endforeach
 
@@ -24,7 +29,11 @@
     
     @foreach( $CenterBlocks as $CenterBlockk => $CenterBlock)
         
-        @includeIf('block_'. $CenterBlock)
+        @if( is_array($CenterBlock) )
+            @includeIf('block_'. $CenterBlock[0],['id'=>$CenterBlock[1]])
+        @else
+            @includeIf('block_'. $CenterBlock)
+        @endif
 
     @endforeach
 
