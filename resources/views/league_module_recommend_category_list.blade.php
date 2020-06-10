@@ -38,7 +38,9 @@
     </div>
     </div>
     @endif
-
+    <div class="alert alert-danger print-error-msg" style="display:none">
+        <ul></ul>
+    </div>
     <div id='recommend_hot_box' class='col-md-12 col-sm-12 col-xs-12'>
         
         <div class="box box-primary">
@@ -71,6 +73,8 @@
                             <td>{{ date('Y-m-d H:s:i' , $data['edit_time'] + date('Z')) }}</td>
                             <td> 
                                 <a href="{{url('/league_module_recommend_category/').'/'}}{{$data['id']}}" title='編輯'><i class='fa fa-fw fa-edit'></i></a>
+
+                                <a title='刪除' onclick="deleteCateRecommend(this)" value="{{$data['id']}}" ><i class='fa fa-fw fa-trash'></i></a>
                             </td>
                         </tr>                        
                         @endforeach
@@ -94,4 +98,75 @@
 @endsection
 
 @section('selfjs')
+<script type="text/javascript">
+document.addEventListener("DOMContentLoaded", (event) => {
+    
+
+});
+
+
+
+
+function deleteCateRecommend( cancel_recommend ){
+    var cancel_recommend = cancel_recommend.getAttribute('value');
+
+    if( !cancel_recommend )
+    {
+        alert("移除過程有誤，請重新整理後再嘗試");
+        return false;
+    }
+
+    if (confirm("項目刪除後,將無法恢復,確定要刪除此項目?")) 
+    {
+
+        var delajax = $.ajax({
+            url: "{{url('/league_module_recommend_category_del')}}",
+            method: "POST",
+            data: { 
+                      "_token": "{{ csrf_token() }}" ,
+                      "category_del_id":cancel_recommend
+                  },
+            dataType: "json"
+        });
+ 
+        delajax.done(function( data ) {
+            
+            // 如果成功就呈現刪除成功
+            if($.isEmptyObject(data.error))
+            {
+                alert(data.success);
+                location.reload();
+            }
+            // 刪除失敗呈現錯誤訊息
+            else
+            {
+                printErrorMsg(data.error);
+            }
+        });
+ 
+        delajax.fail(function( jqXHR, textStatus ) {
+            //console.log( "Request failed: " + textStatus );
+        });
+    }
+    else
+    {
+        
+        return false;
+    }
+    
+}
+
+
+function printErrorMsg (msg) {
+    
+    var err_msg = '';
+    $.each( msg, function( key, value ) 
+    {
+       err_msg += value+'\n\r';
+            
+    });
+
+    alert(err_msg);
+}
+</script>
 @endsection

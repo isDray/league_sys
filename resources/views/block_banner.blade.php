@@ -6,7 +6,6 @@ $hots = file_get_contents( public_path().'/top3.json' );
 
 $hots =  json_decode($hots,true);
 
-
 @endphp
 
 <style type="text/css">
@@ -62,7 +61,7 @@ $hots =  json_decode($hots,true);
         <div class='col-md-4 col-sm-12 col-xs-12 _np' id='topbuy'>
             <div id='topbuytitle'><h2 class='_nm'>本週熱銷排行</h2></div>
             @foreach( $hots as $hotk => $hot)
-            <a href="">
+            <a href="{{url('/show_goods/')}}/{{$hot['goods_id']}}" target='_blank'>
             <div class='col-md-12 top_recommend'>
                 
                 <div class='col-md-6 col-sm-4 col-xs-2 top_recommend_img'>

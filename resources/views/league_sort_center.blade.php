@@ -13,7 +13,19 @@
         <li class="ui-state-highlight pin" blocknum='1' >banner</li>
     	@foreach( $OnModules as $OnModulek => $OnModule)
     	@if( $OnModulek != 1 )
-        <li class="ui-state-highlight" blocknum='{{$OnModulek}}' >{{$OnModule}}</li>
+        <li class="ui-state-highlight" blocknum='{{$OnModulek}}' >
+
+            @if( $OnModule['edit_route_name'] != '')
+            <div class="box-tools">
+                  <a href="{{URL( $OnModule['edit_route_name'])}}@if(!empty(explode('_',$OnModulek)[1]))/{{explode('_',$OnModulek)[1]}}@endif" target='_blank'>
+                      <button type="button" class="btn btn-primary btn-sm">
+                      <i class="fa fa-fw fa-edit"></i></button>
+                  </a>
+            </div>
+            @endif
+
+            {{$OnModule['block_name']}}
+        </li>
         @endif
     	@endforeach
     </ul>
@@ -23,7 +35,17 @@
     <ul id="sortable2" class="connectedSortable">
     	@foreach( $OffModules as $OffModulek => $OffModule)
         @if( $OffModulek != 1 )
-    	<li class="ui-state-highlight" blocknum='{{$OffModulek}}'>{{$OffModule}}</li>
+        <li class="ui-state-highlight" blocknum='{{$OffModulek}}'>
+            @if( $OffModule['edit_route_name'] != '')
+            <div class="box-tools">
+                  <a href="{{URL( $OffModule['edit_route_name'])}}@if(!empty(explode('_',$OffModulek)[1]))/{{explode('_',$OffModulek)[1]}}@endif" target='_blank'>
+                      <button type="button" class="btn btn-primary btn-sm">
+                      <i class="fa fa-fw fa-edit"></i></button>
+                  </a>
+            </div>
+            @endif
+            {{$OffModule['block_name']}}
+        </li>
         @endif
     	@endforeach
     </ul>

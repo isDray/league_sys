@@ -4,6 +4,8 @@ use Illuminate\Http\Request;
 $categorys = Lib_block::get_categorys( $id );
 
 @endphp
+
+@if( $categorys )
 <link href="{{ asset('css/block_category_recommend.css') }}" rel="stylesheet">
 <div class="box box-solid category_box" cus_title='類別商品推薦'>
     
@@ -91,3 +93,4 @@ document.addEventListener("DOMContentLoaded", function(event) {
     });
 });
 </script>
+@endif

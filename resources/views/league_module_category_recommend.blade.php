@@ -192,7 +192,7 @@ $(function(){
         
         input_total = $(this).parent().children('.form-group').length
         
-        if( input_total + 1 > 10){
+        if( input_total + 1 > 4){
 
             toastr.info('各類別推薦商品最多只能設定10個');
         }

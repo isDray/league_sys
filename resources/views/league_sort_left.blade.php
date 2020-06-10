@@ -11,7 +11,17 @@
 <div class='col-md-2 col-md-offset-4 col-sm-6 col-xs-6' id='bloack_on' subject="呈現區塊" >
     <ul id="sortable1" class="connectedSortable">
     	@foreach( $OnModules as $OnModulek => $OnModule)
-    	<li class="ui-state-highlight" blocknum='{{$OnModulek}}'>{{$OnModule}}</li>
+    	<li class="ui-state-highlight" blocknum='{{$OnModulek}}'>
+            @if( $OnModule['edit_route_name'] != '')
+            <div class="box-tools">
+                  <a href="{{URL( $OnModule['edit_route_name'])}}@if(!empty(explode('_',$OnModulek)[1]))/{{explode('_',$OnModulek)[1]}}@endif" target='_blank'>
+                      <button type="button" class="btn btn-primary btn-sm">
+                      <i class="fa fa-fw fa-edit"></i></button>
+                  </a>
+            </div>
+            @endif
+            {{$OnModule['block_name']}}
+        </li>
     	@endforeach
     </ul>
 </div> 
@@ -19,7 +29,17 @@
 <div class='col-md-2 col-md-offset- col-sm-6 col-xs-6' id='block_off' subject="待用區塊" >
     <ul id="sortable2" class="connectedSortable">
     	@foreach( $OffModules as $OffModulek => $OffModule)
-    	<li class="ui-state-highlight" blocknum='{{$OffModulek}}'>{{$OffModule}}</li>
+    	<li class="ui-state-highlight" blocknum='{{$OffModulek}}'>
+            @if( $OffModule['edit_route_name'] != '')
+            <div class="box-tools">
+                  <a href="{{URL( $OffModule['edit_route_name'])}}@if(!empty(explode('_',$OffModulek)[1]))/{{explode('_',$OffModulek)[1]}}@endif" target='_blank'>
+                      <button type="button" class="btn btn-primary btn-sm">
+                      <i class="fa fa-fw fa-edit"></i></button>
+                  </a>
+            </div>
+            @endif
+            {{$OffModule['block_name']}}
+        </li>
     	@endforeach
     </ul>
 </div>

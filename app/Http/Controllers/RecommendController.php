@@ -684,6 +684,10 @@ class RecommendController extends Controller
             $cate_goods[0] = $request->old()['goods1'];
             $cate_goods[1] = $request->old()['goods2'];
             $cate_goods[2] = $request->old()['goods3'];
+           
+            $cate_recommend_id =  $request->old()['cate_recommend_id'];
+
+
         }
         else
         {   
@@ -733,6 +737,7 @@ class RecommendController extends Controller
     */
     public function league_module_recommend_category_act( Request $request ){
         
+        // 取得當下加盟會員ID
         $LeagueId = $request->session()->get('user_id');        
         
         $goods_msg1 = [];
@@ -772,22 +777,23 @@ class RecommendController extends Controller
                         
         for( $i = 0 ; $i < 3 ;$i++ )
         {   $tmp_arr = "goods_msg1";
-            $tmp_str = '';
+            $tmp_str  = '';
+            $tmp_str2 = '';
 
-            for ($j=0; $j <10 ; $j++) { 
-                $tmp_str = "第".($i+1)."-".($j+1)."商品，不屬於該類別";
-                $goods_msg1['goods'.($i+1).".".$j.".exists"] =  $tmp_str ;
+            for ($j=0; $j <4 ; $j++) { 
+                $tmp_str  = "第".($i+1)."-".($j+1)."商品，不屬於該類別";
+                $tmp_str2 = "第".($i+1)."-".($j+1)."商品，不存在";
+                $goods_msg1['goods'.($i+1).".".$j.".good_class"] =  $tmp_str ;
+                $goods_msg1['goods'.($i+1).".".$j.".exists"]     =  $tmp_str2 ;
             }    
         }
 
-        $goods_msg = $goods_msg1;
+        $goods_msg = $goods_msg1; 
         
         $validator = Validator::make($request->all(), 
-        [ 'goods1.*'=> ['nullable',
-                        Rule::exists('xyzs_goods','goods_sn')->where(function ($query) use ($cat1) {
-                            $query->where('cat_id', $cat1);
-                        }),
-                       ],
+        [ 
+          'goods1.*'=> "nullable|exists:xyzs_goods,goods_sn|good_class:{$cat1}",
+          
           'goods2.*'=> ['nullable',
                         Rule::exists('xyzs_goods','goods_sn')->where(function ($query) use ($cat2) {
                             $query->where('cat_id', $cat2);
@@ -953,6 +959,57 @@ class RecommendController extends Controller
 
 
     
+    /*
+    |--------------------------------------------------------------------------
+    | 類別推薦刪除
+    |--------------------------------------------------------------------------
+    |
+    |
+    */
+    public function league_module_recommend_category_del( Request $request ){
+        
+        // 當下加盟會員id
+        $LeagueId = $request->session()->get('user_id');
+        
+
+        // 判斷類別推薦是否屬於當下加盟會員
+        $validator = Validator::make($request->all(), 
+        [ 'category_del_id'=> ['required',
+                        Rule::exists('xyzs_league_category_recommend','id')->where(function ($query) use ($LeagueId) {
+                            $query->where('league_id', $LeagueId);
+                        }),
+                       ],                       
+        ]
+        ,
+        ['category_del_id.required'=>'移除過程有誤，請重新整理後再嘗試',
+         'category_del_id.exists'  =>'此類別推薦不存在，或者無權限刪除',
+        ]
+        );
+
+        // 驗證成功,可執行刪除
+        if ($validator->passes())
+        {
+            if( DB::table('xyzs_league_category_recommend')->where('id', '=', $request->category_del_id)->where('league_id','=',$LeagueId)->delete() )
+            {
+                return response()->json(['success'=>'刪除成功']);
+            }
+            else
+            {
+                return response()->json(['error'=>['移除過程有誤，請重新整理後再嘗試']]);
+            }
+        }
+        // 驗證失敗，回傳錯誤訊息
+        else
+        {
+            return response()->json(['error'=>$validator->errors()->all()]);
+        }
+
+        
+    }
+
+
+
+
     /*
     |--------------------------------------------------------------------------
     | 堆疊商品輪播清單
@@ -1169,4 +1226,53 @@ class RecommendController extends Controller
         return redirect('/league_message');
         //var_dump( $request->all() );
     }
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | 堆疊推薦刪除功能
+    |--------------------------------------------------------------------------
+    |
+    */
+    public function league_module_recommend_stack_del( Request $request ){
+
+        // 當下加盟會員id
+        $LeagueId = $request->session()->get('user_id');
+        
+
+        // 判斷類別推薦是否屬於當下加盟會員
+        $validator = Validator::make($request->all(), 
+        [ 'stack_del_id'=> ['required',
+                        Rule::exists('xyzs_league_stack','id')->where(function ($query) use ($LeagueId) {
+                            $query->where('league_id', $LeagueId);
+                        }),
+                       ],                       
+        ]
+        ,
+        ['stack_del_id.required'=>'移除過程有誤，請重新整理後再嘗試',
+         'stack_del_id.exists'  =>'此堆疊推薦不存在，或者無權限刪除',
+        ]
+        );
+
+        // 驗證成功,可執行刪除
+        if ($validator->passes())
+        {
+            if( DB::table('xyzs_league_stack')->where('id', '=', $request->stack_del_id)->where('league_id','=',$LeagueId)->delete() )
+            {
+                return response()->json(['success'=>'刪除成功']);
+            }
+            else
+            {
+                return response()->json(['error'=>['移除過程有誤，請重新整理後再嘗試']]);
+            }
+        }
+        // 驗證失敗，回傳錯誤訊息
+        else
+        {   
+            return response()->json(['error'=>$validator->errors()->all()]);
+        }
+    }
+
 }

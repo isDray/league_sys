@@ -71,6 +71,8 @@
                             <td>{{ date('Y-m-d H:s:i' , $stack['edit_time'] + date('Z')) }}</td>
                             <td> 
                                 <a href="{{url('/league_module_recommend_stack_edit/').'/'.$stack['id']}}" title='編輯'><i class='fa fa-fw fa-edit'></i></a>
+
+                                <a title='刪除' onclick="deleteStackRecommend(this)" value="{{$stack['id']}}" ><i class='fa fa-fw fa-trash'></i></a>
                             </td>
                         </tr>                        
                         @endforeach
@@ -94,4 +96,69 @@
 @endsection
 
 @section('selfjs')
+<script type="text/javascript">
+
+function deleteStackRecommend( cancel_recommend ){
+    var cancel_recommend = cancel_recommend.getAttribute('value');
+
+    if( !cancel_recommend )
+    {
+        alert("移除過程有誤，請重新整理後再嘗試");
+        return false;
+    }
+
+    if (confirm("項目刪除後,將無法恢復,確定要刪除此項目?")) 
+    {
+
+        var delajax = $.ajax({
+            url: "{{url('/league_module_recommend_stack_del')}}",
+            method: "POST",
+            data: { 
+                      "_token": "{{ csrf_token() }}" ,
+                      "stack_del_id":cancel_recommend
+                  },
+            dataType: "json"
+        });
+ 
+        delajax.done(function( data ) {
+            
+            // 如果成功就呈現刪除成功
+            if($.isEmptyObject(data.error))
+            {
+                alert(data.success);
+                location.reload();
+            }
+            // 刪除失敗呈現錯誤訊息
+            else
+            {
+                printErrorMsg(data.error);
+            }
+        });
+ 
+        delajax.fail(function( jqXHR, textStatus ) {
+            //console.log( "Request failed: " + textStatus );
+        });
+    }
+    else
+    {
+        
+        return false;
+    }
+    
+}
+
+
+function printErrorMsg (msg) {
+    
+    var err_msg = '';
+    $.each( msg, function( key, value ) 
+    {
+       err_msg += value+'\n\r';
+            
+    });
+
+    alert(err_msg);
+}
+</script>
+</script>
 @endsection

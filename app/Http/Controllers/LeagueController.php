@@ -295,28 +295,30 @@ class LeagueController extends Controller
     */
     public function league_sort_center( Request $request ){
 
-        // 取出所有區塊
+        // 取出所有中央區塊
         $TmpModules = DB::table('xyzs_league_block')->where('block_area','center')->get();
         
         // 轉換為array
         $TmpModules = json_decode( $TmpModules , true );
-
+        
         $ToolModules = [];
         
         $ExtensionModules = [];
 
         foreach ($TmpModules as $TmpModulek => $TmpModule ) {
-
-            //$ToolModules[ $TmpModule['id'] ] = $TmpModule['block_name'];
-
-            // 非擴張群組
+             
+            
+            // 判斷是否為擴張模組,再分別放入不同陣列
             if( $TmpModule['extension'] == 0 )
             {
-                $ToolModules[ $TmpModule['id'] ] = $TmpModule['block_name'];
+                $ToolModules[ $TmpModule['id'] ]['block_name']      = $TmpModule['block_name'];
+                $ToolModules[ $TmpModule['id'] ]['edit_route_name'] = $TmpModule['edit_route_name'];
             }
             else
             {
-                $ExtensionModules[ $TmpModule['id'] ] = $TmpModule['ex_table'];
+                $ExtensionModules[ $TmpModule['id'] ]['id'] = $TmpModule['ex_table'];
+                $ExtensionModules[ $TmpModule['id'] ]['edit_route_name'] = $TmpModule['edit_route_name'];
+
             }
         }
 
@@ -325,16 +327,19 @@ class LeagueController extends Controller
         {
             foreach ($ExtensionModules as $ExtensionModulek => $ExtensionModule ) {
                 
-                $tmpExtensions = DB::table( $ExtensionModule)->where('league_id',$request->session()->get('user_id'))->get();
+                $tmpExtensions = DB::table( $ExtensionModule['id'] )->where('league_id',$request->session()->get('user_id'))->get();
 
                 $tmpExtensions = json_decode( $tmpExtensions , true );
 
                 foreach ($tmpExtensions as $tmpExtensionk => $tmpExtension ) {
 
-                    $ToolModules[ $ExtensionModulek.'_'.$tmpExtension['id'] ] = $tmpExtension['title'];
+                    $ToolModules[ $ExtensionModulek.'_'.$tmpExtension['id'] ]['block_name'] = $tmpExtension['title'];
+                    $ToolModules[ $ExtensionModulek.'_'.$tmpExtension['id'] ]['edit_route_name'] = $ExtensionModule['edit_route_name'];
                 }
             }
         }
+
+
          
         // 取出會員的中央排序
         $TmpLeagueCenterSort = DB::table('xyzs_league_block_sort')->where('user_id',$request->session()->get('user_id'))->where('block_id',1)->first();
@@ -347,7 +352,7 @@ class LeagueController extends Controller
 
             $TmpOnModules = unserialize( $TmpLeagueCenterSort->sort );
         }
-        
+    
         $OnModules = [];
 
         foreach( $TmpOnModules as $TmpOnModulek => $TmpOnModule ) {
@@ -471,25 +476,28 @@ class LeagueController extends Controller
             // 非擴張群組
             if( $TmpModule['extension'] == 0 )
             {
-                $ToolModules[ $TmpModule['id'] ] = $TmpModule['block_name'];
+                $ToolModules[ $TmpModule['id'] ]['block_name'] = $TmpModule['block_name'];
+                $ToolModules[ $TmpModule['id'] ]['edit_route_name'] = $TmpModule['edit_route_name'];
             }
             else
             {
-                $ExtensionModules[ $TmpModule['id'] ] = $TmpModule['ex_table'];
+                $ExtensionModules[ $TmpModule['id'] ]['id'] = $TmpModule['ex_table'];
+                $ExtensionModules[ $TmpModule['id'] ]['edit_route_name'] = $TmpModule['edit_route_name'];                
             }
         }
-        
+
         if( count($ExtensionModules) > 0 )
         {
             foreach ($ExtensionModules as $ExtensionModulek => $ExtensionModule ) {
                 
-                $tmpExtensions = DB::table( $ExtensionModule)->where('league_id',$request->session()->get('user_id'))->get();
+                $tmpExtensions = DB::table( $ExtensionModule['id'] )->where('league_id',$request->session()->get('user_id'))->get();
 
                 $tmpExtensions = json_decode( $tmpExtensions , true );
 
                 foreach ($tmpExtensions as $tmpExtensionk => $tmpExtension ) {
 
-                    $ToolModules[ $ExtensionModulek.'_'.$tmpExtension['id'] ] = $tmpExtension['title'];
+                    $ToolModules[ $ExtensionModulek.'_'.$tmpExtension['id'] ]['block_name'] = $tmpExtension['title'];
+                    $ToolModules[ $ExtensionModulek.'_'.$tmpExtension['id'] ]['edit_route_name'] = $ExtensionModule['edit_route_name'];                    
                 }
             }
         }
@@ -521,8 +529,12 @@ class LeagueController extends Controller
             unset($ToolModules[$TmpOnModule]);
         }
 
-        $OffModules = $ToolModules;
         
+
+        $OffModules = $ToolModules;
+                var_dump( $OffModules );
+
+
         $PageTitle = "左側區塊排序";
 
         return view('/league_sort_left',['OnModules' => $OnModules , 'OffModules' => $OffModules ,'PageTitle'=>$PageTitle , 'tree' => 'sort' ]);

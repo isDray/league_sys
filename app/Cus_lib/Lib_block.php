@@ -225,6 +225,12 @@ class Lib_block{
         
         $is_exist = (array)$is_exist;
         
+
+        if( !$is_exist )
+        {
+            return [];
+        }
+
         if( $is_exist )
         {
             $categorys = DB::table('xyzs_category')->whereIn('cat_id',[$is_exist['cate_name1'],$is_exist['cate_name2'],$is_exist['cate_name3']])->orderBy('cat_id','DESC')->get();
@@ -257,7 +263,6 @@ class Lib_block{
                   
                 }
             }
-            //var_dump($categorys);
 
 
         }
@@ -298,9 +303,16 @@ class Lib_block{
                         ->where('league_id',$LeagueId)
                         ->where('id',$id)
                         ->first();
+        
+        
 
         $stacks = (array)$stacks;
         
+        if( !$stacks )
+        {
+            return [];
+        }
+
         $stacks['goods'] = unserialize($stacks['goods']);
         
         $stacks['goods_data'] = [];

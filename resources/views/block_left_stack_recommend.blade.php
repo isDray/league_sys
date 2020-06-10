@@ -5,11 +5,13 @@
   use Illuminate\Http\Request;
   
   $stacks = Lib_block::get_stack($id);
-  
 
 @endphp
 
+
+@if( $stacks )
 <style type="text/css">
+@import url(https://fonts.googleapis.com/earlyaccess/cwtexyen.css);
 ol, ul { list-style: none }
 
 blockquote, q { quotes: none }
@@ -27,7 +29,7 @@ blockquote, q { quotes: none }
   left: 0;
   background: #c4c4c4;
   width: 100%;
-  height: 240px;
+  /*height: 240px;*/
   border-radius: 4px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   -webkit-transform-origin: center;
@@ -252,7 +254,7 @@ blockquote, q { quotes: none }
     position: absolute;
     z-index: 30;
     left:calc(50% - 60px);
-    bottom: -10px;
+    bottom: 4px;
     width: 120px;
 }
 /*span {
@@ -350,3 +352,4 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
 
 </script>
+@endif
