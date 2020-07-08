@@ -19,9 +19,6 @@ $categorys = Lib_block::get_categorys( $id );
     <!-- /.box-header -->
 
     <div class="switch_box">
-<!--         <li class='switch_label active' id="label1" >男性用品</li>
-        <li class='switch_label' id="label2" >女性用品</li>
-        <li class='switch_label' id="label3" >SM用品</li> -->
         @foreach($categorys as $categoryk => $category)
             <li class='switch_label{{$id}} @if($categoryk == 0) active @endif' id="label{{$categoryk}}" >{{ $category['cat_name'] }}</li>       
         @endforeach        
@@ -30,39 +27,31 @@ $categorys = Lib_block::get_categorys( $id );
     <div class="box-body switch_content_box">       
         @foreach($categorys as $categoryk => $category)
             <div class='@if($categoryk == 0) active @endif switch_content{{$id}}' for='label{{$categoryk}}'>
+                
                 <div class='categoory_ribbon'>{{ $category['cat_name'] }}</div>
                 <div class='categoory_desc'>{{ $category['cus_des'] }}</div>
-                    
-                    <div class='col-md-12 col-sm-12 col-xs-12 cat_main_box_out'>
-
-                        <div class='col-md-12 col-sm-12 col-xs-12 cat_main_box_mid'>
-
-                    @foreach( $category['goodsDatas'] as $category_k => $category_v )
-                    
-                        <div class='cat_main_box_in col-md-3 col-sm-3 col-xs-6'>
-                            
-                            <div class='cat_item'>
-                                
-                                <div class='cat_item_img'>
-                                    <img src="https://***REMOVED***.com/***REMOVED***/{{$category_v['goods_thumb']}}">
-                                </div>
-
-                                <div class='cat_item_info'>
-                                    <div class='item_sn'>{{$category_v['goods_sn']}}</div>
-                                    <div class='item_name'>{{$category_v['goods_name']}}</div>
-                                    <div class='item_price'>${{round($category_v['shop_price'])}}</div>
-                                    <div class='item_btn'><a  class="btn colorbtn add_to_cart" role="button" goods_id="{{$category_v['goods_id']}}" title="將{{ $category_v['goods_name'] }}加入購物車">立即購買</a></div>
-                                </div>
-                            </div>
-                        </div>
-                    
-                    @endforeach
-
-                        </div>
-                    </div>
-                    
-
                 
+                @foreach( $category['goodsDatas'] as $category_k => $category_v )
+                    
+                <div class='col-md-3 col-sm-4 col-xs-6 show_goods_box'>
+        
+                    <div class="thumbnail">
+                        <a href="{{url('/show_goods/'.$category_v['goods_id'])}}" title="查看商品:{{$category_v['goods_name']}}詳細內容">
+                        <img lazysrc="https://***REMOVED***.com/***REMOVED***/{{$category_v['goods_thumb']}}" data-holder-rendered="true" class="lazyload" alt="{{ $category_v['goods_name'] }},貨號:{{ $category_v['goods_sn'] }},價格:{{ $category_v['shop_price'] }}">
+                        </a>
+                        <div class="caption">
+                            <p class='goods_sn'>貨號:{{ $category_v['goods_sn'] }}</p>
+                            <a href="{{url('/show_goods/'.$category_v['goods_id'])}}" title="查看商品:{{$category_v['goods_name']}}詳細內容">
+                            <h4 class="goods_title">{{ $category_v['goods_name'] }}</h4></a>
+                            
+                            <p class='goods_price'><small>$</small>{{ $category_v['shop_price'] }}</p>
+                            <p class='goods_add_btn'><a  class="btn colorbtn add_to_cart" role="button" goods_id="{{$category_v['goods_id']}}" title="將{{ $category_v['goods_name'] }}加入購物車">立即購買</a></p>
+                        </div>
+                    </div>                
+                    
+                </div>
+                    
+                @endforeach
 
             </div>            
         @endforeach               

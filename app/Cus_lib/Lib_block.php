@@ -232,19 +232,39 @@ class Lib_block{
         }
 
         if( $is_exist )
-        {
-            $categorys = DB::table('xyzs_category')->whereIn('cat_id',[$is_exist['cate_name1'],$is_exist['cate_name2'],$is_exist['cate_name3']])->orderBy('cat_id','DESC')->get();
+        {   
+            // 取出三個類別
+            $categorys = DB::table('xyzs_category')->whereIn('cat_id',[$is_exist['cate_name1'],$is_exist['cate_name2'],$is_exist['cate_name3']])/*->orderBy('cat_id','DESC')*/->get();
             
             $categorys = json_decode( $categorys , true);
+            
 
 
             for ($i=0; $i < 3; $i++) { 
 
                 $tmpGoods = unserialize($is_exist['cate_goods'.($i+1)]);
+                
+                $tmpGoodsRes = [];
 
-                $tmpGoods[$i] = json_decode( DB::table('xyzs_goods')->whereIn('goods_sn',$tmpGoods)->limit(4)->get() , true );
+                foreach ($tmpGoods as $tmpGoodsk => $tmpGoodv) {
+                    
+                    $getGoodsData = json_decode( DB::table('xyzs_goods')->where('goods_sn',$tmpGoodv)->where('goods_number','>',0)->get() , true ); 
+                    
+                    if( $getGoodsData ){
+
+                        array_push($tmpGoodsRes, $getGoodsData[0]);
+
+                    }
+
+                    if( count($tmpGoodsRes) >= 4 ){
+                        break;
+                    }
+                }
                 
 
+                //$tmpGoods[$i] = json_decode( DB::table('xyzs_goods')->whereIn('goods_sn',$tmpGoods)->limit(4)->get() , true );
+                
+                $tmpGoods[$i] = $tmpGoodsRes;
                 //$tmpGoods[$i][0]['cat_id'];
                 //echo '<br>';
                 for ($j=0; $j < 3 ; $j++) { 

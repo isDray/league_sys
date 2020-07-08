@@ -95,7 +95,6 @@
                     <span type="button" class="btn btn-success add_input add_input{{$i+1}}" >+ 新增</span>  
                     <br><br>
 
-
             	</div>
 
                 <div class='col-md-8 col-md-offset-4 col-sm-12 col-xs-12 goods_input_div'>
@@ -192,9 +191,9 @@ $(function(){
         
         input_total = $(this).parent().children('.form-group').length
         
-        if( input_total + 1 > 4){
+        if( input_total + 1 > 6){
 
-            toastr.info('各類別推薦商品最多只能設定10個');
+            toastr.info('各類別推薦商品最多只能設定6個');
         }
         else{
             

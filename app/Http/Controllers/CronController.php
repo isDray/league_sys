@@ -47,12 +47,15 @@ class CronController extends Controller
                     ->orWhere('shipping_status', '=', 2);
                })
                ->where('g.is_on_sale',1)
+               ->where('g.shop_price','>=',200)
+               ->where('g.goods_number','>',0)
                ->select('g.*', DB::raw('SUM(og.goods_number) AS totalsale') )
                ->groupBy('g.goods_id')
                ->orderBy('totalsale','desc')
                ->offset(0)
                ->limit(3)
                ->get();
+
 
 
         Storage::disk('ezpub')->put('top3.json', json_encode($goods)  );

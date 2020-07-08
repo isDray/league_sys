@@ -259,7 +259,57 @@
             </a>            
         </div>
     </div>
-        
+    <!-- 快速menu區塊 -->
+    <div id='fast_cat_box'>
+        <div id='fast_cat_box_left'>
+            @foreach( $categorys as $categoryk => $category)<input type='checkbox' class='fast_cat_root' id='fast_cat_root_{{$category["rcat"]}}'><label class='fast_cat_root_label' for='fast_cat_root_{{$category["rcat"]}}' refor='fast_cat_root_{{$category["rcat"]}}' >{{$category['rcat_name']}}</label>@endforeach
+        </div>
+
+        <div id='fast_cat_box_right'>
+            <input type='checkbox' id='all_cat_root'><label id='all_cat_root_label' for='all_cat_root'></label>
+        </div>
+
+        <div id='fast_cat_box_show'>
+            @foreach( $categorys as $categoryk => $category)
+            <div class='fast_cat_box_child' id="fast_cat_root_{{$category["rcat"]}}_child_box">
+
+            @if( count($category['child']) > 0 )
+                @foreach( $category['child'] as $categorykc => $categoryc)<a href="{{url('/category')}}/{{$categoryc['ccat']}}"><div class='fast_cat_box_child_item'>{{$categoryc['ccat_name']}}</div></a>@endforeach
+            @else
+
+            @endif
+            </div>
+            @endforeach
+
+            <!-- 全選單-->
+            <div id='all_cat_box'>
+            
+                @foreach( $categorys as $categoryk => $category)
+                <input type='checkbox' id='all_cat_{{$category["rcat"]}}' class='all_cat_check'><label class='all_cat_label' for='all_cat_{{$category["rcat"]}}' backfor='all_cat_{{$category["rcat"]}}'><span class='return_cat'></span>{{$category['rcat_name']}}</label>
+                <div class='all_cat_child_box' id='all_cat_child_box_{{$category["rcat"]}}'>
+                    @if( count($category['child'] > 0) )
+                        
+                        @foreach( $category['child'] as $categorykc => $categoryc)
+                            <a href="{{url('/category')}}/{{$categoryc['ccat']}}">
+                                <div>
+                                    {{$categoryc['ccat_name']}}
+                                </div>
+                            </a>
+                        @endforeach
+
+                    @else
+
+                    @endif
+                </div>
+                @endforeach
+
+            </div>
+                
+            <!-- /全選單-->   
+
+        </div>
+    </div>
+    <!-- /快速menu區塊 -->        
     <div class='col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-12' id="content_right">
         
         @yield('content_right')
@@ -274,26 +324,26 @@
 
                 <div class='col-md-4 col-sm-4 col-xs-12'>
                     <ul class='footer_list'><h4>如何購買</h4>
-                        <li>購買流程</li>
-                        <li>配送說明</li>
-                        <li>支付方式說明</li>
-                        <li>退換貨原則</li>
+                        <li> <a href="{{url('/article/10')}}">購買流程</a> </li>
+                        <li> <a href="{{url('/article/15')}}">配送說明</a></li>
+                        <li> <a href="{{url('/article/17')}}">支付方式說明</a></li>
+                        <li> <a href="{{url('/article/21')}}">退換貨原則</a></li>
                     </ul>
                 </div>
 
                 <div class='col-md-4 col-sm-4 col-xs-12'>
                     <ul class='footer_list'><h4>常見問題</h4>
-                        <li>發票說明</li>
-                        <li>情趣用品清洗及收納注意事項</li>
-                        <li>常見Q&A</li>
-                        <li>產品保固說明</li>
+                        <li> <a href="{{url('/article/9')}}">發票說明</a></li>
+                        <li> <a href="{{url('/article/33')}}">情趣用品清洗及收納注意事項</a></li>
+                        <li> <a href="{{url('/article/48')}}">常見Q&A</a></li>
+                        <li> <a href="{{url('/article/51')}}">產品保固說明</a></li>
                     </ul>
                 </div>                
 
                 <div class='col-md-4 col-sm-4 col-xs-12'>
-                    <ul class='footer_list'><h4>會員中心</h4>
-                        <li>批發合作說明</li>
-                    </ul>
+                    <!--<ul class='footer_list'><h4>會員中心</h4>
+                        <li> <a href="{{url('/article/47')}}">批發合作說明</a></li>
+                    </ul> -->
                 </div>
             </div>
 
@@ -304,7 +354,7 @@
                 <div class="col-md-12 col-sm-12 col-xs-12"> 
                     <img lazysrc="https://***REMOVED***.com/***REMOVED***/ecs_static/img/18.png" style='float:right' class="lazyload">                    
                     <p id='footer_des'>
-                        享愛網採全站情趣用品購物滿千免運，「包裝隱密」保護您的購物隱私，本購物網站支援－貨到付款－超商取貨－宅配到府，讓您購物輕鬆無負擔！本站提供數千種情趣用品批發、零售， 並有滿額贈品選擇，歡迎參觀選購
+                        {{$LeagueData['store_name']}}採全站情趣用品購物滿千免運，「包裝隱密」保護您的購物隱私，本購物網站支援－貨到付款－超商取貨－宅配到府，讓您購物輕鬆無負擔！本站提供數千種情趣用品批發、零售， 並有滿額贈品選擇，歡迎參觀選購
                     </p>
                 </div>
 
@@ -602,6 +652,144 @@ $("#over_yes").click(function(){
     $("#over18").hide();
 });
 @endif
+
+/*
+|--------------------------------------------------------------------------
+| 左側快速分類選單
+|--------------------------------------------------------------------------
+|
+*/
+$(".fast_cat_root").click(function(){
+
+    //$( "fast_cat_box_left" ).scrollLeft( 300 );
+
+    //console.log( $(this).attr('id') );
+
+
+    // 先將當前選取id存入變數    
+    var selectId = $(this).attr('id');
+    
+    // 取消選取所有checkbox母分類
+    $(".fast_cat_root").prop('checked',false);
+
+    $("#"+selectId).prop('checked',true);
+    
+    var selectDisplay = $("#"+selectId+"_child_box").css('display');
+    
+    /*// 隱藏所有子分類
+    $(".fast_cat_box_child").slideUp();
+    */
+    //console.log( $("label[for="+selectId+"]").outerWidth() );
+    
+    //var paretnsLeft = $("#fast_cat_box_left").offset();
+    //var selfLeft    = $("label[for="+selectId+"]").offset();
+    
+    var moveDistance = 0;
+    $(".fast_cat_root_label").each(function(){
+
+        if( $(this).prop('for') == selectId )
+        {
+            return false;
+        }
+
+        moveDistance += $(this).outerWidth();
+    });
+
+    $('#fast_cat_box_left').animate({scrollLeft:moveDistance}, 200);
+    console.log( moveDistance );
+
+    if( selectDisplay == 'none')
+    {   
+        
+        $("#all_cat_box").hide();
+        $("#all_cat_root").prop('checked',false);
+        
+        if( $(".fast_cat_box_child:visible").length > 0 )
+        {    
+            $(".fast_cat_box_child").hide();
+
+            // 呈現選取的子分類
+            $("#"+selectId+"_child_box").fadeIn();
+        }
+        else
+        {    
+            $(".fast_cat_box_child").hide();
+
+            // 呈現選取的子分類
+            $("#"+selectId+"_child_box").slideDown();
+        }
+
+
+    }
+    else
+    {   // 隱藏選取的子分類
+        $("#"+selectId+"_child_box").slideUp(); 
+    }
+
+});
+
+
+
+
+/*
+|--------------------------------------------------------------------------
+|
+|--------------------------------------------------------------------------
+|
+*/
+$("#all_cat_root").click(function(){
+    
+    if( $("#all_cat_root:checked").length > 0 )
+    {   
+        $(".fast_cat_box_child").hide();
+        $("#all_cat_box").slideDown();
+    }
+    else{
+        
+        $("#all_cat_box").slideUp();
+    }
+
+})
+
+
+
+/*
+|--------------------------------------------------------------------------
+| 全選快速選單
+|--------------------------------------------------------------------------
+|
+*/
+$(".all_cat_check").click(function(){
+    
+    if( $(".all_cat_check:checked").length > 0)
+    {
+        var selectAllCat = $(this).attr('id');
+         
+        $(".all_cat_check").removeClass('checkroot');
+        $(".all_cat_check").addClass('uncheckroot');
+    
+        $("#"+selectAllCat).addClass('checkroot');
+        $("#"+selectAllCat).removeClass('uncheckroot');
+        
+        $(".all_cat_label").prop('for','');
+    }
+
+})
+
+
+
+$(".return_cat").click(function(){
+
+    $(".all_cat_check").removeClass('checkroot');
+    $(".all_cat_check").removeClass('uncheckroot');
+
+    $(".all_cat_label").each(function(k,i){
+        
+        tmpfor = i.getAttribute('backfor');
+
+        $(this).prop('for',tmpfor);
+    })
+})
 </script>
 </body>
 </html>

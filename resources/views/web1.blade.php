@@ -369,9 +369,9 @@
                 </div>                
 
                 <div class='col-md-4 col-sm-4 col-xs-12'>
-                    <ul class='footer_list'><h4>會員中心</h4>
+                    <!--<ul class='footer_list'><h4>會員中心</h4>
                         <li> <a href="{{url('/article/47')}}">批發合作說明</a></li>
-                    </ul>
+                    </ul> -->
                 </div>
             </div>
 
@@ -382,7 +382,7 @@
                 <div class="col-md-12 col-sm-12 col-xs-12"> 
                     <img lazysrc="https://***REMOVED***.com/***REMOVED***/ecs_static/img/18.png" style='float:right' class="lazyload" alt="禁止未滿18歲進行購買">                    
                     <p id='footer_des'>
-                        享愛網採全站情趣用品購物滿千免運，「包裝隱密」保護您的購物隱私，本購物網站支援－貨到付款－超商取貨－宅配到府，讓您購物輕鬆無負擔！本站提供數千種情趣用品批發、零售， 並有滿額贈品選擇，歡迎參觀選購
+                        {{$LeagueData['store_name']}}採全站情趣用品購物滿千免運，「包裝隱密」保護您的購物隱私，本購物網站支援－貨到付款－超商取貨－宅配到府，讓您購物輕鬆無負擔！本站提供數千種情趣用品批發、零售， 並有滿額贈品選擇，歡迎參觀選購
                     </p>
                 </div>
 
@@ -410,7 +410,7 @@
         <a href="{{url('/')}}">
         <i class="fa fa-fw fa-home"></i>
         <br>
-        首頁 <span id='mydemo'>@{{counter}}</span>
+        首頁
         </a>
     </div>
     <div class='col-md-3 col-sm-3 col-xs-3 rwd_search_btn'>
