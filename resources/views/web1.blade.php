@@ -340,6 +340,12 @@
     
     <div class='col-md-8 col-sm-12 col-xs-12' id="content_right">
         @yield('content_right')
+
+        @if( isset($viewed_goods) && count($viewed_goods) > 0)
+
+            @include('viewed_goods')
+    
+        @endif
     </div>   
 </div>
 
@@ -874,6 +880,36 @@ $(".return_cat").click(function(){
         $(this).prop('for',tmpfor);
     })
 })
+
+
+
+$("#viewed_switch").click(function(){
+    
+    
+    // 如果室外箭頭就要向外
+    if( $( "#viewed_switch p" ).hasClass( "fa-chevron-left" ) )
+    {   
+        //$("#viewed_goods_box").css("right","10px");
+
+        $('#viewed_goods_box').animate({"margin-right": '+=110'});
+
+        $( "#viewed_switch p").removeClass("fa-chevron-left");
+        $( "#viewed_switch p").addClass( "fa-chevron-right" );
+
+    }
+    else
+    {
+        //$("#viewed_goods_box").css("right","-100px");
+
+        $('#viewed_goods_box').animate({"margin-right": '-=110'});
+
+        $( "#viewed_switch p").removeClass("fa-chevron-right");
+        $( "#viewed_switch p").addClass( "fa-chevron-left" );        
+    }
+
+
+});
+
 </script>
 </body>
 </html>

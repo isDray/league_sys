@@ -248,7 +248,7 @@ class Lib_block{
 
                 foreach ($tmpGoods as $tmpGoodsk => $tmpGoodv) {
                     
-                    $getGoodsData = json_decode( DB::table('xyzs_goods')->where('goods_sn',$tmpGoodv)->where('goods_number','>',0)->get() , true ); 
+                    $getGoodsData = json_decode( DB::table('xyzs_goods')->where('goods_sn',$tmpGoodv)->where('goods_number','>',0)->select('*',DB::raw( "ROUND(shop_price) as shop_price" ) )->get() , true ); 
                     
                     if( $getGoodsData ){
 

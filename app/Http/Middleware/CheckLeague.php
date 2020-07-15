@@ -1,10 +1,12 @@
 <?php
 
 namespace App\Http\Middleware;
+use Illuminate\Support\Facades\Cookie;
 use App\Cus_lib\Lib_common;
 use Closure;
 use DB;
 use View;
+
 class CheckLeague
 {
     /**
@@ -136,6 +138,61 @@ class CheckLeague
         
         
         View::share('Breadcrum' , Lib_common::_getBreadcrumb() );
+        
+        /**
+         * 確認是否已是本站會員
+         **/
+        $sub_member = $request->session()->get('member_id');
+
+        $request->attributes->add(['sub_member' => $sub_member ]);
+
+        // 試著取出瀏覽紀錄
+        if( !empty($sub_member) )
+        {
+            $viewd_goods = DB::table('xyzs_league_viewd_goods')->where('member_id', $sub_member)->first();
+            
+            // 如果有取到瀏覽紀錄 , 就取出還原成array
+            if( $viewd_goods )
+            {
+                $tmp_viewed_goods = unserialize( $viewd_goods->viewed_goods );
+                
+                // 將整理好的瀏覽紀錄傳給全部view
+                $final_viewed_goods = [];
+
+                foreach ($tmp_viewed_goods as $tmp_viewed_goodk => $tmp_viewed_good) {
+                    
+                    $tmp_goods_datas = DB::table('xyzs_goods')->where('goods_id', $tmp_viewed_good)->select('goods_sn','goods_name','goods_thumb','goods_id')->first();
+
+                    if( $tmp_goods_datas )
+                    {
+                        array_push( $final_viewed_goods , ['goods_sn'=>$tmp_goods_datas->goods_sn , 'goods_name'=>$tmp_goods_datas->goods_name , 'goods_thumb'=>$tmp_goods_datas->goods_thumb , 'goods_id'=>$tmp_goods_datas->goods_id ] );
+                    }
+                }
+
+                View::share('viewed_goods' , $final_viewed_goods );
+            }
+        }
+        else
+        {
+            if( Cookie::get('viewed_goods') !== null )
+            {
+                $tmp_viewed_goods = Cookie::get('viewed_goods');
+            
+                $final_viewed_goods = [];
+                
+                foreach ($tmp_viewed_goods as $tmp_viewed_goodk => $tmp_viewed_good) {
+                    
+                    $tmp_goods_datas = DB::table('xyzs_goods')->where('goods_id', $tmp_viewed_good)->select('goods_sn','goods_name','goods_thumb','goods_id')->first();
+
+                    if( $tmp_goods_datas )
+                    {
+                        array_push( $final_viewed_goods , ['goods_sn'=>$tmp_goods_datas->goods_sn , 'goods_name'=>$tmp_goods_datas->goods_name , 'goods_thumb'=>$tmp_goods_datas->goods_thumb , 'goods_id'=>$tmp_goods_datas->goods_id ] );
+                    }
+                }
+
+                View::share('viewed_goods' , $final_viewed_goods );   
+            }                         
+        }
 
         /**
          * 判斷是否驗證過18歲
