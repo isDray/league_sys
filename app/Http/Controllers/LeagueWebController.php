@@ -62,12 +62,22 @@ class LeagueWebController extends Controller
             $CenterBlocks = $CenterBlock;
         }
         
+        $center_css = ['10'=>'block_cga_recommend.css'];
+        $final_css  = [];
+
         foreach ($CenterBlocks as $CenterBlockk => $CenterBlock) {
             
             $BlockName = DB::table('xyzs_league_block')->where('id',$CenterBlock)->first();
 
             if( $BlockName != NULL ){
 
+                if( array_key_exists(explode('_', $CenterBlock)[0], $center_css) ){
+
+                    if( !in_array(explode('_', $CenterBlock)[0], $final_css) )
+                    {
+                        array_push($final_css, trim($center_css[explode('_', $CenterBlock)[0]]) );
+                    }
+                }
                 if( !empty(explode('_', $CenterBlock)[1]) )
                 {
                     $CenterBlocks[$CenterBlockk] = [ 0=>$BlockName->name , 1 => explode('_', $CenterBlock)[1] ];
@@ -86,10 +96,11 @@ class LeagueWebController extends Controller
             
             $condList['owl'] = true;    
         }
-
+        
         //$request->session()->forget('cart');
         
         return view('web_index', [ 'CenterBlocks' => $CenterBlocks ,
+                                   'center_css'   => $final_css,
                                    'title'        => '情趣用品-飛機杯-跳蛋-按摩棒-情趣小物-線上購買',
                                    'keywords'     => '情趣用品,電動飛機杯,仿真飛機杯,無線跳蛋,有線跳蛋,旋轉按摩棒,震動按摩棒,多段變頻按摩棒,情趣小怪獸,情趣小章魚,舌舔跳蛋',
                                    'description'  => '樣式最多的情趣用品線上購買的平台 , 精選跳蛋、變頻按摩棒、情趣睡衣、自慰飛機杯、情趣娃娃、潤滑液等多款情趣商品,想要找提升情趣的用品',

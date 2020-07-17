@@ -352,5 +352,39 @@ class Lib_block{
         
         return $stacks;
     }
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | 取客製商品推薦
+    |--------------------------------------------------------------------------
+    |
+    */
+    public static function get_custom_ad( $id ){
+        
+        $LeagueId = Session::get( 'league_id' );
+
+        $datas =  DB::table('xyzs_league_custom_ad')
+                        ->where('league_id',$LeagueId)
+                        ->where('id',$id)
+                        ->first();        
+
+        $datas = (array)$datas;
+        
+        if( !$datas )
+        {
+            return [];
+        }        
+
+        $goodimg = DB::table('xyzs_goods')->where('goods_sn',$datas['goods_sn'])->select('goods_thumb','goods_id')->first();
+            
+
+        $datas['img']=$goodimg->goods_thumb;
+        $datas['goods_id']=$goodimg->goods_id;
+
+        return $datas;
+    }
 }
 ?>

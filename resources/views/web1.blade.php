@@ -479,16 +479,6 @@
 
 <script src="{{url('/js/lazyload.js')}}"></script>
 
-<script src="https://vuejs.org/js/vue.min.js"></script> 
-
-<script type="text/javascript">
-var demo = new Vue({
-    el:mydemo,
-    data:{
-        counter:20
-    }
-});
-</script>
 <!-- 判斷匯入 -->
 @if( isset($owl) )
 <script src="{{url('/js/owl.carousel.min.js')}}"></script>

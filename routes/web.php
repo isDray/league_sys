@@ -180,18 +180,28 @@ Route::group(['middleware' => ['CheckLogin']], function () {
     Route::post('/league_module_recommend_category_del','RecommendController@league_module_recommend_category_del');
     
     // 堆疊商品輪播功能管理
-    Route::get('league_module_recommend_stack','RecommendController@league_module_recommend_stack_list');
+    Route::get('/league_module_recommend_stack','RecommendController@league_module_recommend_stack_list');
     
     // 堆疊商品輪播編輯
-    Route::get('league_module_recommend_stack_edit/{stack_id?}','RecommendController@league_module_recommend_stack_list_edit');
+    Route::get('/league_module_recommend_stack_edit/{stack_id?}','RecommendController@league_module_recommend_stack_list_edit');
     
     // 堆疊商品輪播編輯功能
-    Route::post('league_module_recommend_stack_edit_act','RecommendController@league_module_recommend_stack_edit_act');
+    Route::post('/league_module_recommend_stack_edit_act','RecommendController@league_module_recommend_stack_edit_act');
     
     // 堆疊商品輪播編輯刪除
-    Route::post('league_module_recommend_stack_del','RecommendController@league_module_recommend_stack_del');
+    Route::post('/league_module_recommend_stack_del','RecommendController@league_module_recommend_stack_del');
 
+    // 客製化推薦商品清單
+    Route::get('/league_module_recommend_custom_ad','RecommendController@league_module_recommend_custom_ad_list');
     
+    // 客製化推薦商品編輯
+    Route::get('/league_module_recommend_custom_ad_edit/{id?}','RecommendController@league_module_recommend_custom_ad_edit');
+    
+    // 客製化推薦商品編輯功能
+    Route::post('/league_module_recommend_custom_ad_edit_act','RecommendController@league_module_recommend_custom_ad_edit_act');
+    
+    // 客製化推薦商品刪除
+    Route::post('/league_module_recommend_custom_gad_del','RecommendController@league_module_recommend_custom_gad_del');
     // 網站設定
     Route::get('/league_webset','WebsetController@league_webset');
     

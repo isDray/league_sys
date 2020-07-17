@@ -1274,5 +1274,293 @@ class RecommendController extends Controller
             return response()->json(['error'=>$validator->errors()->all()]);
         }
     }
+    
 
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | 客製化廣告商品列表
+    |--------------------------------------------------------------------------
+    |
+    |
+    */
+    public function league_module_recommend_custom_ad_list( Request $request ){
+        
+        // 加盟會員id
+        $LeagueId = $request->session()->get('user_id');         
+
+        $stacks   = DB::table('xyzs_league_custom_ad')->select('*')->where('league_id',$LeagueId)->get();
+
+        $stacks   = json_decode( $stacks , true );
+
+        $PageTitle = '客製推薦商品管理';
+              
+        return view('/league_module_recommend_custom_ad_list',[ 
+                                                              'PageTitle' => $PageTitle ,
+                                                              'stacks'    => $stacks
+                                                          ]);
+    }
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | 客製化廣告商品編輯
+    |--------------------------------------------------------------------------
+    |
+    |
+    */
+    public function league_module_recommend_custom_ad_edit( Request $request ){
+
+        $LeagueId = $request->session()->get('user_id');  
+
+        $PageTitle = '客製推薦商品編輯';
+
+        $id   = '';
+
+        $datas = [];
+        
+        // 如果沒有給id 
+        if( !empty($request->id) )
+        {   
+           
+            $datas = DB::table('xyzs_league_custom_ad')->where('id',$request->id)->where('league_id',$LeagueId)->first();
+            
+
+            if( $datas === NULL )
+            {
+                return redirect('/league_module_recommend_custom_ad');
+                exit;
+            }
+            
+            $id = trim( $request->id );
+            
+            // 取出對應堆疊資料
+            $datas = (array)$datas;
+
+            $act = 'edit';
+        }
+        else
+        {
+            $act = 'new';
+        }
+
+        return view('/league_module_recommend_custon_ad_edit',[   
+                                                              'PageTitle'   => $PageTitle ,
+                                                              'act'         => $act,
+                                                              'id'          => $id,
+                                                              'datas'       => $datas,
+                                                          ]);
+    }
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | 客製化廣告商品編輯功能
+    |--------------------------------------------------------------------------
+    |
+    */
+    public function league_module_recommend_custom_ad_edit_act( Request $request ){
+        
+        // 加盟會員id
+        $LeagueId = $request->session()->get('user_id');  
+
+        
+        // 製作驗證訊息array
+        /*
+        for( $i = 0 ; $i < 5 ;$i++ )
+        {   
+            $tmp_str = "第".($i+1)."筆商品,不存在或已停售";
+            
+            $goods_msg['goods_sn.'.($i)."."."exists"] =  $tmp_str ;
+             
+        }
+        */
+
+        // 驗證動作
+        $validator = Validator::make( $request->all() ,
+        [ 
+            'title' => 'required|string|max:16',
+            'goods_sn' => ['required',
+                            Rule::exists('xyzs_goods','goods_sn')->where(function ($query){
+                                $query->where('is_on_sale', 1);
+                            }),
+                          ],
+            'descript' =>'required|string|max:128',
+            'link'     =>'required|url',
+            'bgcolor' =>'required|in:1,2,3,4,5,6',
+            'animate' =>'required|in:1,2',
+            'rorl'    =>'required|in:1,2',
+            'id' => ['nullable',
+                            Rule::exists('xyzs_league_custom_ad','id')->where(function ($query) use ( $LeagueId ){
+                                $query->where('league_id', $LeagueId);
+                            }),
+                          ],
+        ],
+        [   'title.required'    => '標題為必填',
+            'title.string'      => '標題必須為字串',
+            'title.max'         => '標題最多16個字',
+            'descript.required' => '簡述為必填',
+            'descript.max'      => '簡述最多為128個字',
+            'descript.string'   => '簡述必須為字串',
+            'link.required'     => '推薦連結為必填',
+            'link.url'          => '推薦連結必須為完整網址',
+            'goods_sn.required' => '商品編號為必填',
+            'goods_sn.exists'   => '商品停售或者不存在',
+            'bgcolor.required'  => '背景色必須選擇',
+            'bgcolor.in'        => '背景色不存在',
+            'animate.required'  => '動畫類型必須選擇',
+            'animate.in'        => '動畫類型不存在',
+            'rorl.required'     => '圖像位置為必選',
+            'rorl.in'           => '圖像位置值錯誤',
+            'id.exists'         => '客製推薦不存在',
+
+            //'stack_id.exists'=> '此堆疊商品不存在',
+        ])->validate();   
+        
+        // 整理能寫入的sn
+        /*$editGoodsSn = [];
+
+        foreach ($request->goods_sn as $key => $value) {
+            
+            if( !empty($value) )
+            {
+                array_push($editGoodsSn, trim($value) );
+            }
+        
+        }        
+        
+        $editGoodsSn = serialize( $editGoodsSn );*/
+        
+        $editGoodsSn = trim( $request->goods_sn );
+
+
+        // 寫入資料庫 , 如果有指定id 表示要執行更新
+        if( !empty( $request->id ) )
+        {
+            try {
+                
+                $res = DB::table('xyzs_league_custom_ad')
+                ->where('id', $request->id)
+                ->update([
+                     'title'     => $request->title,
+                     'goods_sn'  => $editGoodsSn,
+                     'background-color'=>$request->bgcolor,
+                     'animate'         =>$request->animate,
+                     'descript'        =>$request->descript,
+                     'link'            =>$request->link,    
+                     'rorl'            =>$request->rorl,
+                     'edit_time' => time() - date('Z'),
+                ]);  
+                
+                $res = 1;
+
+            } catch (Exception $e) {
+                
+                $res = 0;
+            }
+        }
+        // 無指定編號 , 表示為新增
+        else
+        {
+            try {
+                
+                $res = DB::table('xyzs_league_custom_ad')->insert(
+                      [
+                     'league_id' => $LeagueId,
+                     'title'     => $request->title,
+                     'goods_sn'  => $editGoodsSn,
+                     'background-color'=>$request->bgcolor,
+                     'animate'         =>$request->animate,
+                     'descript'        =>$request->descript,
+                     'link'            =>$request->link,
+                     'rorl'            =>$request->rorl,
+                     'edit_time' => time() - date('Z'),
+                    ]
+                );   
+                
+                $res = 1;
+
+            } catch (Exception $e) {
+
+                $res = 0;
+            }
+        }
+
+        if( $res )
+        {
+            $league_message =   [ '1',
+                                  "編輯堆疊商品推薦成功",
+                                  [ ['operate_text'=>'回堆疊商品管理','operate_path'=>'/league_module_recommend_custom_ad'] ],
+                                  3
+                                ];
+
+            $request->session()->put('league_message', $league_message);  
+        }
+        else
+        {   
+
+            $league_message =   [ '0',
+                                  "編輯堆疊商品推薦成功",
+                                  [ ['operate_text'=>'回堆疊商品管理','operate_path'=>'/league_module_recommend_custom_ad'] ],
+                                  3
+                                ];
+
+            $request->session()->put('league_message', $league_message); 
+        }        
+
+        return redirect('/league_message');
+        //var_dump( $request->all() );
+    }
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | 客製化廣告商品刪除
+    |--------------------------------------------------------------------------
+    |
+    */
+    public function league_module_recommend_custom_gad_del( Request $request ){
+        // 當下加盟會員id
+        $LeagueId = $request->session()->get('user_id');
+        
+
+        // 判斷類別推薦是否屬於當下加盟會員
+        $validator = Validator::make($request->all(), 
+        [ 'custom_ad_id'=> ['required',
+                        Rule::exists('xyzs_league_custom_ad','id')->where(function ($query) use ($LeagueId) {
+                            $query->where('league_id', $LeagueId);
+                        }),
+                       ],                       
+        ]
+        ,
+        ['custom_ad_id.required'=>'移除過程有誤，請重新整理後再嘗試',
+         'custom_ad_id.exists'  =>'此客製化商品推薦不存在，或者無權限刪除',
+        ]
+        );
+     
+        // 驗證成功,可執行刪除
+        if ($validator->passes())
+        {
+            if( DB::table('xyzs_league_custom_ad')->where('id', '=', $request->custom_ad_id)->where('league_id','=',$LeagueId)->delete() )
+            {
+                return response()->json(['success'=>'刪除成功']);
+            }
+            else
+            {
+                return response()->json(['error'=>['移除過程有誤，請重新整理後再嘗試']]);
+            }
+        }
+        // 驗證失敗，回傳錯誤訊息
+        else
+        {   
+            return response()->json(['error'=>$validator->errors()->all()]);
+        }
+    }
 }
