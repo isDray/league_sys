@@ -1294,7 +1294,7 @@ class RecommendController extends Controller
 
         $stacks   = json_decode( $stacks , true );
 
-        $PageTitle = '客製推薦商品管理';
+        $PageTitle = '推薦卡片管理';
               
         return view('/league_module_recommend_custom_ad_list',[ 
                                                               'PageTitle' => $PageTitle ,
@@ -1316,7 +1316,7 @@ class RecommendController extends Controller
 
         $LeagueId = $request->session()->get('user_id');  
 
-        $PageTitle = '客製推薦商品編輯';
+        $PageTitle = '推薦卡片編輯';
 
         $id   = '';
 
@@ -1407,8 +1407,8 @@ class RecommendController extends Controller
             'descript.required' => '簡述為必填',
             'descript.max'      => '簡述最多為128個字',
             'descript.string'   => '簡述必須為字串',
-            'link.required'     => '推薦連結為必填',
-            'link.url'          => '推薦連結必須為完整網址',
+            'link.required'     => '連結為必填',
+            'link.url'          => '連結必須為完整網址',
             'goods_sn.required' => '商品編號為必填',
             'goods_sn.exists'   => '商品停售或者不存在',
             'bgcolor.required'  => '背景色必須選擇',
@@ -1417,7 +1417,7 @@ class RecommendController extends Controller
             'animate.in'        => '動畫類型不存在',
             'rorl.required'     => '圖像位置為必選',
             'rorl.in'           => '圖像位置值錯誤',
-            'id.exists'         => '客製推薦不存在',
+            'id.exists'         => '推薦卡片不存在',
 
             //'stack_id.exists'=> '此堆疊商品不存在',
         ])->validate();   
@@ -1494,8 +1494,8 @@ class RecommendController extends Controller
         if( $res )
         {
             $league_message =   [ '1',
-                                  "編輯堆疊商品推薦成功",
-                                  [ ['operate_text'=>'回堆疊商品管理','operate_path'=>'/league_module_recommend_custom_ad'] ],
+                                  "編輯推薦卡片成功",
+                                  [ ['operate_text'=>'回推薦卡片管理','operate_path'=>'/league_module_recommend_custom_ad'] ],
                                   3
                                 ];
 
@@ -1505,8 +1505,8 @@ class RecommendController extends Controller
         {   
 
             $league_message =   [ '0',
-                                  "編輯堆疊商品推薦成功",
-                                  [ ['operate_text'=>'回堆疊商品管理','operate_path'=>'/league_module_recommend_custom_ad'] ],
+                                  "編輯推薦卡片成功",
+                                  [ ['operate_text'=>'回推薦卡片管理','operate_path'=>'/league_module_recommend_custom_ad'] ],
                                   3
                                 ];
 
@@ -1541,7 +1541,7 @@ class RecommendController extends Controller
         ]
         ,
         ['custom_ad_id.required'=>'移除過程有誤，請重新整理後再嘗試',
-         'custom_ad_id.exists'  =>'此客製化商品推薦不存在，或者無權限刪除',
+         'custom_ad_id.exists'  =>'此推薦卡片不存在，或者無權限刪除',
         ]
         );
      

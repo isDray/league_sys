@@ -36,7 +36,7 @@
             
             <div class="box-header with-border">
               
-              <h3 class="box-title">@if( empty($id))新增@else編輯@endif客製推薦商品</h3>
+              <h3 class="box-title">@if( empty($id))新增@else編輯@endif推薦卡片</h3>
 
             </div>
 
@@ -49,16 +49,16 @@
                         
 
                         <div class="form-group">
-                            客製推薦商品標題:<input type='text' class='form-control' name="title" placeholder="請輸入堆疊輪播標題，EX:網友激推 - 妳一定要試試看" value="@if($act == 'edit'){{old('title', $datas['title'])}}@else{{old('title')}}@endif">
+                            標題:<input type='text' class='form-control' name="title" placeholder="請輸入標題，EX:網友激推 - 妳一定要試試看" value="@if($act == 'edit'){{old('title', $datas['title'])}}@else{{old('title')}}@endif">
                         </div>
 
                         <div class="form-group">
-                            客製推薦商品簡述:            
+                            簡述:            
                             <input type='text' class='form-control' name="descript" placeholder="請輸入簡述,EX: 酥麻高潮神器，滾珠按摩棒，漸增可調震度直達酥麻高潮" value="@if($act == 'edit'){{old('descript', $datas['descript'])}}@else{{old('descript')}}@endif">
                         </div>
 
                         <div class="form-group">
-                            推薦連結:            
+                            連結:            
                             <input type='text' class='form-control' name="link" placeholder="請輸入要導向之連結" value="@if($act == 'edit'){{old('link', $datas['link'])}}@else{{old('link')}}@endif">
                         </div> 
 
