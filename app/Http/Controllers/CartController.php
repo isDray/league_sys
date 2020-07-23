@@ -206,8 +206,8 @@ class CartController extends Controller
 
             return redirect('/');
 
-        }
-        
+        }      
+
         $GoodsNums = [];
 
         foreach( $request->session()->get('cart') as $cartk => $cart ){
@@ -223,8 +223,60 @@ class CartController extends Controller
                 $GoodsNums[ $cart['id'] ] = 0;
             }
         }
+        
+        /**
+         *購物車區塊
+         **/
+        $LeagueId = $request->session()->get('league_id');
 
-        return view("web_cart" , ['GoodsNums'=>$GoodsNums]);
+        // 取出加盟商的購物車區塊
+        $CenterBlock = DB::table('xyzs_league_block_sort')->where('user_id', $LeagueId)->where('block_id',3)->first();
+        
+        // 轉換為陣列
+        $CenterBlock = (array)$CenterBlock;
+
+        if( array_key_exists('sort', $CenterBlock) ){
+            
+            $CenterBlocks = unserialize( $CenterBlock['sort'] );
+
+        }else{
+
+            $CenterBlocks = [11];
+        }
+        
+
+
+        $center_css = [];
+        $final_css  = [];
+
+        foreach ($CenterBlocks as $CenterBlockk => $CenterBlock) {
+            
+            $BlockName = DB::table('xyzs_league_block')->where('id',$CenterBlock)->first();
+
+            if( $BlockName != NULL ){
+
+                if( array_key_exists(explode('_', $CenterBlock)[0], $center_css) ){
+
+                    if( !in_array(explode('_', $CenterBlock)[0], $final_css) )
+                    {
+                        array_push($final_css, trim($center_css[explode('_', $CenterBlock)[0]]) );
+                    }
+                }
+                if( !empty(explode('_', $CenterBlock)[1]) )
+                {
+                    $CenterBlocks[$CenterBlockk] = [ 0=>$BlockName->name , 1 => explode('_', $CenterBlock)[1] ];
+                }
+                else
+                {
+                    $CenterBlocks[$CenterBlockk] = $BlockName->name;
+                }
+
+            }
+        }        
+
+        return view("web_cart" , ['GoodsNums'    => $GoodsNums,
+                                  'CenterBlocks' => $CenterBlocks
+                                 ]);
     } 
 
 
@@ -323,7 +375,7 @@ class CartController extends Controller
             $shipping_list = json_decode( $shipping_list , true );
             
             // 移除不要用的配送方式
-            $no_display = array('flat_lan','ecan_lan','hct','hct_shun','kerry_tj','acac'); 
+            $no_display = array('flat_lan','ecan_lan','hct','hct_shun','kerry_tj','acac','super_s2s','super_s2s2','super_s2s3'); 
 
             foreach ($shipping_list AS $key => $val){   
                 

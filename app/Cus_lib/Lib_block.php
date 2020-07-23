@@ -386,5 +386,80 @@ class Lib_block{
 
         return $datas;
     }
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | 免暈差額提示、推薦
+    |--------------------------------------------------------------------------
+    | 
+    */
+    public static function get_progress_percent(){
+        
+        $total = 0;
+
+        if( Session::has('cart') )
+        {
+            
+            $goods = Session::get( 'cart' );
+
+            foreach ($goods as $goodk => $good) {
+                
+                $total += $good['subTotal'];
+            }
+        }
+
+        $percent = round(( $total / 1000 )*100);
+        
+        $msg = "";
+        
+        // 取出推薦商品
+        $shipping_goods = [];
+
+        if( $percent >= 100 )
+        {               $percent = 100;
+
+            $msg = " 您目前已達免運門檻 ";
+        }
+        else
+        {   
+
+            $msg = " 您只差".(1000 - $total)."元即達到免運門檻 ";
+
+            $diff_prcie = 1000 - $total;
+
+            $range = ceil( $diff_prcie/100 );
+
+
+
+            $tmp_shippings = DB::table('xyzs_league_shipping_recommend')->first();
+
+            if( $tmp_shippings )
+            {
+                $need_name = "need_{$range}";
+
+                $all_needs  = unserialize( $tmp_shippings->$need_name );
+
+                if( count( $all_needs ) > 0)
+                {
+                    $tmp_shipping_goods = DB::table('xyzs_goods')
+                                    ->whereIn('goods_sn', $all_needs )
+                                    ->get();
+
+                    if( $tmp_shipping_goods )
+                    {
+                        $shipping_goods =  json_decode($tmp_shipping_goods,true);
+                    }
+                }
+            }
+
+        }
+
+
+        return ['percent'=>$percent,'msg'=>$msg , 'shipping_goods'=>$shipping_goods ];
+    }
+
 }
 ?>

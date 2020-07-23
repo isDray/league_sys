@@ -555,7 +555,11 @@ $(function(){
                 });
 
                 $(".num_in_cart").empty();
-                $(".num_in_cart").append(num_in_cart);                
+                $(".num_in_cart").append(num_in_cart);
+
+                if( $("#cart_content").length > 0) {
+                    location.reload();
+                }             
             }
 
         });

@@ -954,6 +954,7 @@ class RecommendController extends Controller
         }
 
         return redirect('/league_message');
+        //why 
     }
 
 
@@ -1505,7 +1506,7 @@ class RecommendController extends Controller
         {   
 
             $league_message =   [ '0',
-                                  "編輯推薦卡片成功",
+                                  "編輯推薦卡片失誤",
                                   [ ['operate_text'=>'回推薦卡片管理','operate_path'=>'/league_module_recommend_custom_ad'] ],
                                   3
                                 ];
@@ -1563,4 +1564,284 @@ class RecommendController extends Controller
             return response()->json(['error'=>$validator->errors()->all()]);
         }
     }
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | 免運差額推薦編輯
+    |--------------------------------------------------------------------------
+    |
+    |
+    */
+    public function league_module_recommend_shipping_free( Request $request ){
+        
+        $PageTitle = '免運差額推薦管理';
+    
+        $LeagueId = $request->session()->get('user_id'); 
+        
+        for ($i=1; $i < 11; $i++) { 
+
+            $tmpname = "goods{$i}";
+            ${$tmpname} = [];
+        }
+
+        // 整理呈現資料
+        $old = session()->getOldInput();
+        
+
+        if( $old )
+        {    
+            for ($i=1; $i < 11; $i++) { 
+                
+                $tmpname = "goods{$i}";
+                ${$tmpname}  = $old["goods{$i}"];
+            }
+        }
+        else
+        {
+            
+            $res = DB::table('xyzs_league_shipping_recommend')->where('league_id', '=', $LeagueId)->first();
+            
+            if( $res )
+            {
+                for ($i=1; $i < 11; $i++) { 
+                    
+                    $tmpname = "goods{$i}";
+                    
+                    $tmp_column = "need_{$i}";
+
+                    ${$tmpname}  = unserialize( $res->$tmp_column ); 
+                }
+            }
+
+        }
+        
+        $cond = [];
+
+        for ($i=1; $i < 11; $i++) { 
+
+            $tmpname = "goods{$i}";
+            
+            $cond["goods{$i}"] = ${$tmpname};
+        }
+
+
+        return view('/league_module_shipping_fee_recommend',[ 'PageTitle' => $PageTitle ,
+                                                            ]+$cond
+                                                            );        
+    }
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | 免運差額推薦編輯功能
+    |--------------------------------------------------------------------------
+    | 
+    |
+    */
+    public function league_module_recommend_shipping_free_act( Request $request ){
+        
+        /*var_dump($request->goods1);
+        exit;*/
+        // 取得當下加盟會員ID
+        $LeagueId = $request->session()->get('user_id');        
+        
+        for( $i = 0 ; $i < 10 ;$i++ )
+        {   
+            $tmp_str  = '';
+            $tmp_str2 = '';
+
+            for ($j=0; $j <4 ; $j++) 
+            { 
+                $tmp_str  = "差".($i+1)."00免運中,第".($j+1)."商品不存在 , 或者價格不屬於該免運級距";
+                $goods_msg1['goods'.($i+1).".".$j.".exists"] =  $tmp_str ;
+            }    
+        }
+
+        $goods_msg = $goods_msg1; 
+        
+        $validator = Validator::make($request->all(), 
+        [ 
+          'goods1.*'=> ['nullable',
+                        Rule::exists('xyzs_goods','goods_sn')->where(function ($query) {
+                            $query->where('shop_price','>=', 100);
+                            $query->where('shop_price','<', 200);
+                        })
+                        ],
+          'goods2.*'=> ['nullable',
+                        Rule::exists('xyzs_goods','goods_sn')->where(function ($query) {
+                            $query->where('shop_price','>=', 200);
+                            $query->where('shop_price','<', 300);
+                        })
+                        ],    
+          'goods3.*'=> ['nullable',
+                        Rule::exists('xyzs_goods','goods_sn')->where(function ($query) {
+                            $query->where('shop_price','>=', 300);
+                            $query->where('shop_price','<', 400);
+                        })
+                        ],
+          'goods4.*'=> ['nullable',
+                        Rule::exists('xyzs_goods','goods_sn')->where(function ($query) {
+                            $query->where('shop_price','>=', 400);
+                            $query->where('shop_price','<', 500);
+                        })
+                        ],
+          'goods5.*'=> ['nullable',
+                        Rule::exists('xyzs_goods','goods_sn')->where(function ($query) {
+                            $query->where('shop_price','>=', 500);
+                            $query->where('shop_price','<', 600);
+                        })
+                        ],
+          'goods6.*'=> ['nullable',
+                        Rule::exists('xyzs_goods','goods_sn')->where(function ($query) {
+                            $query->where('shop_price','>=', 600);
+                            $query->where('shop_price','<', 700);
+                        })
+                        ],
+          'goods7.*'=> ['nullable',
+                        Rule::exists('xyzs_goods','goods_sn')->where(function ($query) {
+                            $query->where('shop_price','>=', 700);
+                            $query->where('shop_price','<', 800);
+                        })
+                        ],
+          'goods8.*'=> ['nullable',
+                        Rule::exists('xyzs_goods','goods_sn')->where(function ($query) {
+                            $query->where('shop_price','>=', 800);
+                            $query->where('shop_price','<', 900);
+                        })
+                        ],
+          'goods9.*'=> ['nullable',
+                        Rule::exists('xyzs_goods','goods_sn')->where(function ($query) {
+                            $query->where('shop_price','>=', 900);
+                            $query->where('shop_price','<', 1000);
+                        })
+                        ],
+          'goods10.*'=> ['nullable',
+                        Rule::exists('xyzs_goods','goods_sn')->where(function ($query) {
+                            $query->where('shop_price','>=', 1000);
+
+                        })
+                        ],                                                                                                                                                                                                                    
+        ]
+        ,
+        $goods_msg
+        )->validate(); 
+        
+        // 判斷是要寫入還是更新
+        $res = DB::table('xyzs_league_shipping_recommend')
+               ->where('league_id', $LeagueId)
+               ->first();
+
+        for ($i=1; $i < 11; $i++) { 
+
+            $tmpname = "goods{$i}";
+            
+            // 清除空值
+            $request->$tmpname = array_filter($request->$tmpname);
+            
+            // 合併相同值站存陣列
+            $group_array = [];
+            
+            foreach ($request->$tmpname as $tmpk => $tmpv) 
+            {
+                if( !in_array($tmpv, $group_array ) )
+                {
+                    array_push( $group_array , $tmpv );
+                }
+            }
+            
+            // 將整理好的陣列回填
+            $request->$tmpname = $group_array;
+            
+            $request->$tmpname = serialize($request->$tmpname);
+            
+        }
+
+        // 新增
+        if( !$res )
+        {   
+            try {
+
+                DB::table('xyzs_league_shipping_recommend')->insert(
+                    ['league_id' => $LeagueId,
+                     'need_1'    => $request->goods1,
+                     'need_2'    => $request->goods2,
+                     'need_3'    => $request->goods3,
+                     'need_4'    => $request->goods4,
+                     'need_5'    => $request->goods5,
+                     'need_6'    => $request->goods6,
+                     'need_7'    => $request->goods7,
+                     'need_8'    => $request->goods8,
+                     'need_9'    => $request->goods9,
+                     'need_10'   => $request->goods10,
+                    ]
+                );
+                
+                $db_res = 1;
+
+            } catch (Exception $e) {
+
+                $db_res = 0;
+            }
+
+        }
+        //更新
+        else
+        {
+            
+            try 
+            {
+                DB::table('xyzs_league_shipping_recommend')
+                ->where('league_id', $LeagueId)
+                ->update(['league_id' => $LeagueId,
+                     'need_1'    => $request->goods1,
+                     'need_2'    => $request->goods2,
+                     'need_3'    => $request->goods3,
+                     'need_4'    => $request->goods4,
+                     'need_5'    => $request->goods5,
+                     'need_6'    => $request->goods6,
+                     'need_7'    => $request->goods7,
+                     'need_8'    => $request->goods8,
+                     'need_9'    => $request->goods9,
+                     'need_10'   => $request->goods10,
+                    ]);
+                
+                $db_res = 1;
+            } 
+            catch (Exception $e) 
+            {
+                $db_res = 0;    
+            }
+        }
+
+        if( $db_res )
+        {
+            $league_message =   [ '1',
+                                  "免運差額推薦編輯成功",
+                                  [ ['operate_text'=>'回免運差額推薦管理','operate_path'=>'/league_module_recommend_shipping_free'] ],
+                                  3
+                                ];
+
+            $request->session()->put('league_message', $league_message);  
+        }
+        else
+        {   
+
+            $league_message =   [ '0',
+                                  "免運差額推薦編輯失誤",
+                                  [ ['operate_text'=>'回免運差額推薦管理','operate_path'=>'/league_module_recommend_shipping_free'] ],
+                                  3
+                                ];
+
+            $request->session()->put('league_message', $league_message); 
+        }        
+
+        return redirect('/league_message');        
+
+    }
+    
 }

@@ -129,8 +129,9 @@
                 </span>                
             </a>
             <ul class="treeview-menu">
-                <li><a href="{{url('/league_sort_center')}}"><i class="fa fa-fw fa-angle-right"></i>中央區塊排序</a></li>
+                <li><a href="{{url('/league_sort_center')}}"><i class="fa fa-fw fa-angle-right"></i>首頁區塊排序</a></li>
                 <li><a href="{{url('/league_sort_left')}}"><i class="fa fa-fw fa-angle-right"></i>左側區塊排序</a></li>
+                <li><a href="{{url('/league_sort_cart')}}"><i class="fa fa-fw fa-angle-right"></i>購物車區塊排序</a></li>
             </ul>        
             
         </li>
@@ -152,6 +153,7 @@
                 <li><a href="{{url('/league_module_recommend_category_list')}}"><i class="fa fa-fw fa-angle-right"></i>類別商品功能管理</a></li>
                 <li><a href="{{url('/league_module_recommend_stack')}}"><i class="fa fa-fw fa-angle-right"></i>堆疊商品輪播功能管理</a></li>
                 <li><a href="{{url('/league_module_recommend_custom_ad')}}"><i class="fa fa-fw fa-angle-right"></i>推薦卡片功能管理</a></li>
+                <li><a href="{{url('/league_module_recommend_shipping_free')}}"><i class="fa fa-fw fa-angle-right"></i>免運差額推薦管理</a></li>
             </ul>                
         </li>
         <!-- /模組管理 -->

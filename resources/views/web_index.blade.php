@@ -1,10 +1,13 @@
 @extends("web1")
 
 @section('selfcss')
-<link rel="stylesheet" href="{{url('/css/login.css')}}">
-@foreach($center_css as $center_cssk => $center_cssv)
+    
+    <link rel="stylesheet" href="{{url('/css/login.css')}}">
+    
+    @foreach($center_css as $center_cssk => $center_cssv)
     <link rel="stylesheet" href="{{url('/css/'.$center_cssv)}}">
-@endforeach
+    @endforeach
+
 @endsection
 
 

@@ -296,11 +296,22 @@ class LeagueController extends Controller
     public function league_sort_center( Request $request ){
 
         // 取出所有中央區塊
-        $TmpModules = DB::table('xyzs_league_block')->where('block_area','center')->get();
+        $TmpModules = DB::table('xyzs_league_block')->get();
         
+
+        foreach ($TmpModules as $TmpModulek => $TmpModule) 
+        {
+            if( !in_array('center', unserialize($TmpModule->block_area))  )
+            {
+                unset($TmpModules[$TmpModulek]);
+            }
+        }
+
         // 轉換為array
         $TmpModules = json_decode( $TmpModules , true );
-        
+
+        $TmpModules = array_values( $TmpModules ); 
+
         $ToolModules = [];
         
         $ExtensionModules = [];
@@ -394,9 +405,9 @@ class LeagueController extends Controller
 
         foreach ( $request->blocksort as $blocksortk => $blocksort) {
             
-            $AreaValidate = DB::table('xyzs_league_block')->where('id',$blocksort)->where('block_area','center')->first();
+            $AreaValidate = DB::table('xyzs_league_block')->where('id',$blocksort)->first();
 
-            if(  $AreaValidate === NULL ){
+            if( !in_array( 'center' , unserialize($AreaValidate->block_area) ) ){
                 
                 $league_message =   [ '0',
                                       "中央排序失敗",
@@ -462,10 +473,20 @@ class LeagueController extends Controller
     public function league_sort_left( Request $request ){
 
         // 取出所有區塊
-        $TmpModules = DB::table('xyzs_league_block')->where('block_area','left')->get();
+        $TmpModules = DB::table('xyzs_league_block')->get();
         
+        foreach ($TmpModules as $TmpModulek => $TmpModule) 
+        {
+            if( !in_array('left', unserialize($TmpModule->block_area))  )
+            {
+                unset($TmpModules[$TmpModulek]);
+            }
+        }
+
         // 轉換為array
         $TmpModules = json_decode( $TmpModules , true );
+
+        $TmpModules = array_values( $TmpModules );         
 
         $ToolModules = [];
         
@@ -532,7 +553,6 @@ class LeagueController extends Controller
         
 
         $OffModules = $ToolModules;
-                var_dump( $OffModules );
 
 
         $PageTitle = "左側區塊排序";
@@ -561,9 +581,9 @@ class LeagueController extends Controller
 
         foreach ( $request->blocksort as $blocksortk => $blocksort) {
             
-            $AreaValidate = DB::table('xyzs_league_block')->where('id',$blocksort)->where('block_area','left')->first();
+            $AreaValidate = DB::table('xyzs_league_block')->where('id',$blocksort)->first();
 
-            if(  $AreaValidate === NULL ){
+            if(  !in_array( 'left' , unserialize($AreaValidate->block_area) ) ){
                 
                 $league_message =   [ '0',
                                       "左側排序失敗",
@@ -615,6 +635,192 @@ class LeagueController extends Controller
         
         return redirect('/league_message');
     }
+    
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | 購物車區塊排序
+    |--------------------------------------------------------------------------
+    |
+    */
+    public function league_sort_cart( Request $request ){
+
+        // 取出所有區塊
+        $TmpModules = DB::table('xyzs_league_block')->get();
+        
+        foreach ($TmpModules as $TmpModulek => $TmpModule) 
+        {
+            if( !in_array('cart', unserialize($TmpModule->block_area))  )
+            {
+                unset($TmpModules[$TmpModulek]);
+            }
+        }
+
+        // 轉換為array
+        $TmpModules = json_decode( $TmpModules , true );
+
+        $TmpModules = array_values( $TmpModules );         
+
+        $ToolModules = [];
+        
+        $ExtensionModules = [];
+        
+        // 全部可使用在cart頁面的模組迴圈假查
+        foreach ($TmpModules as $TmpModulek => $TmpModule ) {
+            
+            // 非擴張群組
+            if( $TmpModule['extension'] == 0 )
+            {
+                $ToolModules[ $TmpModule['id'] ]['block_name'] = $TmpModule['block_name'];
+                $ToolModules[ $TmpModule['id'] ]['edit_route_name'] = $TmpModule['edit_route_name'];
+            }
+            else
+            {
+                $ExtensionModules[ $TmpModule['id'] ]['id'] = $TmpModule['ex_table'];
+                $ExtensionModules[ $TmpModule['id'] ]['edit_route_name'] = $TmpModule['edit_route_name'];                
+            }
+        }
+        
+        // 如果有擴張群組則需要將擴張模組整理key值後,再填回 $ToolModules 
+        if( count($ExtensionModules) > 0 )
+        {
+            foreach ($ExtensionModules as $ExtensionModulek => $ExtensionModule ) {
+                
+                $tmpExtensions = DB::table( $ExtensionModule['id'] )->where('league_id',$request->session()->get('user_id'))->get();
+
+                $tmpExtensions = json_decode( $tmpExtensions , true );
+
+                foreach ($tmpExtensions as $tmpExtensionk => $tmpExtension ) {
+
+                    $ToolModules[ $ExtensionModulek.'_'.$tmpExtension['id'] ]['block_name'] = $tmpExtension['title'];
+                    $ToolModules[ $ExtensionModulek.'_'.$tmpExtension['id'] ]['edit_route_name'] = $ExtensionModule['edit_route_name'];                    
+                }
+            }
+        }
+
+        
+        // 取出會員的左側排序
+        $TmpLeagueCenterSort = DB::table('xyzs_league_block_sort')->where('user_id',$request->session()->get('user_id'))->where('block_id',3)->first();
+        
+        // 如果還沒有排序過 , 就硬塞一個"購物車清單"(購物車頁面必須要有)
+        if( $TmpLeagueCenterSort === NULL ){
+            
+            $TmpOnModules = [11];
+
+        }else{
+
+            $TmpOnModules = unserialize( $TmpLeagueCenterSort->sort );
+        }
+        
+
+        $OnModules = [];
+        
+        foreach( $TmpOnModules as $TmpOnModulek => $TmpOnModule ) {
+            
+            if( array_key_exists($TmpOnModule, $ToolModules) ){
+            
+                $OnModules[$TmpOnModule] = $ToolModules[$TmpOnModule] ;
+
+            }
+
+            unset($ToolModules[$TmpOnModule]);
+        }
+        
+
+        
+
+        $OffModules = $ToolModules;
+
+
+        $PageTitle = "購物車區塊排序";
+
+        return view('/league_sort_cart',['OnModules' => $OnModules , 'OffModules' => $OffModules ,'PageTitle'=>$PageTitle , 'tree' => 'sort' ]);        
+
+    }
+    
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | 購物車區塊排序功能
+    |--------------------------------------------------------------------------
+    |
+    |
+    */
+    public function league_sort_check_cart_act( Request $request ){
+        
+        // 先確認資料庫是否已經有資料 , 再決定是要新增還是更新
+        if( !isset($request->blocksort) || empty($request->blocksort) ){
+
+            $request->blocksort = [11];
+        }
+        
+        // 檢查如果沒有購物車,就直接加到陣列第一個
+        if( !in_array(11, $request->blocksort) )
+        {
+            array_unshift( $request->blocksort , 11 );
+        }
+
+        foreach ( $request->blocksort as $blocksortk => $blocksort) {
+            
+            $AreaValidate = DB::table('xyzs_league_block')->where('id',$blocksort)->first();
+
+            if(  !in_array( 'cart' , unserialize($AreaValidate->block_area) ) ){
+                
+                $league_message =   [ '0',
+                                      "購物車區塊排序失敗",
+                                      [ ['operate_text'=>'回購物車區塊排序','operate_path'=>'/league_sort_cart'] ],
+                                      3
+                                    ];
+ 
+                $request->session()->put('league_message', $league_message);                 
+               
+                return redirect('/league_message');
+            }
+        }
+
+        DB::beginTransaction();
+
+        try {
+            
+            DB::table('xyzs_league_block_sort')
+                ->updateOrInsert(
+                ['user_id' => $request->session()->get('user_id') , 'block_id' =>3],
+                ['sort' => serialize($request->blocksort)]
+            );        
+        
+            DB::commit();
+
+            $league_message =   [ '1',
+                                  "購物車區塊排序成功",
+                                  [ ['operate_text'=>'回購物車區塊排序','operate_path'=>'/league_sort_cart'] ],
+                                  3
+                                ];
+
+            $request->session()->put('league_message', $league_message);
+
+            
+        } catch (\Exception $e) {
+            
+            DB::rollback();
+            
+            //var_dump($e->getMessage());
+            $league_message =   [ '0',
+                                  "購物車區塊排序失敗",
+                                  [ ['operate_text'=>'回購物車區塊排序','operate_path'=>'/league_sort_cart'] ],
+                                  3
+                                ];
+
+            $request->session()->put('league_message', $league_message);            
+
+        }
+        
+        return redirect('/league_message');
+    }
+
 
 
 

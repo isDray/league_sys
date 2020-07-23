@@ -124,6 +124,12 @@ Route::group(['middleware' => ['CheckLogin']], function () {
     // 左側排序功能
     Route::post('/league_sort_left_act','LeagueController@league_sort_left_act'); 
 
+    // 購物車排序
+    Route::get('/league_sort_cart','LeagueController@league_sort_cart');
+    
+    // 購物車排序功能
+    Route::post('/league_sort_check_cart_act','LeagueController@league_sort_check_cart_act'); 
+ 
 
 
     // banner 設定
@@ -202,6 +208,13 @@ Route::group(['middleware' => ['CheckLogin']], function () {
     
     // 客製化推薦商品刪除
     Route::post('/league_module_recommend_custom_gad_del','RecommendController@league_module_recommend_custom_gad_del');
+
+    // 免運差額推薦編輯
+    Route::get('/league_module_recommend_shipping_free','RecommendController@league_module_recommend_shipping_free');
+
+    // 免運差額推薦功能
+    Route::post('/league_module_recommend_shipping_free_act','RecommendController@league_module_recommend_shipping_free_act');
+
     // 網站設定
     Route::get('/league_webset','WebsetController@league_webset');
     
