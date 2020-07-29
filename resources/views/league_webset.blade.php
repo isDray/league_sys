@@ -81,6 +81,13 @@
                         </label>
                         </div>
                    
+                        <div class='col-md-2 col-sm-4 col-xs-2'>
+                        <input type="radio" id="color_3" name="colorset" value='3' @if($WebData['colorset']==3) checked @endif>
+                        <label for="color_3" class="color_radio">
+                            版型3
+                        </label>
+                        </div>
+
                     </div>
                 </div> 
 

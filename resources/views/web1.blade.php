@@ -35,13 +35,18 @@
     <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
-
+    @if( $LeagueData['colorset'] == 1 || $LeagueData['colorset'] == 2)
     <link rel="stylesheet" href="{{url('/css/weball1.css')}}">
+    @else
+    <link rel="stylesheet" href="{{url('/css/weball'.$LeagueData['colorset'].'.css')}}">
+    @endif
+
     <link rel="stylesheet" href="{{url('/css/colorset'.$LeagueData['colorset'].'.css')}}">
 
     <!-- Google Font -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
 </head>
+
 
 <body class="" style="background-color:{{$LeagueData['back_color']}};">
 
@@ -56,6 +61,12 @@
       
 </div>
 @endif
+
+@if( $LeagueData['colorset'] == 3)
+    
+    @include( 'web_template_3' ,[ 'centent_type' => '1'])
+
+@else
 
 <div class='container-fluid'>
 
@@ -460,7 +471,7 @@
 <!-- /手機用 bottom tool -->
 
 </div>
-
+@endif
 
 
 
@@ -552,8 +563,18 @@ $(document).ready(function(){
 
     $(".hamburger").click(function(){
         $(this).toggleClass("is-active");
+
+        if ( $( ".web_nav1" ).length ) {
+            
+            $(".web_nav1").toggle("slide");
+        }
         
-        $(".web_nav1").toggle("slide");
+        if ( $( ".rwd_menu_slide" ).length ) {
+            
+            $(".rwd_menu_slide").animate({width:'toggle'},350);
+
+        }
+        
 
     });
 });
@@ -609,16 +630,18 @@ $(function(){
                 var cartTotal = 0;
                 
                 $.each( res['data'] , function( listk , listv ){
+                    
                     cartTotal += listv['subTotal'];
+
                     var tmp_goods = "<table class='cart_table' width='100%'>";
                     /*tmp_goods += "<tr><td colspan='4' class='cart_item_title'>"+listv['name']+"</td></tr>";*/
                     num_in_cart += parseInt(listv['num']);
-                    tmp_goods += '<tr><table>';
+                    tmp_goods += '<tr><td><table>';
                     tmp_goods += "<tr><td class='tableimg cart_img_box' colspan='2' ><img src='https://***REMOVED***.com/***REMOVED***/"+listv['thumbnail']+"'><span>"+listv['name']+"</span></td></tr>"+
                                       "<tr><td>$"+listv['goodsPrice']+"×"+listv['num']+"="+listv['subTotal']+"</td>"+
-                                      "<td align='right' ><span class='btn bg-maroon btn-flat margin rmbtn' goods_id='"+listv['id']+"'>刪除</span></td></tr>";
+                                      "<td align='right'><span class='btn bg-maroon btn-flat margin rmbtn' goods_id='"+listv['id']+"'>刪除</span></td></tr>";
 
-                    tmp_goods += '<table><tr>';
+                    tmp_goods += '</table></td></tr>';
                     tmp_goods += "</table>";
                     
                     $(".cart_list_area").append( tmp_goods );
@@ -678,12 +701,12 @@ $('body').on('click', '.rmbtn', function() {
             
             num_in_cart += parseInt(listv['num']);
 
-            tmp_goods += '<tr><table>';
+            tmp_goods += '<tr><td><table>';
             tmp_goods += "<tr><td class='tableimg cart_img_box' colspan='2' ><img src='https://***REMOVED***.com/***REMOVED***/"+listv['thumbnail']+"'><span>"+listv['name']+"</span></td></tr>"+
                                       "<tr><td>$"+listv['goodsPrice']+"×"+listv['num']+"="+listv['subTotal']+"</td>"+
                                       "<td align='right' ><span class='btn bg-maroon btn-flat margin rmbtn' goods_id='"+listv['id']+"'>刪除</span></td></tr>";
 
-            tmp_goods += '<table><tr>';
+            tmp_goods += '</table></td></tr>';
             tmp_goods += "</table>";
                     
             $(".cart_list_area").append( tmp_goods );
@@ -899,7 +922,37 @@ $("#viewed_switch").click(function(){
 
 
 });
-
 </script>
+@if( $LeagueData['colorset'] == 3)
+<script type="text/javascript">
+$(function(){
+    $(".rwd_menu_li_more").click(function(){
+ 
+        tmp_expand = "rwd_menu_ul"+$(this).attr('toggole_num');
+        
+        if( $("."+tmp_expand).is(":visible") )
+        {
+            $(this).removeClass("fa-angle-right");
+            $(this).addClass( "fa-angle-down" );              
+        }
+        else
+        {
+            $(this).removeClass("fa-angle-down");
+            $(this).addClass( "fa-angle-right" );                      
+        }
+
+        $("."+tmp_expand).slideToggle('slow');
+    });
+
+    $(".cart_toggle").click(function(){
+        if ( $( ".rwd_cart_slide" ).length ) {
+            
+            $(".rwd_cart_slide").animate({width:'toggle'},350);
+
+        }
+    });
+});
+</script>
+@endif
 </body>
 </html>

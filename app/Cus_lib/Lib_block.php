@@ -445,6 +445,7 @@ class Lib_block{
                 if( count( $all_needs ) > 0)
                 {
                     $tmp_shipping_goods = DB::table('xyzs_goods')
+                                    ->select( '*' , DB::raw( "ROUND(shop_price) as shop_price") )
                                     ->whereIn('goods_sn', $all_needs )
                                     ->get();
 

@@ -74,7 +74,7 @@ class WebsetController extends Controller
 
         ])->validate();       
         
-        $colorsetArr = ['1','2'];
+        $colorsetArr = ['1','2','3'];
 
         if( !isset( $request->colorset ) || !in_array($request->colorset, $colorsetArr) ){
 

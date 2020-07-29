@@ -37,7 +37,11 @@
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
 
+    @if( $LeagueData['colorset'] == 1 || $LeagueData['colorset'] == 2)
     <link rel="stylesheet" href="{{url('/css/weball1.css')}}">
+    @else
+    <link rel="stylesheet" href="{{url('/css/weball'.$LeagueData['colorset'].'.css')}}">
+    @endif
     <link rel="stylesheet" href="{{url('/css/colorset'.$LeagueData['colorset'].'.css')}}">
     
     <!-- Google Font -->
@@ -56,6 +60,12 @@
       
 </div>
 @endif
+
+@if( $LeagueData['colorset'] == 3)
+    
+    @include( 'web_template_3' ,[ 'centent_type' => '2'] )
+
+@else
 
 <div class='container-fluid'>
 
@@ -426,7 +436,7 @@
 <!-- /手機用 bottom tool -->
 
 </div>
-
+@endif
 
 
 
@@ -795,5 +805,36 @@ $(".return_cat").click(function(){
     })
 })
 </script>
+@if( $LeagueData['colorset'] == 3)
+<script type="text/javascript">
+$(function(){
+    $(".rwd_menu_li_more").click(function(){
+ 
+        tmp_expand = "rwd_menu_ul"+$(this).attr('toggole_num');
+        
+        if( $("."+tmp_expand).is(":visible") )
+        {
+            $(this).removeClass("fa-angle-right");
+            $(this).addClass( "fa-angle-down" );              
+        }
+        else
+        {
+            $(this).removeClass("fa-angle-down");
+            $(this).addClass( "fa-angle-right" );                      
+        }
+
+        $("."+tmp_expand).slideToggle('slow');
+    });
+
+    $(".cart_toggle").click(function(){
+        if ( $( ".rwd_cart_slide" ).length ) {
+            
+            $(".rwd_cart_slide").animate({width:'toggle'},350);
+
+        }
+    });
+});
+</script>
+@endif
 </body>
 </html>

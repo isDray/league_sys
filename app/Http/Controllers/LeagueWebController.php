@@ -97,8 +97,6 @@ class LeagueWebController extends Controller
             $condList['owl'] = true;    
         }
         
-        //$request->session()->forget('cart');
-        
         return view('web_index', [ 'CenterBlocks' => $CenterBlocks ,
                                    'center_css'   => $final_css,
                                    'title'        => '情趣用品-飛機杯-跳蛋-按摩棒-情趣小物-線上購買',
