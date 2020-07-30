@@ -523,6 +523,7 @@ class Lib_common{
     
 
 
+
     /*
     |--------------------------------------------------------------------------
     | 計算購物車總價( 單純購物車內商品總價 )
@@ -708,6 +709,46 @@ class Lib_common{
         $breadcrumb .= "</span>";
 
         return $breadcrumb;
+    }
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | 
+    |--------------------------------------------------------------------------
+    |
+    |
+    */
+    public static function _categoryRoot( $_cat_id = '' ){
+        
+        if( !empty($_cat_id) )
+        {   
+            $sw = true;
+            
+            $tmp_cat = $_cat_id;
+
+            while ( $sw ) {
+                
+                $parent_id = DB::table('xyzs_category')->select('parent_id','cat_name')->where('cat_id', $tmp_cat )->first();
+                
+                if( $parent_id !== NULL )
+                {   
+                    
+                    if( $parent_id->parent_id === 0)
+                    {   
+                        $sw = false;
+                    }
+                    else
+                    {
+                        $tmp_cat = $parent_id->parent_id;
+                    }
+                }
+            }
+            
+            return $tmp_cat; 
+        }
     }
 }
 

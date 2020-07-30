@@ -533,6 +533,7 @@ $(function(){
     })
 
     $("img.lazyload").lazyload();
+
 })
 
 /*
@@ -577,6 +578,21 @@ $(document).ready(function(){
         
 
     });
+
+    // 手機板快速分類
+    currentWidth0 = $('.fastLi.active').outerWidth();
+    var moveDistance = 0;
+    $(".fast_cat_root_label").each(function(){
+
+        if( $(this).hasClass('active') )
+        {
+            return false;
+        }
+
+        moveDistance += $(this).outerWidth();
+    });
+
+    $('#fast_cat_box_left').animate({scrollLeft:moveDistance}, 200);
 });
 
 

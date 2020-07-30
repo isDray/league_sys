@@ -56,6 +56,18 @@
 <div class='rwd_menu_slide m_only'>
 
     <div class='rwd_menu_slide_head'>
+        <form action="{{url('/search')}}" method="POST" >
+
+            {{ csrf_field() }}
+            <div class="input-group margin" >
+                    
+                <input type="text" class="form-control" placeholder="找商品..." name='keyword'>
+                <span class="input-group-btn">
+                    <button type="submit" class="btn btn-default btn-flat"><i class="fa fa-fw fa-search"></i></button>
+                </span>
+            </div>
+
+        </form>           
     </div>    
 
 @foreach( $categorys as $categoryk => $category)
@@ -70,8 +82,30 @@
             @endforeach
             </ul>
         @endif
+
+
     </li>
 @endforeach 
+
+    <div class='line'></div>
+
+    <li class='rwd_menu_li'>
+        <span  class='rwd_menu_li_more fa fa-fw fa-circle-thin' ></span>
+        <a class='rwd_nav_tree_name rwd_child_tree rwd_menua' href="{{url('/new_arrival')}}">最新商品</a>
+    </li>
+    <li class='rwd_menu_li'>
+        <span  class='rwd_menu_li_more fa fa-fw fa-circle-thin' ></span>
+        <a class='rwd_nav_tree_name rwd_child_tree rwd_menua' href="{{url('/register')}}">批發辦法</a>
+    </li>
+    <li class='rwd_menu_li'>
+        <span  class='rwd_menu_li_more fa fa-fw fa-circle-thin' ></span>
+        <a class='rwd_nav_tree_name rwd_child_tree rwd_menua' href="{{url('/check_order')}}">訂單查詢</a>
+    </li>
+    <li class='rwd_menu_li'>
+        <span  class='rwd_menu_li_more fa fa-fw fa-circle-thin' ></span>
+        <a class='rwd_nav_tree_name rwd_child_tree rwd_menua' href="{{url('/article/49')}}">反詐騙宣導</a>
+    </li>        
+
 </div>    
 <!-- /rwd menu滑動區塊 -->
 
@@ -126,10 +160,10 @@
             </div>
 
             <div id='member_box' class='col-md-6 col-sm-12 col-xs-12'>
-            	<a class='btn btn-flat margin tool_btn'>
+            	<a class='btn btn-flat margin tool_btn' href="{{url('/join_member')}}">
                 <i class="fa fa-fw fa-user-plus"></i>加入會員
                 </a>
-            	<a class='btn btn-flat margin tool_btn'>
+            	<a class='btn btn-flat margin tool_btn' href="{{url('/member_login')}}">
                 <i class="fa fa-fw fa-sign-in"></i>會員登入
                 </a>        	
 <!-- num_in_cart -->
@@ -156,8 +190,79 @@
             </li>
         @endforeach 
         </div>
+        
+        <div id='fast_cat_box' class='m_only'>
+
+            <div id='fast_cat_box_left'>
+                @foreach( $categorys as $categoryk => $category)<input type='checkbox' class='fast_cat_root @if(isset($FastCat)&&$FastCat==$category["rcat"]) active @endif' id='fast_cat_root_{{$category["rcat"]}}' @if(isset($FastCat)&&$FastCat==$category["rcat"]) checked @endif><label class='fast_cat_root_label @if(isset($FastCat)&&$FastCat==$category["rcat"]) active @endif' for='fast_cat_root_{{$category["rcat"]}}' refor='fast_cat_root_{{$category["rcat"]}}' >{{$category['rcat_name']}}</label>@endforeach
+            </div>
+
+            <div id='fast_cat_box_right'>
+                <input type='checkbox' id='all_cat_root'><label id='all_cat_root_label' for='all_cat_root'></label>
+            </div>
+
+            <div id='fast_cat_box_show'>
+                
+                @foreach( $categorys as $categoryk => $category)
+                    <div class='fast_cat_box_child' id="fast_cat_root_{{$category["rcat"]}}_child_box">
+
+                    @if( count($category['child']) > 0 )
+                        @foreach( $category['child'] as $categorykc => $categoryc)<a href="{{url('/category')}}/{{$categoryc['ccat']}}"><div class='fast_cat_box_child_item'>{{$categoryc['ccat_name']}}</div></a>@endforeach
+                    @else
+
+                @endif
+            </div>
+            @endforeach
+
+            <!-- 全選單-->
+            <div id='all_cat_box'>
+            
+                @foreach( $categorys as $categoryk => $category)
+                <input type='checkbox' id='all_cat_{{$category["rcat"]}}' class='all_cat_check'><label class='all_cat_label' for='all_cat_{{$category["rcat"]}}' backfor='all_cat_{{$category["rcat"]}}'><span class='return_cat'></span>{{$category['rcat_name']}}</label>
+                <div class='all_cat_child_box' id='all_cat_child_box_{{$category["rcat"]}}'>
+                    @if( count($category['child'] > 0) )
+                        
+                        @foreach( $category['child'] as $categorykc => $categoryc)
+                            <a href="{{url('/category')}}/{{$categoryc['ccat']}}">
+                                <div>
+                                    {{$categoryc['ccat_name']}}
+                                </div>
+                            </a>
+                        @endforeach
+
+                    @else
+
+                    @endif
+                </div>
+                @endforeach
+
+            </div>
+                
+            <!-- /全選單-->   
+
+        </div>
+    </div>
+    <!-- /快速menu區塊 -->
+
+    </div>
 
 
+    <div class='col-md-12 col-sm-12 col-xs-12 over_m _np' id="sub_menu">
+        <div class='col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1 col-xs-12 over_m' id='sub_menu_main'>
+            
+            <a href="{{url('/new_arrival')}}">
+                <span class="col-md-3 col-sm-3 col-xs-0 text-center sub_menu_item">最新商品</span>
+            </a>
+            <a href="{{url('/register')}}">
+                <span class="col-md-3 col-sm-3 col-xs-0 text-center sub_menu_item">批發辦法</span>
+            </a>
+            <a href="{{url('/check_order')}}">
+                <span class="col-md-3 col-sm-3 col-xs-0 text-center sub_menu_item">訂單查詢</span>
+            </a>            
+            <a href="{{url('/article/49')}}">
+                <span class="col-md-3 col-sm-3 col-xs-0 text-center sub_menu_item">反詐騙宣導</span>
+            </a>            
+        </div>
     </div>
     <!-- /電腦版 menu -->
     @if( $centent_type == 1 )

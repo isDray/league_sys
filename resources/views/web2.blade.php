@@ -61,6 +61,7 @@
 </div>
 @endif
 
+
 @if( $LeagueData['colorset'] == 3)
     
     @include( 'web_template_3' ,[ 'centent_type' => '2'] )

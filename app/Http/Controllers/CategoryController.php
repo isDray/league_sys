@@ -24,7 +24,8 @@ class CategoryController extends Controller
         $IfRoot = DB::table('xyzs_category')->where('cat_id',$CatId)->first();
 
         $CatArr = [ $CatId ];
-
+        
+          
         if( $IfRoot->parent_id == 0 ){
 
             $AllChildCates = DB::table('xyzs_category')->where('parent_id',$CatId)->get();
@@ -121,6 +122,8 @@ class CategoryController extends Controller
         
         $yearMonth = date('Y年n月');
 
+        $FastCat = Lib_common::_categoryRoot( $request->cat_id );
+
         return view('web_category',[ 'Goods' => $Goods , 
         	                         'Pages' => $Pages ,
         	                         'CatSortItem' => $CatSortItem , 
@@ -130,7 +133,8 @@ class CategoryController extends Controller
                                      'title'        => "{$IfRoot->cat_name}-情趣用品",
                                      'keywords'     => "{$IfRoot->keywords}",
                                      'description'  => "{$IfRoot->cat_desc}",
-                                     'page_header'  => "{$IfRoot->cat_name}-{$yearMonth}情趣用品精選推薦",                                     
+                                     'page_header'  => "{$IfRoot->cat_name}-{$yearMonth}情趣用品精選推薦",        
+                                     'FastCat'      => $FastCat
 
         	                        ]);
     }
