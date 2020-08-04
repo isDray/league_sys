@@ -347,6 +347,9 @@ Route::group(['middleware' => ['CheckLeague']], function () {
     Route::post('/member_account_exit','MemberController@member_account_exit');
 
     Route::get('/member_login','MemberController@login');
+    
+    Route::post('/fblogin','MemberController@fblogin');
+    
 
     Route::post('/member_login_act','MemberController@member_login_act');
 

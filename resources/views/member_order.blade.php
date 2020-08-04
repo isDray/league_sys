@@ -9,7 +9,7 @@
 
 @section('content_left')
     
-    @includeIf( 'block_member_menu' , ['now_function'=>$now_function] );
+    @includeIf( 'block_member_menu' , ['now_function'=>$now_function] )
 
 @endsection
 

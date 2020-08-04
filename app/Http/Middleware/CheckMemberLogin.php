@@ -17,7 +17,7 @@ class CheckMemberLogin
     {
         if( empty($request->session()->get('member_id')) || ( empty($request->session()->get('member_login')) || $request->session()->get('member_login') != true ) ){
            
-           echo $WantTo = Route::getFacadeRoot()->current()->uri();
+           $WantTo = Route::getFacadeRoot()->current()->uri();
 
            $request->session()->put('WantTo', $WantTo );
            

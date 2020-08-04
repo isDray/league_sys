@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use DB;
 use Validator;
 use App\Cus_lib\Lib_common;
-
+use Facebook;
 class MemberController extends Controller
 {
     
@@ -189,11 +189,150 @@ class MemberController extends Controller
     |
     */
     public function login( Request $request ){
-
-        return view('member.login');
+        
+        if( !empty($request->session()->get('member_id')) || ( !empty($request->session()->get('member_login')) || $request->session()->get('member_login') == true ) )
+        {
+            return redirect('/member_index');
+        }
+        else
+        {
+            return view('member.login');
+        }
     }
     
 
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | fb 登入
+    |--------------------------------------------------------------------------
+    | FB登入後驗證 , 如果不存在將其寫入
+    | 
+    */
+    public function fblogin( Request $request ){          
+        
+        $LeagueId = $request->session()->get('league_id');
+
+        $fb = new Facebook\Facebook([
+            'app_id' => '***REMOVED***',
+            'app_secret' => '***REMOVED***',
+            'default_graph_version' => 'v2.3',
+        ]);
+
+        
+        if( isset( $request->_tk ) ){
+            
+            try {
+                
+                $response = $fb->get('/me?fields=id,name,email', $request->_tk);
+                $user = $response->getGraphUser();
+                
+                // 判斷該會員是否已經存在
+                
+                /*
+                    $request->session()->put('member_login'  , true ); 
+            
+                    $request->session()->put('member_id' , $res['id'] );
+
+                    $request->session()->put('member_name' , $res['name'] );
+                */
+                
+                $fb_member = 
+
+                DB::table('xyzs_league_member_social as ms')
+                ->select('m.*')
+                ->leftjoin('xyzs_league_member as m', 'ms.member_id', '=', 'm.id')
+                ->where('ms.social_id', '=', $user['id'])->first();
+                
+                // 如果有資料
+                if( $fb_member )
+                {
+                    $request->session()->put('member_login'  , true ); 
+            
+                    $request->session()->put('member_id' , $fb_member->id );
+
+                    $request->session()->put('member_name' , $fb_member->name );
+                }
+                // 沒資料就立即寫入
+                else
+                {
+                    
+                    DB::beginTransaction();
+
+                    try {
+                        
+                        $insert_id = DB::table('xyzs_league_member')->insertGetId([
+                        
+                            'email'     => $user['email'],
+                            'league_id' => $LeagueId,
+                            'name'      => $user['name']
+                        
+                        ]);
+
+                        DB::table('xyzs_league_member_social')->insert(
+                            [
+                                'member_id'   => $insert_id,
+                                'social_name' => "Facebook",
+                                'social_id'   => $user['id']
+                            ]);
+                        DB::commit();
+                
+                    } catch (\Exception $e) {
+                        
+                        //var_dump( $e->getMessage() );
+                        DB::rollback();
+                        return json_encode(false);
+                    }
+                     
+                    $fb_member = 
+
+                    DB::table('xyzs_league_member_social as ms')
+                    ->select('m.*')
+                    ->leftjoin('xyzs_league_member as m', 'ms.member_id', '=', 'm.id')
+                    ->where('ms.social_id', '=', $user['id'])->first();      
+                    
+
+                    $request->session()->put('member_login'  , true ); 
+            
+                    $request->session()->put('member_id' , $fb_member->id );
+
+                    $request->session()->put('member_name' , $fb_member->name );                                  
+                }
+
+                if( $request->session()->get('WantTo') !== NULL )
+                {
+
+                    $WantTo = $request->session()->get('WantTo');
+                    
+                    $request->session()->forget('WantTo');
+
+                    return json_encode("/$WantTo");
+
+                }else{
+
+                    return json_encode('/member_index');
+
+                }
+
+            } catch(\Facebook\Exceptions\FacebookResponseException $e) {
+                
+                return json_encode(false);
+
+            } catch(\Facebook\Exceptions\FacebookSDKException $e) {
+                
+                return json_encode(false);
+            }
+            
+
+        }
+        else
+        {
+            return json_encode(false);
+        }
+        
+
+    }
 
 
 

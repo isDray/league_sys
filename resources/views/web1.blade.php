@@ -815,7 +815,7 @@ $(".fast_cat_root").click(function(){
     });
 
     $('#fast_cat_box_left').animate({scrollLeft:moveDistance}, 200);
-    console.log( moveDistance );
+    //console.log( moveDistance );
 
     if( selectDisplay == 'none')
     {   

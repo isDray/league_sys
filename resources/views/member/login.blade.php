@@ -2,6 +2,93 @@
 
 @section('selfcss')
 <link rel="stylesheet" href="{{url('/css/member_login.css')}}">
+
+<script>
+    
+    function statusChangeCallback(response) 
+    {   
+
+        
+        // 如果登入成功了就取回資料
+        if( response.status == 'connected' )
+        {   
+            //console.log(response.authResponse['accessToken']);
+
+            var _tk = response.authResponse['accessToken'];
+            var request = $.ajax({
+                
+                url: "{{url('/fblogin')}}",
+                method: "POST",
+                data: 
+                { 
+                    "_token": "{{ csrf_token() }}",
+                    _tk : _tk 
+                },
+                dataType: "json"
+            });
+ 
+            request.done(function( msg ) {
+
+                if( msg === false ){
+                    
+                    toastr.warning("Facebook登入過程出錯,請稍後再嘗試");
+                }
+                else
+                {
+                    window.location.href = "{{url('/')}}"+msg;
+                }
+
+            });
+ 
+            request.fail(function( jqXHR, textStatus ) {
+               
+            });            
+        }
+        else
+        {
+            // 登入失敗
+        }
+    }
+
+    function checkLoginState() 
+    {   
+        FB.getLoginStatus(function(response) {
+
+            statusChangeCallback(response);
+
+        });
+    }    
+
+    window.fbAsyncInit = function() {
+
+        FB.init({
+            appId      : '***REMOVED***',
+            cookie     : true,
+            xfbml      : true,
+            version    : 'v7.0'
+        });
+      
+        FB.AppEvents.logPageView();   
+
+    };
+
+    (function(d, s, id){
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) {return;}
+        js = d.createElement(s); js.id = id;
+        js.src = "https://connect.facebook.net/en_US/sdk.js";
+        fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));
+
+</script>
+
+<script type="text/javascript">
+
+
+  
+    
+
+</script>
 @endsection
 
 @section('content_right')
@@ -17,9 +104,12 @@
     
 </div>
 @endif
+<div id="fb-root"></div>
+<script async defer crossorigin="anonymous" src="https://connect.facebook.net/zh_TW/sdk.js#xfbml=1&version=v7.0&appId=***REMOVED***&autoLogAppEvents=1" nonce="o8BN8n8g"></script>
 
 <div class="box box-solid">
 
+<div class='col-md-7 col-sm-7 col-xs-12 _np'>
 <div class="box box-default">
     
     <div class="box-header with-border">
@@ -70,6 +160,27 @@
     </form>
 
 </div>
+</div>
+
+
+
+<div class='col-md-4 col-md-offset-1 col-sm-4 col-sm-offset-1 col-xs-12 _np'>
+<div class="box box-default">
+    
+    <div class="box-header with-border">
+        <h3 class="box-title">社群登入</h3>
+    </div>
+
+    <div class="box-body">
+
+        <div class="fb-login-button" data-size="medium" data-button-type="login_with" data-layout="rounded" data-auto-logout-link="false" data-use-continue-as="true" data-width="" onlogin="checkLoginState();"></div>
+
+    </div>
+
+</div>
+</div>
+
+
 </div>
 @endsection
 
