@@ -7,6 +7,7 @@ use DB;
 use Validator;
 use App\Cus_lib\Lib_common;
 use Facebook;
+use Google_Client;
 class MemberController extends Controller
 {
     
@@ -230,19 +231,12 @@ class MemberController extends Controller
                 
                 // 判斷該會員是否已經存在
                 
-                /*
-                    $request->session()->put('member_login'  , true ); 
-            
-                    $request->session()->put('member_id' , $res['id'] );
-
-                    $request->session()->put('member_name' , $res['name'] );
-                */
-                
                 $fb_member = 
 
                 DB::table('xyzs_league_member_social as ms')
                 ->select('m.*')
                 ->leftjoin('xyzs_league_member as m', 'ms.member_id', '=', 'm.id')
+                ->where('ms.social_name','=','Facebook')
                 ->where('ms.social_id', '=', $user['id'])->first();
                 
                 // 如果有資料
@@ -266,7 +260,8 @@ class MemberController extends Controller
                         
                             'email'     => $user['email'],
                             'league_id' => $LeagueId,
-                            'name'      => $user['name']
+                            'name'      => $user['name'],
+                            'account'   => 'social_'.time()
                         
                         ]);
 
@@ -290,6 +285,7 @@ class MemberController extends Controller
                     DB::table('xyzs_league_member_social as ms')
                     ->select('m.*')
                     ->leftjoin('xyzs_league_member as m', 'ms.member_id', '=', 'm.id')
+                    ->where('ms.social_name','=','Facebook')
                     ->where('ms.social_id', '=', $user['id'])->first();      
                     
 
@@ -299,6 +295,18 @@ class MemberController extends Controller
 
                     $request->session()->put('member_name' , $fb_member->name );                                  
                 }
+
+                
+                try {
+                    
+                    DB::table('xyzs_league_member')
+                    ->where('league_id', $LeagueId)
+                    ->where('id',$fb_member->id)
+                    ->update( ['login_time' => Lib_common::_GetGMTTime() ] );     
+
+                } catch (\Exception $e) {
+                    
+                } 
 
                 if( $request->session()->get('WantTo') !== NULL )
                 {
@@ -333,6 +341,145 @@ class MemberController extends Controller
         
 
     }
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | google login 功能
+    |--------------------------------------------------------------------------
+    |
+    |
+    */
+    public function googlelogin( Request $request ){
+
+        $LeagueId = $request->session()->get('league_id');
+        
+        if( isset($request->_tk) )
+        {
+            // 指定web 應用id
+            $client = new Google_Client(['client_id' => '***REMOVED***']);  
+        
+            // 驗證 token 正確性
+            $payload = $client->verifyIdToken( $request->_tk );
+            
+            //var_dump($payload);
+            if ($payload) 
+            {
+                // 判斷是否本來就有會員     
+                
+                $google_member = 
+                DB::table('xyzs_league_member_social as ms')
+                ->select('m.*')
+                ->leftjoin('xyzs_league_member as m', 'ms.member_id', '=', 'm.id')
+                ->where('ms.social_name','=','Google')
+                ->where('ms.social_id', '=', $payload['sub'])->first();
+
+                if( $google_member )
+                {
+                    // 已是會員就直接登入
+                    $request->session()->put('member_login'  , true ); 
+            
+                    $request->session()->put('member_id' , $google_member->id );
+
+                    $request->session()->put('member_name' , $google_member->name );                    
+
+                }
+                else
+                {
+                    // 還不是會員 , 就立即註冊後登入
+                    DB::beginTransaction();
+
+                    try {
+                        
+                        $insert_id = DB::table('xyzs_league_member')->insertGetId([
+                        
+                            'email'     => $payload['email'],
+                            'league_id' => $LeagueId,
+                            'name'      => $payload['name'],
+                            'account'   => 'social_'.time()
+                        
+                        ]);
+
+                        DB::table('xyzs_league_member_social')->insert(
+                            [
+                                'member_id'   => $insert_id,
+                                'social_name' => "Google",
+                                'social_id'   => $payload['sub']
+                            ]);
+                        DB::commit();
+                
+                    } catch (\Exception $e) {
+                        
+                        //var_dump( $e->getMessage() );
+                        DB::rollback();
+                        return json_encode(false);
+                    }   
+
+                    
+                    $google_member = 
+                    DB::table('xyzs_league_member_social as ms')
+                    ->select('m.*')
+                    ->leftjoin('xyzs_league_member as m', 'ms.member_id', '=', 'm.id')
+                    ->where('ms.social_name','=','Google')
+                    ->where('ms.social_id', '=', $payload['sub'])->first();
+
+                    if( $google_member )
+                    {
+                        // 已是會員就直接登入
+                        $request->session()->put('member_login'  , true ); 
+            
+                        $request->session()->put('member_id' , $google_member->id );
+
+                        $request->session()->put('member_name' , $google_member->name );                    
+
+                    }                                     
+                }
+                 
+                try {
+                    
+                    DB::table('xyzs_league_member')
+                    ->where('league_id', $LeagueId)
+                    ->where('id',$google_member->id)
+                    ->update( ['login_time' => Lib_common::_GetGMTTime() ] );     
+
+                } catch (\Exception $e) {
+                        var_dump( $e->getMessage() );
+                        DB::rollback();
+                        return json_encode(false);                    
+                } 
+
+                if( $request->session()->get('WantTo') !== NULL )
+                {
+
+                    $WantTo = $request->session()->get('WantTo');
+                    
+                    $request->session()->forget('WantTo');
+
+                    return json_encode("/$WantTo");
+
+                }else{
+
+                    return json_encode('/member_index');
+
+                }                    
+            }
+            else
+            {
+                return json_encode(false);
+            }
+        }
+        // 沒收到 _tk 直接算失敗
+        else
+        {
+            return json_encode(false);
+        }
+
+    }
+
+
+
 
 
 

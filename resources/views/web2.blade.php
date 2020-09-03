@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>@if( !empty($title) ){{$title}}-@endif{{$LeagueData['store_name']}}</title>
-
+    
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     @if( isset($description) )
@@ -14,8 +14,11 @@
 
     @if( isset($keywords) )
     <meta name="keywords" content="{{$keywords}}">
-    @endif    
-        
+    @endif  
+    <meta name="google-signin-scope" content="profile email">
+    <meta name="google-signin-client_id" content="***REMOVED***"> 
+    
+
     <!-- Bootstrap 3.3.7 -->
     <link rel="stylesheet" href="{{url('/AdminLTE/bower_components/bootstrap/dist/css/bootstrap.min.css')}}">
     <!-- Font Awesome -->
@@ -260,7 +263,7 @@
                 <span class="col-md-3 col-sm-3 col-xs-0 text-center sub_menu_item">最新商品</span>
             </a>
             <a href="{{url('/register')}}">
-                <span class="col-md-3 col-sm-3 col-xs-0 text-center sub_menu_item">批發辦法</span>
+                <span class="col-md-3 col-sm-3 col-xs-0 text-center sub_menu_item">加盟辦法</span>
             </a>
             <a href="{{url('/check_order')}}">
                 <span class="col-md-3 col-sm-3 col-xs-0 text-center sub_menu_item">訂單查詢</span>
@@ -513,7 +516,7 @@ $(document).ready(function(){
 */
 $(function(){
 
-    $(".add_to_cart").click(function(){
+   $('body').on('click',  ".add_to_cart" , function(){
 
         var goods_id = $(this).attr('goods_id');
 
@@ -554,13 +557,15 @@ $(function(){
                     
                     var tmp_goods = "<table class='cart_table' width='100%'>";
                     /*tmp_goods += "<tr><td colspan='4' class='cart_item_title'>"+listv['name']+"</td></tr>";*/
-                    
                     num_in_cart += parseInt(listv['num']);
+                    tmp_goods += '<tr><td><table>';
+                    tmp_goods += "<tr><td class='tableimg cart_img_box' colspan='2' ><img src='https://***REMOVED***.com/***REMOVED***/"+listv['thumbnail']+"'><span>"+listv['name']+"</span></td></tr>"+
+                                      "<tr><td>$"+listv['goodsPrice']+"×"+listv['num']+"="+listv['subTotal']+"</td>"+
+                                      "<td align='right'><span class='btn bg-maroon btn-flat margin rmbtn' goods_id='"+listv['id']+"'>刪除</span></td></tr>";
 
-                    tmp_goods += "<tr><td class='tableimg'><img src='https://***REMOVED***.com/***REMOVED***/"+listv['thumbnail']+"'></td>"+
-                                      "<td width='30%'>×"+listv['num']+"="+listv['subTotal']+"</td>"+
-                                      "<td width='30%'><span class='btn bg-maroon btn-flat margin rmbtn' goods_id='"+listv['id']+"'><i class='fa fa-fw fa-remove'></i></span></td></tr>";
+                    tmp_goods += '</table></td></tr>';
                     tmp_goods += "</table>";
+                    
                     
                     $(".cart_list_area").append( tmp_goods );
                 });
@@ -571,6 +576,26 @@ $(function(){
                 if( $("#cart_content").length > 0) {
                     location.reload();
                 }             
+
+                if( $("#checkout_content").length >0)
+                {
+                    var request = $.ajax({
+                        url: "{{url('/ajax_shipping_free_recommend')}}",
+                        method: "POST",
+                        data: { _token: "{{ csrf_token() }}" },
+                        dataType: "json"
+                    });
+ 
+                    request.done(function( return_data ) {
+                        
+                        $("#check_sub").empty();
+
+                        $("#check_sub").append( return_data );
+                    });
+                    request.fail(function( jqXHR, textStatus ) {
+
+                    });                    
+                }
             }
 
         });
@@ -613,24 +638,53 @@ $('body').on('click', '.rmbtn', function() {
         $(".cart_list_area").empty();
         
         var num_in_cart = 0;
-
+        var cartTotal = 0;
         $.each( res['data'] , function( listk , listv ){
-                    
+            
+            cartTotal += listv['subTotal'];                    
+
             var tmp_goods = "<table class='cart_table' width='100%'>";
             /*tmp_goods += "<tr><td colspan='4' class='cart_item_title'>"+listv['name']+"</td></tr>";*/
             
             num_in_cart += parseInt(listv['num']);
 
-            tmp_goods += "<tr><td class='tableimg'><img src='https://***REMOVED***.com/***REMOVED***/"+listv['thumbnail']+"'></td>"+
-                             "<td width='30%'>×"+listv['num']+"="+listv['subTotal']+"</td>"+
-                             "<td width='30%'><span class='btn bg-maroon btn-flat margin rmbtn' goods_id='"+listv['id']+"'><i class='fa fa-fw fa-remove'></i></span></td></tr>";
+            tmp_goods += '<tr><td><table>';
+            tmp_goods += "<tr><td class='tableimg cart_img_box' colspan='2' ><img src='https://***REMOVED***.com/***REMOVED***/"+listv['thumbnail']+"'><span>"+listv['name']+"</span></td></tr>"+
+                                      "<tr><td>$"+listv['goodsPrice']+"×"+listv['num']+"="+listv['subTotal']+"</td>"+
+                                      "<td align='right' ><span class='btn bg-maroon btn-flat margin rmbtn' goods_id='"+listv['id']+"'>刪除</span></td></tr>";
+
+            tmp_goods += '</table></td></tr>';
             tmp_goods += "</table>";
                     
             $(".cart_list_area").append( tmp_goods );
+
+
         });
+         
+        $(".cart_list_area").append( '<p>小計'+cartTotal+'</p>' );
 
         $(".num_in_cart").empty();
-        $(".num_in_cart").append(num_in_cart);        
+        $(".num_in_cart").append(num_in_cart);   
+        
+        if( $("#checkout_content").length >0)
+        {
+            var request = $.ajax({
+                url: "{{url('/ajax_shipping_free_recommend')}}",
+                method: "POST",
+                data: { _token: "{{ csrf_token() }}" },
+                dataType: "json"
+            });
+ 
+            request.done(function( return_data ) {
+                        
+                $("#check_sub").empty();
+
+                $("#check_sub").append( return_data );
+            });
+            request.fail(function( jqXHR, textStatus ) {
+
+            });                    
+        }     
     });
  
     rmrequest.fail(function( jqXHR, textStatus ) {

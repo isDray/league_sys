@@ -317,6 +317,17 @@ Route::group(['middleware' => ['CheckLeague']], function () {
 
     // 結帳頁面
     Route::get('/checkout','CartController@checkout');
+    
+    // 宅配站所取得
+    Route::post('/get_cat_store','CartController@get_cat_store');
+
+    // 宅配站所取得
+    Route::get('/get_cat_map/{address}','CartController@get_cat_map');
+
+    // ajax免運差額
+    Route::post('/ajax_shipping_free_recommend','CartController@ajax_shipping_free_recommend');
+
+    Route::post('/ajax_df_address','CartController@ajax_df_address');
 
     // 寫入訂單
     Route::post('/done','CartController@done');
@@ -349,6 +360,8 @@ Route::group(['middleware' => ['CheckLeague']], function () {
     Route::get('/member_login','MemberController@login');
     
     Route::post('/fblogin','MemberController@fblogin');
+
+    Route::post('/googlelogin','MemberController@googlelogin');
     
 
     Route::post('/member_login_act','MemberController@member_login_act');

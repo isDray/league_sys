@@ -143,6 +143,8 @@ class CheckLeague
          * 確認是否已是本站會員
          **/
         $sub_member = $request->session()->get('member_id');
+        
+        View::share('sub_member' , $sub_member );
 
         $request->attributes->add(['sub_member' => $sub_member ]);
 

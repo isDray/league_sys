@@ -6,6 +6,8 @@
     "type": "project",
     "require": {
         "php": ">=5.6.4",
+        "facebook/graph-sdk": "^5.7",
+        "google/apiclient": "^2.7",
         "intervention/image": "^2.5",
         "laravel/framework": "5.4.*",
         "laravel/tinker": "~1.0",

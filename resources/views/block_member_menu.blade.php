@@ -7,6 +7,7 @@
             <a href="{{url('/member_index')}}"><li class="@if( $now_function == 'member_index' ) active @endif">會員中心入口</li></a>
             <a href="{{url('/member_edit')}}"><li class="@if( $now_function == 'member_edit' ) active @endif">個人資料</li></a>
             <a href="{{url('/member_order')}}"><li class="@if( $now_function == 'member_order' ) active @endif">我的訂單</li></a>
+            <a href="{{url('/member_logout_act')}}"><li class="">會員登出</li></a>
         </ul>
 
     </div>

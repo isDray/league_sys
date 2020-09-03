@@ -173,3 +173,54 @@ span#super_get_btn {
 @media( min-width: 601px ) and ( max-width: 992px){
 
 }
+.input_half
+{
+    width: 50%;
+    display: inline-block;
+    /*overflow-y: hidden;*/
+    padding-top: 7px!important;
+    padding-bottom: 7px!important;
+}
+.fast_cat{
+    width: calc(50% - 40px);
+    margin-right: 0px;
+    display: inline-block;
+    /*font-size: 14px;*/
+}
+@media(max-width:768px){
+.input_half
+{
+    width: 100%;
+    display: block;
+    margin-bottom: 10px;
+    /*overflow-y: hidden;*/
+    /*padding-top: 7px!important;
+    padding-bottom: 7px!important;*/
+}
+.fast_cat{
+    width: calc(100% - 40px);
+    margin-right: 0px;
+    display: inline-block;
+    /*font-size: 14px;*/
+}
+}
+#map_content{
+	width: 60%;
+	height: 50%;
+	margin-top: 10%;
+	margin-left: 20%;
+}
+#catframe{
+	height: 100%;
+}
+@media(max-width:768px){
+    #map_content{
+	    width: 90%;
+	    height: 60%;
+	    margin-top: 10%;
+	    margin-left: 5%;
+    }
+    #catframe{
+	    height: 100%;
+    }	
+}

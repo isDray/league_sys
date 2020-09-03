@@ -89,7 +89,8 @@
         <img src="{{url('/league_logo/'.$LeagueData['logo'])}}" class='menulogo only_m' alt="{{$LeagueData['store_name']}}logo">
         </a>
         @endif
-
+        
+        
 
         <nav class='web_nav1'>
             @if( !empty($LeagueData['logo']) )
@@ -282,7 +283,7 @@
                 <span class="col-md-3 col-sm-3 col-xs-0 text-center sub_menu_item">最新商品</span>
             </a>
             <a href="{{url('/register')}}">
-                <span class="col-md-3 col-sm-3 col-xs-0 text-center sub_menu_item">批發辦法</span>
+                <span class="col-md-3 col-sm-3 col-xs-0 text-center sub_menu_item">加盟辦法</span>
             </a>
             <a href="{{url('/check_order')}}">
                 <span class="col-md-3 col-sm-3 col-xs-0 text-center sub_menu_item">訂單查詢</span>

@@ -1,6 +1,12 @@
 @extends("web2")
 
 @section('selfcss')
+<style type="text/css">
+#cus_g_btn > .abcRioButton{
+    border-radius: 20px!important;
+    border:1px solid #bebebe;
+}
+</style>
 <link rel="stylesheet" href="{{url('/css/member_login.css')}}">
 
 <script>
@@ -47,6 +53,7 @@
         else
         {
             // 登入失敗
+
         }
     }
 
@@ -80,15 +87,64 @@
         fjs.parentNode.insertBefore(js, fjs);
     }(document, 'script', 'facebook-jssdk'));
 
-</script>
+    // google 登入
+    function gsign( googleUser ) {
+        
+        id_token = googleUser.getAuthResponse().id_token;
 
-<script type="text/javascript">
+        if( id_token )
+        {   
 
+            var _tk = id_token;
+            var request = $.ajax({
+                
+                url: "{{url('/googlelogin')}}",
+                method: "POST",
+                data: 
+                { 
+                    "_token": "{{ csrf_token() }}",
+                    _tk : _tk 
+                },
+                dataType: "json"
+            });
+ 
+            request.done(function( msg ) {
 
-  
+                if( msg === false ){
+                    
+                    toastr.warning("Google登入過程出錯,請稍後再嘗試");
+                }
+                else
+                {
+                    window.location.href = "{{url('/')}}"+msg;
+                }
+
+            });
+ 
+            request.fail(function( jqXHR, textStatus ) {
+               
+            }); 
+        }
+    }
     
+    function onFailure(){}
 
+    function onLoadCallback(){
+        $('span[id^="not_signed_"]').html('使用 Google 登入');
+        $('span[id^="connected"]').html('使用 Google 登入');
+
+        gapi.load('auth2', function() {
+            auth2 = gapi.auth2.init({
+                client_id: '***REMOVED***',
+            });
+            element = document.getElementById('cus_g_btn');
+            auth2.attachClickHandler(element, {}, gsign, onFailure);
+        });              
+    }
+
+    
 </script>
+
 @endsection
 
 @section('content_right')
@@ -154,6 +210,7 @@
         <div class="box-footer text-center">
           
             <button type="submit" class="btn colorbtn ">登入</button>
+            
 
         </div>
 
@@ -173,7 +230,9 @@
 
     <div class="box-body">
 
-        <div class="fb-login-button" data-size="medium" data-button-type="login_with" data-layout="rounded" data-auto-logout-link="false" data-use-continue-as="true" data-width="" onlogin="checkLoginState();"></div>
+        <div class="fb-login-button" data-size="medium" data-button-type="login_with" data-layout="rounded" data-auto-logout-link="false" data-use-continue-as="true" data-width="" onlogin="checkLoginState();" style='width: 200px;'></div>
+        <br><br>
+        <div id='cus_g_btn' class="g-signin2"  data-height="28" data-width="200" data-longtitle="true"></div>
 
     </div>
 
@@ -186,6 +245,8 @@
 
 
 @section('selfjs')
+<script src="https://apis.google.com/js/platform.js?onload=onLoadCallback" async defer></script>    
+
 <script src="{{url('/validation/jquery.validate.min.js')}}"></script>
 
 <script type="text/javascript">

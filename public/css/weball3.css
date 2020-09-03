@@ -2,6 +2,7 @@
 body{
 	font-family: 'cwTeXYen', sans-serif;	 
 	font-weight: 900;	
+    font-size: 18px;
 }
 h1,h2,h3,h4,h5,h6{
     font-family: 'cwTeXYen', sans-serif;
@@ -16,6 +17,7 @@ h1,h2,h3,h4,h5,h6{
 ._nm{
     margin: 0px;
 }
+
 @media(max-width:991px){
     .m_only{
         display: block;
@@ -374,7 +376,16 @@ h1,h2,h3,h4,h5,h6{
     padding-top: 20px!important;
     margin-top: 20px;
     padding-top: 0px;
-    padding: 0px;
+    /*padding: 0px;*/
+}
+@media(max-width:991px){
+    #content_right{
+        min-height: calc(100vh - 400px);
+        padding-top: 20px!important;
+        margin-top: 20px;
+        padding-top: 0px;
+        padding: 0px;
+    }
 }
 #content_right .box-body{
     /*padding: 0px;*/
@@ -1021,4 +1032,76 @@ input:checked+.paymentLabel:after{
     margin-left: 10%;
     border-top: 2px solid #ec7070;
     margin-bottom: 20px;
+}
+/* checkout小計 */
+#check_sub{
+    margin-top: 40px;
+}
+#check_sub_in{
+    width: 100%;
+    border-radius: 4px;
+    border:2px dotted #ec7070;
+}
+#check_sub>#check_sub_in>table{
+    width: 100%;
+}
+.textleft{text-align: left;}
+.textright{text-align:right; }
+.textcenter{text-align: center;}
+
+.cart-progress-bar {
+    position: relative;
+    background: #e6eeff;
+    box-shadow: inset 0 0 3px rgba(0,0,0,0.5);
+    /*width: 500px;*/
+    height: 10px;
+    border-radius: 50px;
+    margin: auto;
+    /*overflow: hidden;*/
+    padding-left: 0px;
+    padding-right: 0px;
+    margin-top: 14px;
+    margin-bottom: 14px;
+}
+.cart-progress-bar:after{
+    font-family: 'cwTeXYen', sans-serif!important; 
+    font-weight: 900;
+    display: block;
+    width: 80px;
+    height: 20px;
+    content: attr(percent);
+    background-color: #ffabca;
+    position: absolute;
+    right:-86px;
+    top:calc(50% - 10px);
+    text-align: center;
+    line-height: 20px!important;
+    border-radius: 4px;
+
+}
+@media( max-width: 991px){
+.cart-progress-bar:after{
+    font-family: 'cwTeXYen', sans-serif!important; 
+    font-weight: 900;
+    display: block;
+    width: 80px;
+    height: 20px;
+    content: attr(percent);
+    background-color: #ffabca;
+    position: absolute;
+    right:0px;
+    top:-26px;
+    text-align: center;
+    line-height: 20px!important;
+    border-radius: 4px;
+
+}  
+}
+
+.cart-progress-bar .cart-progress {
+  background-image: -webkit-gradient(linear, left top, right top, from(#8aaaff), to(#fa8cff));
+  background-image: linear-gradient(90deg, #8aaaff, #fa8cff);
+  /*width: 70%;*/
+  height: 10px;
+  border-radius: 5px;
 }

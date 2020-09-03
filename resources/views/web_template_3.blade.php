@@ -95,7 +95,7 @@
     </li>
     <li class='rwd_menu_li'>
         <span  class='rwd_menu_li_more fa fa-fw fa-circle-thin' ></span>
-        <a class='rwd_nav_tree_name rwd_child_tree rwd_menua' href="{{url('/register')}}">批發辦法</a>
+        <a class='rwd_nav_tree_name rwd_child_tree rwd_menua' href="{{url('/register')}}">加盟辦法</a>
     </li>
     <li class='rwd_menu_li'>
         <span  class='rwd_menu_li_more fa fa-fw fa-circle-thin' ></span>
@@ -163,9 +163,15 @@
             	<a class='btn btn-flat margin tool_btn' href="{{url('/join_member')}}">
                 <i class="fa fa-fw fa-user-plus"></i>加入會員
                 </a>
+                @if( !isset($sub_member) || empty($sub_member))
             	<a class='btn btn-flat margin tool_btn' href="{{url('/member_login')}}">
                 <i class="fa fa-fw fa-sign-in"></i>會員登入
                 </a>        	
+                @else
+                <a class='btn btn-flat margin tool_btn' href="{{url('/member_index')}}">
+                <i class="fa fa-fw fa-sign-in"></i>會員專區
+                </a>                
+                @endif
 <!-- num_in_cart -->
                 <a class='btn btn-flat margin tool_btn cart_btn cart_toggle'>
                     <i class="fa fa-fw fa-shopping-cart"></i>購物車
@@ -254,7 +260,7 @@
                 <span class="col-md-3 col-sm-3 col-xs-0 text-center sub_menu_item">最新商品</span>
             </a>
             <a href="{{url('/register')}}">
-                <span class="col-md-3 col-sm-3 col-xs-0 text-center sub_menu_item">批發辦法</span>
+                <span class="col-md-3 col-sm-3 col-xs-0 text-center sub_menu_item">加盟辦法</span>
             </a>
             <a href="{{url('/check_order')}}">
                 <span class="col-md-3 col-sm-3 col-xs-0 text-center sub_menu_item">訂單查詢</span>
@@ -359,11 +365,19 @@
             </a>        
         </div>
         <div class='col-md-3 col-sm-3 col-xs-3'>
+            @if( session()->has('member_login') && session('member_id') == true && session()->has('member_id') )
+            <a href="{{url('/member_logout_act')}}">
+            <i class="fa fa-fw fa-sign-out"></i>
+            <br>
+            會員登出
+            </a>             
+            @else
             <a href="{{url('/join_member')}}">
             <i class="fa fa-fw fa-user-plus"></i>
             <br>
             加入會員
-            </a>          
+            </a> 
+            @endif         
         </div>
         <div class='col-md-3 col-sm-3 col-xs-3'>
             @if( session()->has('member_login') && session('member_id') == true && session()->has('member_id') )

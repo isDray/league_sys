@@ -28,15 +28,16 @@
     </div>
     
     
-    <div class="box-body" id="cart_content">
-        <form action="{{url('/done')}}" method="post" id="checkout_form">
+    <div class="box-body" id="checkout_content">
+
+        <form action="{{url('/done')}}" method="post" id="checkout_form" >
         {!! csrf_field() !!}
         <!-- 配送區域 -->
         <div class="col-md-12 col-sm-12 col-xs-12">
         
             <span>配送區域:</span>
 
-            <div class="form-group">
+            <div class="form-group" id='ship_area_select'>
             
             <!-- 國家 -->
             <select id='country' name="country" class="form-control custom_form_control">
@@ -170,34 +171,45 @@
                                                         
                             @endif
                             <!-- 針對萊爾富增設獨立表格結束 -->
-                                   
+                            
+                            @if( COUNT($address_sets) > 0 )
+                            <div class="form-group">
+                                <label for=""><font color="red"></font>快速地址：</label>
+                                <select id='address_set' class="form-control custom_form_control">
+                                    <option value='0' >不使用</option>
+                                    @foreach( $address_sets as $address_setk=>$address_set )
+                                    <option value="{{$address_set['id']}}">{{$address_set['address_name']}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            @endif
+
                             @if( $shipping_listv['shipping_code'] == 'super_get' || $shipping_listv['shipping_code'] == 'super_get2' || $shipping_listv['shipping_code'] == 'super_get3')
                             <div class="form-group">
                                 <label for=""><font color="red">*</font>收貨人：</label>
-                                <input type="text" class="super_consignee form-control " name="super_consignee" value=""  disabled="disabled" />
+                                <input type="text" class="super_consignee form-control " name="super_consignee" disabled="disabled" @if($member_datas && $member_datas['name'])value="{{ $member_datas['name']}}"@endif/>
 
                             </div> 
 
                             <div class="form-group">
                                 <label for=""><font color="red">*</font>手機：</label>
-                                <input type="text" class="super_mobile form-control" name="super_mobile" value=""  placeholder="格式:0912345678" disabled="disabled" />
+                                <input type="text" class="super_mobile form-control" name="super_mobile" placeholder="格式:0912345678" disabled="disabled" @if($member_datas && $member_datas['phone'])value="{{ $member_datas['phone']}}"@endif/>
 
                             </div> 
 
                             <div class="form-group">
                                 <label for="">電子郵件：</label>
-                                <input type="text" class="super_email form-control" name="super_email" value=""  disabled="disabled" />(訂單收信用)
+                                <input type="text" class="super_email form-control" name="super_email" disabled="disabled" @if($member_datas && $member_datas['email'])value="{{ $member_datas['email']}}"@endif/>(訂單收信用)
                             </div> 
 
                             @else
-
                             <div class="form-group">
                                 <label for=""><font color="red">*</font>收貨人：</label>
-                                <input type="text" name="consignee" value="" class="form-control" disabled="disabled"/>
+                                <input type="text" name="consignee" class="form-control" disabled="disabled" @if($member_datas && $member_datas['name'])value="{{ $member_datas['name']}}"@endif />
                             </div>
 
                             <div class="form-group">
-                                <label for=""><font color="red">*</font>收貨地址：</label>
+                                <label for="" style='display:block;vertical-align:bottom;'><font color="red">*</font>收貨地址：</label>
                                 <input type="text" name="address" value="" class="form-control"/>
                             </div>                            
                                  
@@ -208,17 +220,17 @@
 
                             <div class="form-group">
                                 <label for=""><font color="red"></font>電子郵件：</label>
-                                <input name="email" type="text" value="" class="form-control"/>(訂單收信用)
+                                <input name="email" type="text" class="form-control" @if($member_datas && $member_datas['email'])value="{{ $member_datas['email']}}"@endif />(訂單收信用)
                             </div>                            
 
                             <div class="form-group">
                                 <label for=""><font color="red">*</font>手機：</label>
-                                <input name="mobile" type="text" value="" class="form-control" placeholder="格式:0912345678"/>
+                                <input name="mobile" type="text" class="form-control" placeholder="格式:0912345678" @if($member_datas && $member_datas['phone'])value="{{ $member_datas['phone']}}"@endif/>
                             </div>                                
 
                             <div class="form-group">
                                 <label for=""><font color="red"></font>電話：</label>
-                                <input type="text" name="tel" value="" class="form-control"/>
+                                <input type="text" name="tel" class="form-control" @if($member_datas && $member_datas['tel'])value="{{ $member_datas['tel']}}"@endif/>
                             </div>                             
 
                             
@@ -261,7 +273,7 @@
             <!-- 配送方式結束 --> 
 
             <div class="col-md-12 col-sm-12 col-xs-12" id='consigneeArea'>
-
+            
             </div>    
 
             <!-- 付款方式 -->
@@ -376,6 +388,59 @@
 
             </div>
             <!-- 備註結束 -->
+
+            <!-- checkout 小計 -->
+            <div class='col-md-12 col-sm-12 col-xs-12 _np' id='check_sub'>
+            @if( count($check_sub) )
+            <div id='check_sub_in' class="col-md-12 col-sm-12 col-xs-12">
+                <table>
+                    <tr>
+                        <td class='textright'>商品金額 : {{$check_sub['goods_amount']}}</td>
+                    </tr>
+                    <tr>
+
+                        <td class='textright'>運費 : {{$check_sub['shipping_fee']}}</td>
+                    </tr>
+
+                    <tr>
+                        <td class='textright'>總價 : {{$check_sub['order_amount']}}</td>
+                    </tr>                                 
+                </table>
+                
+                <h4>@if( $check_sub['achieve_percent'] < 100) 目前只要再{{$check_sub['diff_for_free']}}即享免運 @else 已達免運標準 @endif</h4>
+                <div class="cart-progress-bar col-md-8 col-sm-12 col-xs-12" percent="{{$check_sub['achieve_percent']}}%">
+                    <div class="cart-progress" id="progress" style="width:{{$check_sub['achieve_percent']}}%;" percent="{{$check_sub['achieve_percent']}}%">
+                    </div>
+                </div>
+                @if( count($shipfree_recommends) > 0)
+                    <div class='col-md-12 col-sm-12 col-xs-12'></div>
+                    @foreach( $shipfree_recommends as $shipfree_recommendk => $shipfree_recommend )
+                    <div class='col-md-3 col-sm-4 col-xs-6 show_goods_box'>
+
+                        <div class="thumbnail">
+                            
+                            <a href="{{url('/show_goods/'.$shipfree_recommend['goods_id'])}}" title="查看商品:{{$shipfree_recommend['goods_name']}}詳細內容">
+                                <img lazysrc="https://***REMOVED***.com/***REMOVED***/{{$shipfree_recommend['goods_thumb']}}" data-holder-rendered="true" class="lazyload" alt="{{ $shipfree_recommend['goods_name'] }},貨號:{{ $shipfree_recommend['goods_sn'] }},價格:{{ $shipfree_recommend['shop_price'] }}">
+                            </a>
+                            
+                            <div class="caption">
+                                <p class='goods_sn'>貨號:{{ $shipfree_recommend['goods_sn'] }}</p>
+                                <a href="{{url('/show_goods/'.$shipfree_recommend['goods_id'])}}" title="查看商品:{{$shipfree_recommend['goods_name']}}詳細內容">
+                                    <h4 class="goods_title">{{ $shipfree_recommend['goods_name'] }}</h4>
+                                </a>
+                    
+                                <p class='goods_price'><small>$</small>{{ $shipfree_recommend['shop_price'] }}</p>
+                                
+                                <p class='goods_add_btn'><a  class="btn colorbtn add_to_cart" role="button" goods_id="{{$shipfree_recommend['goods_id']}}" title="將{{ $shipfree_recommend['goods_name'] }}加入購物車">立即購買</a></p>
+                            </div>
+                        </div>                
+                    </div>                    
+                    @endforeach
+                @endif
+            </div>
+            @endif
+            </div>
+            <!-- /checkout 小計 -->
             
             <div class="col-md-12 col-sm-12 col-xs-12" id="submitArea">                                    
                 
@@ -411,6 +476,11 @@
 
 </div><!-- /.modal -->
 
+
+<div id="map_modal" class="modal">
+    <div class="modal-content" id='map_content'>
+    </div>
+</div>
 @endsection
 
 @section('selfjs')
@@ -457,7 +527,7 @@ $(document).ready(function(){
      |----------------------------------------------------------------
      |
      */
-    $("#country").change(function(){
+    $('body').on('change', '#country', function() {
         
         var area = $(this).val();
 
@@ -493,7 +563,7 @@ $(document).ready(function(){
      |----------------------------------------------------------------
      |
      */
-    $("#province").change(function(){
+     $('body').on('change', '#province', function() {
         
         var area = $(this).val();
 
@@ -529,7 +599,7 @@ $(document).ready(function(){
      |----------------------------------------------------------------
      |
      */
-    $("#city").change(function(){
+    $('body').on('change', '#city', function() {     
         
         var area = $(this).val();
 
@@ -566,9 +636,8 @@ $(document).ready(function(){
      |
      */
     $("input[name='shipping']").change(function(){
-
+        
         var ship = $("input[name='shipping']:checked").val();
-
         // 先記錄選擇了甚麼配送
         var shipAjax = $.ajax({
             url: "{{url('/shipChange')}}",
@@ -581,7 +650,25 @@ $(document).ready(function(){
         });
  
         shipAjax.done(function( res ) {
-            
+            if( $("#checkout_content").length >0)
+            {
+                var request = $.ajax({
+                    url: "{{url('/ajax_shipping_free_recommend')}}",
+                    method: "POST",
+                    data: { _token: "{{ csrf_token() }}" },
+                    dataType: "json"
+                });
+     
+                request.done(function( return_data ) {
+                            
+                    $("#check_sub").empty();
+    
+                    $("#check_sub").append( return_data );
+                });
+                request.fail(function( jqXHR, textStatus ) {
+    
+                });                    
+            }             
         });
  
         shipAjax.fail(function( jqXHR, textStatus ) {
@@ -591,7 +678,7 @@ $(document).ready(function(){
         
         // 清空收貨人訊息區塊
         $("#consigneeArea").empty();
-
+        
         // 取消鎖定
         $(".hideInput input").removeAttr("disabled");
         
@@ -601,8 +688,20 @@ $(document).ready(function(){
         
         // 恢復鎖定
         $(".hideInput input").attr("disabled","disabled");
+
     })
     
+
+
+    
+    /*
+    |--------------------------------------------------------------------------
+    | 快速地址功能 
+    |--------------------------------------------------------------------------
+    |
+    |
+    */
+
 
 
 
@@ -613,7 +712,7 @@ $(document).ready(function(){
      */
     if ($("input[name='shipping']:checked").val()) {
         
-        $("input[name='shipping']").trigger('change');
+        $("input[name='shipping']:checked").trigger('change');
 
     }
 
@@ -657,7 +756,6 @@ $(document).ready(function(){
         }
     });
     
-
 
 
     /*----------------------------------------------------------------
@@ -916,7 +1014,43 @@ $(document).ready(function(){
         }
         
     });
+    
+    $(document).on('change','#address_set',function(){
+        
+        selectAddress = $(this).val();
+    
+        if( selectAddress > 0 )
+        {
+            var menuId = $( "ul.nav" ).first().attr( "id" );
+            
+            var request = $.ajax({
+            
+                url: "{{url('/ajax_df_address')}}",
+                method: "POST",
+                data: { 
+                    address_id : selectAddress,
+                    _token : "{{ csrf_token() }}",
+                },
+                dataType: "json"
 
+            });
+ 
+            request.done(function( return_datas ) {
+                
+                if( return_datas != false )
+                {
+                    fill_df_address( return_datas );
+                }
+            });
+ 
+            request.fail(function( jqXHR, textStatus ) {
+                
+                //alert( "Request failed: " + textStatus );
+            
+            });
+        }
+
+    });
 });
 
 
@@ -996,5 +1130,158 @@ function showdiv( ){
     }    
 
 }
+
+
+
+
+/*
+|--------------------------------------------------------------------------
+| 預設地址填寫
+|--------------------------------------------------------------------------
+|
+*/
+function fill_df_address( df_address ){
+    
+    /***
+     * 區域處理
+     **/    
+    $("#ship_area_select").empty();
+    $("#ship_area_select").append( df_address['ajax_area_select']);
+    
+
+    /***
+     * 資料填寫處理
+     **/
+    if( $("#consigneeArea select[name='best_time'] ").length )
+    { 
+        // 回填宅配表格
+        $("#consigneeArea input[name='consignee']").val( df_address['consignee'] );
+        $("#consigneeArea input[name='address']").val( df_address['address'] );
+        $("#consigneeArea input[name='email']").val( df_address['email'] );
+        $("#consigneeArea input[name='mobile']").val( df_address['mobile'] );
+        $("#consigneeArea input[name='tel']").val( df_address['tel'] );
+        //$("#consigneeArea input[name='consignee']").val( df_address['consignee'] );
+    }
+    else
+    {
+        // 回填超商表格
+    }
+     
+    
+}
+
+
+
+
+/*
+|--------------------------------------------------------------------------
+| 宅配站所提示功能
+|--------------------------------------------------------------------------
+|
+*/
+
+// 取得宅配站所
+function get_cat_stoe(){
+    
+    $(".fast_cat").remove();
+
+    $("input[name='address']").removeClass("input_half");
+
+    cityVal     = $("#city").val();
+
+    shippingVal = $("input[name='shipping']:checked").val();
+
+    if ( typeof cityVal !== "undefined" && typeof shippingVal !== "undefined" && shippingVal == 20 ) {
+        
+        var menuId = $( "ul.nav" ).first().attr( "id" );
+
+        var request = $.ajax({
+            url: "{{url('/get_cat_store')}}",
+            method: "POST",
+            data: {  
+                _token : "{{ csrf_token() }}", 
+                city:$( "#city option:selected" ).text(),
+                shipping:shippingVal
+            },
+            dataType: "JSON"
+        });
+         
+        request.done(function( return_datas ) {
+            
+            if( return_datas != false )
+            {   
+                $("input[name='address']").addClass("input_half");
+                $(".fast_cat").remove();
+                $("input[name='address']").after( decodeURIComponent(return_datas) );
+            }
+        });
+         
+        request.fail(function( jqXHR, textStatus ) {
+          //alert( "Request failed: " + textStatus );
+        });
+
+    }    
+
+}
+
+$('body').on('change', '#city', function() {
+
+    get_cat_stoe();
+});
+$('body').on('click', "input[name='shipping']", function() {
+
+    get_cat_stoe();
+});
+
+function select_cat_store(){
+    $(this).after('<button type="button" class="btn btn-primary map_btn"><i class="glyphicon glyphicon-map-marker"></i></button>');
+}
+
+
+$('body').on('change', ".fast_cat", function() {
+        
+    $(".map_btn").remove();
+    
+    $(this).css({'padding-bottom':'6px'});
+
+    if( $(this).val() != 0)
+    {
+        $("input[name=address]").val( $(this).val() );
+        $(".cat_open_time").empty();
+        $(".cat_open_time").append("站所營業時間:"+$(this).find('option:selected').attr('ot') );
+        $(this).after('<span type="button" class="btn btn-primary map_btn"><i class="glyphicon glyphicon-map-marker center"></i></span>');
+        $(this).css({'padding-bottom':'3px'});
+        $(".map_btn").css({'padding':'6px','height':'34px' , 'float':'right' ,'background-color':'#ec7070' , 'border-color':'#ec7070'});   
+        //$(".map_btn a ").css({'display':'inline-table','vertical-align':'middle'});             
+    }
+    else
+    {
+        $("input[name=address]").val( '' );
+        $(".cat_open_time").empty();
+        $(".map_btn").remove();
+    }
+
+});
+
+$('body').on('click', ".map_btn", function() {
+
+    if( $(this).prev('select').val() != 0)
+    {
+        $("#map_content").empty();
+            
+        $("#map_modal").show();
+        //alert( $(this).prev('select').val() );
+        $("#map_content").load("{{url('/get_cat_map')}}/"+$(this).prev('select').val());
+    }
+
+}); 
+
+$('body').on('click', "#cat_map_close,#map_modal", function() {
+
+    if( $("#map_modal").is(":visible") )
+    {
+        $("#map_modal").hide();
+    }
+});
 </script>
 @endsection

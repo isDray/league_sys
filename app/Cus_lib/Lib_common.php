@@ -2,6 +2,7 @@
 namespace App\Cus_lib;
 use DB;
 use Session;
+use Illuminate\Support\Facades\Cookie;
 /*
 |--------------------------------------------------------------------------
 | 通用工具
@@ -749,6 +750,189 @@ class Lib_common{
             
             return $tmp_cat; 
         }
+    }
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | 湊免運推薦
+    |--------------------------------------------------------------------------
+    |
+    |
+    */
+    public static function _shipfree_recommend( $_diff_price ){
+        
+        $LeagueId = Session::get( 'league_id' );
+        
+        $sub_member = Session::get('member_id');
+         
+        /***
+         * 優先整理出購物車內所有商品 , 必免推薦構物車內商品
+         **/
+        $session_car_goods = Session::get('cart');
+        
+        $car_goods = [];
+        
+        // 迴圈整理
+        foreach ($session_car_goods as $session_car_goodk => $session_car_good) {
+
+            array_push( $car_goods , $session_car_good['goodsSn'] );
+        }
+        
+        /***
+         * 整理瀏覽過且可湊滿免運的商品
+         **/
+        $final_viewed_goods = [];
+        
+        if( !empty($sub_member) )
+        {   
+
+            $viewd_goods = DB::table('xyzs_league_viewd_goods')->where('member_id', $sub_member)->first();
+            
+            // 如果有取到瀏覽紀錄 , 就取出還原成array
+            if( $viewd_goods )
+            {
+                $tmp_viewed_goods = unserialize( $viewd_goods->viewed_goods );
+            
+                foreach ($tmp_viewed_goods as $tmp_viewed_goodk => $tmp_viewed_good) {
+                    
+                    $tmp_goods_datas = DB::table('xyzs_goods')->where('goods_id', $tmp_viewed_good)->select('goods_sn','goods_name','goods_thumb','goods_id',DB::raw( "ROUND(shop_price) as shop_price"))->whereNotIn('goods_sn', $car_goods )->first();
+
+                    if( $tmp_goods_datas )
+                    {
+                        array_push( $final_viewed_goods , ['goods_sn'=>$tmp_goods_datas->goods_sn , 'goods_name'=>$tmp_goods_datas->goods_name , 'goods_thumb'=>$tmp_goods_datas->goods_thumb , 'goods_id'=>$tmp_goods_datas->goods_id ,'shop_price'=>$tmp_goods_datas->shop_price ] );
+                    }
+                }
+            }
+        }
+        else
+        {
+            if( Cookie::get('viewed_goods') !== null )
+            {
+                $tmp_viewed_goods = Cookie::get('viewed_goods');
+            
+                
+                foreach ($tmp_viewed_goods as $tmp_viewed_goodk => $tmp_viewed_good) {
+                    
+                    $tmp_goods_datas = DB::table('xyzs_goods')->where('goods_id', $tmp_viewed_good)->select('goods_sn','goods_name','goods_thumb','goods_id',DB::raw( "ROUND(shop_price) as shop_price"))->whereNotIn('goods_sn', $car_goods )->first();
+
+                    if( $tmp_goods_datas )
+                    {
+                        array_push( $final_viewed_goods , ['goods_sn'=>$tmp_goods_datas->goods_sn , 'goods_name'=>$tmp_goods_datas->goods_name , 'goods_thumb'=>$tmp_goods_datas->goods_thumb , 'goods_id'=>$tmp_goods_datas->goods_id ,'shop_price'=>$tmp_goods_datas->shop_price ] );
+                    }
+                }
+
+            }                         
+        } 
+        
+        // 推薦陣列
+        $recommend_arr = [];
+        
+        // 相差級距 , 最少為 1 ( 即100 ~ 200 )
+        $need_range = ceil($_diff_price/100);
+        
+        $need_range = $need_range > 10 ? 10: $need_range;
+
+        // 如果有瀏覽紀錄就先判斷瀏覽紀錄可不可以推薦
+        if( count( $final_viewed_goods ) > 0)
+        {
+            foreach ($final_viewed_goods as $final_viewed_goodk => $final_viewed_good) {
+                
+                // 滿足 差額 ~ 差額+100 之間的商品
+                if( $final_viewed_good['shop_price'] >= $_diff_price && $final_viewed_good['shop_price'] <= ($_diff_price+100) )
+                {
+                    array_push( $recommend_arr , $final_viewed_good);
+                }
+            }
+            
+            // 如果瀏覽商品能夠湊免運的 , 不足四個 , 就嘗試以加盟商設置的補足四個
+            if( count($recommend_arr) < 4 )
+            {   
+                // 取出加盟商的湊免運推薦
+                $tmp_shippings = DB::table('xyzs_league_shipping_recommend')->where('league_id',$LeagueId)->first();
+
+                if( $tmp_shippings && $need_range > 0)
+                {   
+                    $need_name = "need_{$need_range}";
+
+                    $all_needs  = unserialize( $tmp_shippings->$need_name );
+
+                    if( count( $all_needs ) > 0)
+                    {
+                        $tmp_shipping_goods = DB::table('xyzs_goods')
+                                        ->select( 'goods_sn','goods_name','goods_thumb','goods_id' , DB::raw( "ROUND(shop_price) as shop_price") )
+                                        ->whereIn('goods_sn', $all_needs )
+                                        ->whereNotIn('goods_sn', $car_goods )
+                                        ->get();
+
+                        if( $tmp_shipping_goods )
+                        {
+                            $tmp_shipping_goods = json_decode($tmp_shipping_goods , true);
+                            
+                            foreach ($tmp_shipping_goods as $tmp_shipping_goodk => $tmp_shipping_good) {
+                                
+                                if( count($recommend_arr) < 4)
+                                {
+                                    array_push( $recommend_arr , $tmp_shipping_good);
+                                }
+                                else
+                                {
+                                    break;
+                                }
+
+                            }
+
+                        }
+                    }
+                }
+
+            }
+        }
+        else
+        {
+            // 取出加盟商的湊免運推薦
+            $tmp_shippings = DB::table('xyzs_league_shipping_recommend')->where('league_id',$LeagueId)->first();
+
+            if( $tmp_shippings && $need_range > 0 )
+            {   
+                $need_name = "need_{$need_range}";
+
+                $all_needs  = unserialize( $tmp_shippings->$need_name );
+
+                if( count( $all_needs ) > 0)
+                {
+                    $tmp_shipping_goods = DB::table('xyzs_goods')
+                                        ->select( 'goods_sn','goods_name','goods_thumb','goods_id' , DB::raw( "ROUND(shop_price) as shop_price") )
+                                        ->whereIn('goods_sn', $all_needs )
+                                        ->whereNotIn('goods_sn', $car_goods )
+                                        ->get();
+
+                    if( $tmp_shipping_goods )
+                    {
+                        $tmp_shipping_goods = json_decode($tmp_shipping_goods , true);
+                            
+                        foreach ($tmp_shipping_goods as $tmp_shipping_goodk => $tmp_shipping_good) {
+                                
+                            if( count($recommend_arr) < 4)
+                            {
+                                array_push( $recommend_arr , $tmp_shipping_good);
+                            }
+                            else
+                            {
+                                break;
+                            }
+
+                        }
+
+                    }
+                }
+            }          
+        }
+
+        return $recommend_arr;
+
     }
 }
 

@@ -17,7 +17,7 @@
 
 
 
-<div class='row custom_row'>
+
 
 <div class='member_menu box box-solid'>
 @includeIf( 'block_member_menu' , ['now_function'=>$now_function] )
@@ -52,7 +52,7 @@
 </div>
 
 </div>    
-</div>
+
 
 @endsection
 @section('selfjs')

@@ -251,8 +251,11 @@ class CartController extends Controller
 
         foreach ($CenterBlocks as $CenterBlockk => $CenterBlock) {
             
-            $BlockName = DB::table('xyzs_league_block')->where('id',$CenterBlock)->first();
+            // 免運差額推薦已移掉到結帳頁 , 此功能先隱藏
+            if( $CenterBlock == 12){continue;}
 
+            $BlockName = DB::table('xyzs_league_block')->where('id',$CenterBlock)->first();
+           
             if( $BlockName != NULL ){
 
                 if( array_key_exists(explode('_', $CenterBlock)[0], $center_css) ){
@@ -315,6 +318,52 @@ class CartController extends Controller
         // 如果根本沒有購物車 , 直接返回首頁
         if( $request->session()->has('cart') && count($request->session()->get('cart')) > 0 ){
             
+
+            // 會員資料
+            $member_datas = [];
+
+            $address_sets = [];
+            
+            /***
+             * 會員資料
+             */
+            if ($request->session()->has('member_id')) {
+
+                $tmp_member_id = $request->session()->get('member_id');
+
+                $tmp_member_datas  = DB::table('xyzs_league_member')->where('id',$tmp_member_id)->first();
+
+                if( $tmp_member_datas )
+                {
+                    $member_datas = (array)$tmp_member_datas ;
+
+                    $member_datas['phone'] = !empty("{$member_datas['phone']}")? Lib_common::mobileDecode('',$member_datas['phone']) : '';
+
+                    $member_datas['tel']   = !empty("{$member_datas['tel']}")? Lib_common::telDecode('',$member_datas['tel']) : '';
+
+                }
+
+                /***                 
+                 * 全部地址 
+                 */                 
+
+                $address_sets = DB::table('xyzs_league_member_address')->where('member_id',$tmp_member_id)->get();
+                 
+                $address_sets = json_decode($address_sets,true);
+
+                /***
+                 * 預設使用地址
+                 */
+
+                $address_default = DB::table('xyzs_league_member_address')->where('member_id',$tmp_member_id)->where('df_address',true)->first();
+
+                if( $address_default )
+                {
+                    $address_default = array( $address_default );
+                }
+
+            }
+
             // 取得國家級縣市
             $countrys = $this->get_regions();
             $countrys = json_decode($countrys,true);
@@ -368,19 +417,20 @@ class CartController extends Controller
             }
 
             $region = array($tmpCountry, $tmpProvince , 0, 0);
-
+             
             $shipping_list     = $this->available_shipping_list($region);
             
 
             $shipping_list = json_decode( $shipping_list , true );
             
             // 移除不要用的配送方式
-            $no_display = array('flat_lan','ecan_lan','hct','hct_shun','kerry_tj','acac','super_s2s','super_s2s2','super_s2s3'); 
+            $no_display = array('flat_lan','ecan_lan','hct','hct_shun','kerry_tj','kerry_tj_jsy','acac','super_s2s','super_s2s2','super_s2s3',''); 
 
             foreach ($shipping_list AS $key => $val){   
-                
+
                 $no_shipping_display = in_array( $val['shipping_code'] , $no_display) ? '1':'';
                 
+
                 if($no_shipping_display == 1 ){
                      
                     unset($shipping_list[$key]);
@@ -414,6 +464,45 @@ class CartController extends Controller
 
             }
             
+            // 如果有選擇配送方式了 , 就可以得知要多少運費才達到免運
+            $shipping_fee_free = 0;
+            
+
+            if( $request->session()->has('chsShip') )
+            {  
+                foreach ($shipping_list as $sl_tmpk => $sl_tmpv) {
+                    
+
+                    if( $sl_tmpv['shipping_id'] == session()->get('chsShip') )
+                    {
+                        $shipping_fee = $sl_tmpv['shipping_fee'];
+
+                        $shipping_fee_free = $sl_tmpv['shipping_fee_free'];
+                    }
+                }
+            
+            }
+
+            $total = $this->order_fee( $request->session()->get('cart') );
+            
+            // 如果沒有運費 , 表示還沒選擇
+            if( isset($shipping_fee) )
+            {   
+                $check_sub = $this->check_sub_total( $total['goods_price'] , $shipping_fee , $shipping_fee_free );
+            }
+            else
+            {
+                $check_sub = [];
+            }
+            /*
+            
+            $tmp_order['goods_amount'] = $total['goods_price']
+
+            $tmp_order['goods_amount'] >= $shipping_fee_free ? '0',
+
+            $tmp_order['order_amount'] = $tmp_order['goods_amount'] + $tmp_order['shipping_fee'] + $tmp_order['tax'] - $tmp_order['bonus'];
+            */
+
             // 取得付款資料
             $payment_list = $this->available_payment_list(1,'');
 
@@ -442,12 +531,27 @@ class CartController extends Controller
                 }
             }
 
-            return view('web_checkout')->with([ 'title'     => '填寫資料收貨',
+            if( isset($check_sub['diff_for_free']) )
+            {
+                $shipfree_recommends = Lib_common::_shipfree_recommend( $check_sub['diff_for_free'] );
+            }
+            else
+            {
+                $shipfree_recommends = [];
+            }
+
+            return view('web_checkout')->with([ 
+                                            'title'     => '填寫資料收貨',
                                             'countrys'  => $countrys,
                                             'provinces' => $provinces,
                                             'citys'     => $citys,
                                             'shipping_list' => $shipping_list,
-                                            'payment_list'  => $payment_list
+                                            'payment_list'  => $payment_list,
+                                            //'shipping_fee_free' => $shipping_fee_free
+                                            'check_sub' => $check_sub,
+                                            'shipfree_recommends' => $shipfree_recommends,
+                                            'member_datas' => $member_datas,
+                                            'address_sets' => $address_sets
                                           ]);            
 
 
@@ -459,6 +563,68 @@ class CartController extends Controller
         }
     }
     
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | 取出宅急便站所
+    |--------------------------------------------------------------------------
+    |
+    */
+    public function get_cat_store( Request $request ){
+        
+        include( public_path('cus_datas/cat_store.php') );
+
+        if( isset( $request->city ) && !empty( $request->city ) && isset( $request->shipping ) && !empty( $request->shipping ) )
+        {   
+            $filterArray = [];
+
+            foreach( $catStores  as $catStorek => $catStore)
+            {
+                
+                if (stripos($catStorek , $_REQUEST['city']) !== false) {
+                
+                    $catStore[0] = str_replace( '(黑貓寄取站)','', $catStore[0] );
+                    $filterArray[$catStorek] = $catStore;
+                }                
+            }
+            
+            if( $filterArray > 0 )
+            {
+                return json_encode( view('kit_cat_store')->with([ 'filter_array'=>$filterArray ])->render() );
+                //return json_encode( view('kit_cat_store')->with([ 'filter_array'=>$filterArray ])->render() );
+            }
+            else
+            {
+                return json_encode( false );
+            }
+    
+        }
+        else
+        {
+            return json_encode( false );
+        }
+    }
+
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | 取出站所地圖
+    |--------------------------------------------------------------------------
+    |
+    |
+    */
+    public function get_cat_map( Request $request ){
+        
+    
+
+        return view('kit_cat_map')->with([ 'cat_store' => $request->address ]);
+    }
+
 
 
 
@@ -708,7 +874,7 @@ class CartController extends Controller
         }elseif( $order['shipping_code']  == 'super_get3' ){
 
         }
-
+        
         $showDoneString = False ; 
 
         if( $order['shipping_code']  == 'super_get' || $order['shipping_code']  == 'super_get2' || $order['shipping_code']  == 'super_get3' ){
@@ -745,7 +911,7 @@ class CartController extends Controller
             $order['address'] = addslashes( $request->super_name2 ).'_'.addslashes( $request->super_addr2 );
 
         }     
-        
+
         // 收貨人訊息轉換
         foreach ($consignee as $key => $value){
             
@@ -800,7 +966,7 @@ class CartController extends Controller
         $order['order_amount'] = $order['goods_amount'] + $order['shipping_fee'] + $order['tax'] - $order['bonus'];
         
         /**
-         * 如果有登入會員 , 才進行折價券判斷 , 如果沒登入就直接當沒有優惠券處李
+         * 如果有登入會員 , 才進行折價券判斷 , 如果沒登入就直接當沒有優惠券處理
          **/
         if( !empty($request->session()->get('member_id')) && ( !empty($request->session()->get('member_login')) && $request->session()->get('member_login') == true ) ){
             
@@ -995,6 +1161,7 @@ class CartController extends Controller
 
             
         }
+
         return view('finish')->with([ 'title' => '訂購完成' ,
                                       'order_sn' => $order['order_sn'],
                                       'ship_way' => $order['shipping_name'],
@@ -1160,6 +1327,7 @@ class CartController extends Controller
         $sqlData = DB::table('xyzs_payment')
                         ->select('pay_id', 'pay_code', 'pay_name', 'pay_fee', 'pay_desc', 'pay_config', 'is_cod')
                         ->where('enabled','=' , 1)
+                        ->where('pay_id','!=',8)
                         ->orderBy('pay_order', 'asc');
         
 
@@ -1496,5 +1664,306 @@ class CartController extends Controller
             
             return 0;
         }
+    }
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | 結算頁面小計
+    |--------------------------------------------------------------------------
+    |
+    |
+    */
+    public function check_sub_total( $goods_amount , $shipping_fee , $shipping_fee_free , $type = 0 ){
+        
+        // 回傳陣列
+        $return_arr = 
+        [    
+            "order_amount"  => 0,
+            "goods_amount"  => 0,
+            "shipping_fee"  => 0,
+            'diff_for_free' => 0, 
+            'achieve_percent' => 0,
+        ];
+
+        if( $goods_amount >= $shipping_fee_free )
+        {   
+            $return_arr['order_amount']  = $goods_amount;
+            $return_arr['goods_amount']  = $goods_amount;
+            $return_arr['shipping_fee']  = 0;
+            $return_arr['diff_for_free'] = 0;
+            $return_arr['achieve_percent'] = 100;
+        }
+        else
+        {
+            $return_arr['order_amount']  = $goods_amount + $shipping_fee;
+            $return_arr['goods_amount']  = $goods_amount;
+            $return_arr['shipping_fee']  = $shipping_fee;
+            $return_arr['diff_for_free'] = $shipping_fee_free - $goods_amount;
+            $return_arr['achieve_percent'] = round(($goods_amount/$shipping_fee_free)*100);
+        }
+
+        /*
+        var_dump( $return_arr );
+        exit;
+        */
+
+        return $return_arr;
+    }
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | ajax 計算免運額
+    |--------------------------------------------------------------------------
+    |
+    |
+    */
+    public function ajax_shipping_free_recommend( Request $request ){
+        
+        // 取出所有可用的國家
+        $countrys = $this->get_regions();
+
+        $countrys = json_decode($countrys,true);
+        
+        // 如使用者未選擇國家 , 則以台灣作為預設
+        if( $request->session()->has('chsCountry') ){
+
+            $tmpCountry = $request->session()->get('chsCountry');
+
+        }else{
+
+            $request->session()->put('chsCountry', 1);
+            
+            $tmpCountry = 1;
+        }
+
+        // 如果無選取本島 || 離島 則以本島作為預設值
+        if( $request->session()->has('chsProvince') ){
+               
+            $tmpProvince = $request->session()->get('chsProvince');
+
+        }else{
+                
+            $tmpProvince = 807;
+        
+        }
+        
+        // 台灣還會有縣市
+        if( ($tmpProvince == 807 && $tmpCountry ==1) || ($tmpProvince == 808 && $tmpCountry ==1) ){
+                
+            $citys = $this->get_regions( 2 , $tmpProvince);
+            $citys = json_decode($citys,true);
+            
+        }else{
+             
+            $citys = false;
+        
+        }
+            
+        // 非台灣目前無縣市
+        if( $tmpCountry != 1 ){
+            
+            $tmpProvince = 0;
+
+        }
+        
+        // 撈取區域中可用的配送方式
+        $region = array($tmpCountry, $tmpProvince , 0, 0);
+             
+        $shipping_list     = $this->available_shipping_list($region);
+            
+        $shipping_list = json_decode( $shipping_list , true );
+            
+        // 移除不要用的配送方式
+        $no_display = array('flat_lan','ecan_lan','hct','hct_shun','kerry_tj','kerry_tj_jsy','acac','super_s2s','super_s2s2','super_s2s3',''); 
+
+        foreach ($shipping_list AS $key => $val){   
+
+            $no_shipping_display = in_array( $val['shipping_code'] , $no_display) ? '1':'';
+                
+
+            if($no_shipping_display == 1 ){
+                     
+                unset($shipping_list[$key]);
+
+            }else{
+
+                // 計算價格
+                $shipping_cfg = $this->unserialize_config($val['configure']);
+                    
+                // 根據是否有購物車session , 決定計算運費的資料
+                if( $request->session()->has('cart') ){
+                        
+                    $calcCart = $request->session()->get('cart');
+
+                }else{
+                        
+                    $calcCart = array();
+                }
+
+                // 計算運費
+                $tmpfee = $this->shipping_fee( $calcCart ,$shipping_cfg );
+                    
+                $shipping_list[$key]['shipping_fee'] = $tmpfee['fee'];
+                $shipping_list[$key]['shipping_fee_free'] = $tmpfee['free'];
+
+            }            
+
+        }
+        
+        // 如果有選擇配送方式,就計算對應運費 &  免運門檻
+        if( $request->session()->has('chsShip') )
+        {  
+            foreach ($shipping_list as $sl_tmpk => $sl_tmpv) {
+                    
+                if( $sl_tmpv['shipping_id'] == session()->get('chsShip') )
+                {
+                    $shipping_fee = $sl_tmpv['shipping_fee'];
+
+                    $shipping_fee_free = $sl_tmpv['shipping_fee_free'];
+                }
+            }
+            
+        }
+        
+        
+        // 取出購物車費用
+        $total = $this->order_fee( $request->session()->get('cart') );
+            
+        // 如果沒有運費 , 表示還沒選擇
+        if( isset($shipping_fee) )
+        {   
+            $check_sub = $this->check_sub_total( $total['goods_price'] , $shipping_fee , $shipping_fee_free );        
+        }
+        else
+        {
+            $check_sub = [];
+        }
+        
+        // 取出免運差額後 , 撈出推薦商品
+        if( isset($check_sub['diff_for_free']) )
+        {
+            $shipfree_recommends = Lib_common::_shipfree_recommend( $check_sub['diff_for_free'] );
+        }
+        else
+        {
+            $shipfree_recommends = [];
+        }        
+        
+        $return_html = view('block_freefee_ajax')->with( ['check_sub'           => $check_sub,
+                                                  'shipfree_recommends' => $shipfree_recommends])->render();
+
+        return json_encode($return_html);
+    }
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | ajax 取得預設地址
+    |--------------------------------------------------------------------------
+    |
+    |
+    */
+    public function ajax_df_address( Request $request ){
+        
+        if( $request->session()->has('member_id') && !empty($request->address_id) )
+        {   
+            $nowMemberId = $request->session()->get('member_id');
+            
+            $df_address  = 
+                DB::table('xyzs_league_member_address')
+                ->where('member_id',$nowMemberId)
+                ->where('id',$request->address_id)
+                ->first();
+               
+            if( $df_address )
+            {   
+                $df_address = (array)$df_address;
+                $df_address[''] = mobileDecode('');
+                $df_address[''] = telDecode('');
+
+            // 取得國家級縣市
+            $countrys = $this->get_regions();
+            $countrys = json_decode($countrys,true);
+            
+            if( $df_address['country'] ){
+
+                $tmpCountry = $df_address['country'];
+
+            }else{
+
+                $tmpCountry = 1;
+            }
+
+            // $request->session()->put('chsCountry', 833);
+            // $request->session()->forget('chsCountry');
+            if( $tmpCountry == 1){
+                
+                $provinces = $this->get_regions( 1 , $tmpCountry );
+                $provinces = json_decode($provinces,true);
+            
+            }else{
+
+                $provinces = false;
+            }
+            
+            // 設定預設的州
+            if( $df_address['province'] ){
+               
+                $tmpProvince = $df_address['province'];
+
+            }else{
+                
+                $tmpProvince = 807;
+            }
+            
+            if( ($tmpProvince == 807 && $tmpCountry ==1) || ($tmpProvince == 808 && $tmpCountry ==1) ){
+                
+                $citys = $this->get_regions( 2 , $tmpProvince);
+                $citys = json_decode($citys,true);
+            
+            }else{
+             
+                $citys = false;
+            }
+            
+            // 選取
+            if( $tmpCountry != 1 ){
+                $tmpProvince = 0;
+            }
+
+                $df_address['ajax_area_select'] = view('ajax_area_select', ['df_country'  => $df_address['country'],
+                                                                            'countrys'    => $countrys,
+                                                                            'df_province' => $df_address['province'],
+                                                                            'provinces'   => $provinces,
+                                                                            'citys'       => $citys,
+                                                                            'df_city'     => $df_address['city'],
+
+                                                                           ] )->render();
+
+                /*
+                $provinces = $this->get_regions( 1 , $tmpCountry );
+                $provinces = json_decode($provinces,true);
+                */
+
+                return json_encode($df_address);
+            }
+            else
+            {
+                return json_encode(false);
+            }
+        }
+        else
+        {
+            return json_encode(false);
+        }
+
     }
 }
