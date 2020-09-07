@@ -946,20 +946,6 @@ class Lib_common{
     |
     |
     */
-
-    /*
-   <url>
-
-      <loc>http://www.example.com/</loc>
-
-      <lastmod>2005-01-01</lastmod>
-
-      <changefreq>monthly</changefreq>
-
-      <priority>0.8</priority>
-
-   </url>
-    */
     public static function makeSitemaps( $domain )
     {
         if( empty($domain) ) return;
@@ -1046,7 +1032,41 @@ class Lib_common{
         
         return $str;
     }
+    
 
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | 網站基本資料撈取
+    |--------------------------------------------------------------------------
+    |
+    |
+    */
+    public static function _getShopDatas(){
+
+        $returnDatas = 
+        [ 'shopName' => '',
+
+        ];
+
+        $nowdomain = trim( \Request::server ("SERVER_NAME") );
+
+        $ldres = 
+        
+        DB::table('xyzs_league_domain as ld')
+        ->leftJoin('xyzs_league as l','ld.user_id','=','l.user_id')
+        ->where('ld.domain',$nowdomain)
+        //->select('l.store_name')
+        ->first();
+      
+        if( $ldres )
+        {
+            $returnDatas['shopName'] = $ldres->store_name;
+        }
+       
+        return $returnDatas;
+    }
 
 }
 ?>

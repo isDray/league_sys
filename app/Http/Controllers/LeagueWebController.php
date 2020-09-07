@@ -98,12 +98,14 @@ class LeagueWebController extends Controller
             
             $condList['owl'] = true;    
         }
+
+        $shopDatas = Lib_common::_getShopDatas();
         
         return view('web_index', [ 'CenterBlocks' => $CenterBlocks ,
                                    'center_css'   => $final_css,
-                                   'title'        => '情趣用品-飛機杯-跳蛋-按摩棒-情趣小物-線上購買',
+                                   'title'        => '全台最大❤️庫存最足【情趣用品】購物中心|',
                                    'keywords'     => '情趣用品,電動飛機杯,仿真飛機杯,無線跳蛋,有線跳蛋,旋轉按摩棒,震動按摩棒,多段變頻按摩棒,情趣小怪獸,情趣小章魚,舌舔跳蛋',
-                                   'description'  => '樣式最多的情趣用品線上購買的平台 , 精選跳蛋、變頻按摩棒、情趣睡衣、自慰飛機杯、情趣娃娃、潤滑液等多款情趣商品,想要找提升情趣的用品',
+                                   'description'  => "情趣用品購物中心，【包裝隱密】【可超商取貨】【免會員可購買】，想找情趣用品、性感睡衣、情趣小物就找{$shopDatas['shopName']}。按摩棒、跳蛋、飛機杯，矽膠娃娃週週更新，每次都有新鮮貨。是你最好的情趣選擇。",
                                    'page_header'  => "情趣用品首頁-推薦商品-熱銷商品-新品上市-各式情趣用品分類,",
                                  ]+$condList);
     }
