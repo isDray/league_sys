@@ -274,6 +274,8 @@ Route::group(['middleware' => ['CheckLogin']], function () {
 */
 Route::group(['middleware' => ['CheckLeague']], function () {
     
+    Route::get('/sitemap','LeagueWebController@sitemap');
+
     Route::get('/test','LeagueWebController@test');
 
     // 首頁

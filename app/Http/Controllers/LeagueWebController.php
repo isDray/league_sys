@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Cus_lib\Lib_bonus;
 use DB;
 use App\Cus_lib\hctTool;
+use Illuminate\Support\Facades\Storage;
+use App\Cus_lib\Lib_common;
 
 class LeagueWebController extends Controller
 {
@@ -457,4 +459,24 @@ class LeagueWebController extends Controller
         }
 
     }
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | sitemap產生
+    |--------------------------------------------------------------------------
+    | 
+    |
+    */
+    public function sitemap( Request $request ){
+        
+        $sitemapDomain = trim( \Request::server ("SERVER_NAME") );
+        $res = Storage::disk('sitemaps')->put('sitemaps.xml', Lib_common::makeSitemaps($sitemapDomain) );
+
+
+
+    }
+
 }

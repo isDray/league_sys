@@ -934,7 +934,119 @@ class Lib_common{
         return $recommend_arr;
 
     }
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | sitemap 產生方法
+    |--------------------------------------------------------------------------
+    |
+    |
+    |
+    */
+
+    /*
+   <url>
+
+      <loc>http://www.example.com/</loc>
+
+      <lastmod>2005-01-01</lastmod>
+
+      <changefreq>monthly</changefreq>
+
+      <priority>0.8</priority>
+
+   </url>
+    */
+    public static function makeSitemaps( $domain )
+    {
+        if( empty($domain) ) return;
+
+        $str  = "<?xml version='1.0' encoding='UTF-8'?>\n";
+        $str .= "<urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>\n";
+        
+        //首頁
+        $str .= "<url>\n";
+        $str .= "<loc>https://{$domain}</loc>\n";
+        $str .= "<changefreq>daily</changefreq>\n";
+        $str .= "<priority>1.0</priority>\n";
+        $str .= "<lastmod>".date('c', time())."</lastmod>\n";
+        $str .= "</url>\n";
+        
+        /***
+         * 最新商品
+         **/
+        $str .= "<url>\n";
+        $str .= "<loc>https://{$domain}/new_arrival</loc>\n";
+        $str .= "<changefreq>daily</changefreq>\n";
+        $str .= "<priority>1.0</priority>\n";
+        $str .= "<lastmod>".date('c', time())."</lastmod>\n";
+        $str .= "</url>\n";
+
+        /***
+         * 加盟
+         **/
+        $str .= "<url>\n";
+        $str .= "<loc>https://{$domain}/register</loc>\n";
+        $str .= "<changefreq>daily</changefreq>\n";
+        $str .= "<priority>1.0</priority>\n";
+        $str .= "<lastmod>".date('c', time())."</lastmod>\n";
+        $str .= "</url>\n";        
+        
+        /***
+         * 分類頁面
+         **/
+        $categorys = 
+        DB::table('xyzs_category as c')
+        ->leftJoin('xyzs_goods as g', 'c.cat_id', '=', 'g.cat_id')
+        ->where('g.goods_number','>',0)
+        ->where('g.is_on_sale','=',1)
+        ->whereNotNull('g.goods_id')
+        ->select('c.cat_id','g.goods_id')
+        //->groupBy('c.cat_id')
+        ->orderBy('c.cat_id','ASC')
+        ->get();
+        
+        $categorys = json_decode( $categorys , true );
+         
+        //echo count($categorys);
+        $usedCategory = [];
+           
+        foreach ($categorys as $category) {
+            
+            if( !in_array($category, $usedCategory) )
+            {
+                $str .= "<url>\n";
+                $str .= "<loc>https://{$domain}/category/{$category['cat_id']}</loc>\n";
+                $str .= "<changefreq>daily</changefreq>\n";
+                $str .= "<priority>1.0</priority>\n";
+                $str .= "<lastmod>".date('c', time())."</lastmod>\n";
+                $str .= "</url>\n";
+
+                array_push($usedCategory, $category);
+            }
+
+        }
+        
+        /***
+         * 商品頁面
+         **/
+        foreach ($categorys as $category) {
+            $str .= "<url>\n";
+            $str .= "<loc>https://{$domain}/show_goods/{$category['goods_id']}</loc>\n";
+            $str .= "<changefreq>weekly</changefreq>\n";
+            $str .= "<priority>0.8</priority>\n";
+            $str .= "<lastmod>".date('c', time())."</lastmod>\n";
+            $str .= "</url>\n";            
+        }
+
+        $str .= "</urlset>\n";
+        
+        return $str;
+    }
+
+
 }
-
-
 ?>

@@ -47,6 +47,12 @@ return [
         'driver' => 'local',
         'root'   => public_path() . '/banner',
     ],
+    'sitemaps' =>[
+
+        'driver' => 'local',
+        'root'   => public_path(),
+    ]
+    ,
     'ezpub' => [
         'driver' => 'local',
         'root'   => public_path(),
