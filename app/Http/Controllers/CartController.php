@@ -1841,14 +1841,21 @@ class CartController extends Controller
             $check_sub = $this->check_sub_total( $total['goods_price'] , $shipping_fee , $shipping_fee_free );        
         }
         else
-        {
-            $check_sub = [];
+        {                     
+            $check_sub = []; 
         }
         
         // 取出免運差額後 , 撈出推薦商品
         if( isset($check_sub['diff_for_free']) )
-        {
-            $shipfree_recommends = Lib_common::_shipfree_recommend( $check_sub['diff_for_free'] );
+        {   
+            if( $check_sub['diff_for_free'] > 0 )
+            {
+                $shipfree_recommends = Lib_common::_shipfree_recommend( $check_sub['diff_for_free'] );
+            }
+            else
+            {
+                $shipfree_recommends = [];
+            }
         }
         else
         {

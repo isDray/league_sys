@@ -32,6 +32,16 @@
                         @endif  
                     </div> -->
 
+                    <div class="form-group ">
+                        <label for="custom_hot">自訂模組說明</label>
+                        <textarea class="form-control" rows="2" placeholder="為此模組填寫說明( 如未填寫 , 則採用預設文字 )" id='custom_desc' name='custom_desc' >{{$HotSet['cus_desc']}}</textarea>
+                        @if ($errors->has('cus_desc'))
+                            @foreach( $errors->get('cus_desc') as $cus_desc_errork => $cus_desc_error)
+                            <label id="custom_hot-error" class="form_invalid" for="custom_desc">{{ $cus_desc_error }}</label><br>
+                            @endforeach
+                        @endif  
+                    </div>                     
+
                     <div class="form-group">
                         
                         <label id="able_label"> 排除分類 </label>

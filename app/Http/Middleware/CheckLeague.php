@@ -208,7 +208,7 @@ class CheckLeague
 
             }else{
 
-                View::share('over18_l' , "over18_pic/0/ml.png" ); 
+                View::share('over18_l' , "over18_pic/0/ml.jpg" ); 
             }
 
             if( !empty($LeagueData['mr']) && file_exists( public_path("over18_pic/{$LeagueData['user_id']}/{$LeagueData['mr']}") ) )
@@ -217,7 +217,7 @@ class CheckLeague
 
             }else{
                 
-                View::share('over18_r' , "over18_pic/0/mr.png" );
+                View::share('over18_r' , "over18_pic/0/mr.jpg" );
             }            
 
             View::share('over18' , false );  

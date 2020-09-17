@@ -4,13 +4,15 @@ use Illuminate\Http\Request;
 
 $hots = Lib_block::get_recommend('hot');
 
+$hots_desc =  Lib_block::get_recommend('hot','cus_desc');
+
 @endphp
 <div class="box box-solid">
     
     <div class="box-header with-border">
 
         <h2 class="box-title recommend_title">熱銷商品</h2>
-        <h3 class="page_more_desc">為您推薦情趣用品最熱銷的商品,讓您一次就買到最熱門的情趣用品</h3>
+        <h3 class="page_more_desc">@if(!empty($hots_desc)) {{$hots_desc}} @else 為您推薦情趣用品最熱銷的商品,讓您一次就買到最熱門的情趣用品 @endif</h3>
 
     </div>
     

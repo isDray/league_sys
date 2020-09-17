@@ -4,13 +4,15 @@ use Illuminate\Http\Request;
 
 $recommends = Lib_block::get_recommend('best');
 
+$recommends_desc =  Lib_block::get_recommend('best','cus_desc');
+
 @endphp
 <div class="box box-solid">
     
     <div class="box-header with-border">
 
         <h2 class="box-title recommend_title ">推薦商品</h2>
-        <h3 class="page_more_desc">店長嚴選推薦情趣用品,最適合所有男女的情趣商品都在這裡</h3>
+        <h3 class="page_more_desc">@if(!empty($recommends_desc)) {{$recommends_desc}} @else 店長嚴選推薦情趣用品,最適合所有男女的情趣商品都在這裡 @endif</h3>
     </div>
     
     <!-- /.box-header -->

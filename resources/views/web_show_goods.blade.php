@@ -21,12 +21,6 @@
 @section('content_right')
 {!!$Breadcrum!!}
 <div class="box box-solid">
-    
-<!--     <div class="box-header with-border">
-
-        <h1 class="box-title show_goods_title">{{$GoodsData['goods_name']}}</h1>
-    </div> -->
-    
     <!-- /.box-header -->
     <div class="box-body">
     	<div class="col-md-7 col-sm-7 col-xs-12">
@@ -128,8 +122,8 @@
         <!------- -->
         @foreach( $goodsImgs as $goodsImgk => $goodsImg )
 
-            
-        <img src="https://***REMOVED***.com/***REMOVED***/{{$goodsImg['img_original']}}" class="lazyload" alt="{{$GoodsData['goods_name']}}-商品詳細圖-{{$goodsImgk+1}}"/>
+        <img lazysrc="https://***REMOVED***.com/***REMOVED***/{{$goodsImg['img_original']}}" data-holder-rendered="true" class="lazyload" alt="{{$GoodsData['goods_name']}}-商品詳細圖-{{$goodsImgk+1}}">
+
         <br>
             
         @endforeach

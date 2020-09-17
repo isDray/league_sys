@@ -38,7 +38,7 @@ class Lib_block{
     |--------------------------------------------------------------------------
     |
     */
-    public static function get_recommend( $_type ){
+    public static function get_recommend( $_type , $_getType = '' ){
 
         $LeagueId = Session::get( 'league_id' );
 
@@ -59,8 +59,13 @@ class Lib_block{
 
             $RecommendType = 4;
         }
-
+          
         $ExcludeCat = DB::table('xyzs_league_recommend')->where('user_id', $LeagueId )->where('recommmand_type',$RecommendType)->first();
+         
+        if( $_getType == 'cus_desc' )
+        {
+            return $ExcludeCat->cus_desc;
+        }
 
         if( $ExcludeCat != NULL){
             

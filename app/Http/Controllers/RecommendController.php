@@ -99,12 +99,26 @@ class RecommendController extends Controller
 
         } 
 
-        
         // 檢查是否全部都存在資料庫中
         $CustomErrors = [ 'custom_hot' => [] ,
                           'category'   => [] ,
+                          'cus_desc'   => []
                         ];
         $ErrorSwitch = 0 ;
+
+        if( mb_strlen( $request->custom_desc ) <= 0)
+        {
+            $desString = '為您推薦情趣用品最熱銷的商品,讓您一次就買到最熱門的情趣用品';
+        }
+        elseif( mb_strlen( $request->custom_desc ) > 128 )
+        {
+            $ErrorSwitch = 1;
+            array_push( $CustomErrors['cus_desc'] , "自訂模組說明最多128個字");
+        }
+        else
+        {
+            $desString = $request->custom_desc;
+        }
 
         foreach ($HotArrs as $HotArrk => $HotArr) {
             
@@ -156,7 +170,9 @@ class RecommendController extends Controller
             DB::table('xyzs_league_recommend')
             ->updateOrInsert(
                 ['user_id' => $LeagueId , 'recommmand_type' => 1 ],
-                ['custom_set' =>  serialize( $HotArrs ),
+                [
+                 'cus_desc'  => $desString,
+                 'custom_set' =>  serialize( $HotArrs ),
                  'avoid_cat'  =>  serialize( $request->cats ),
                  'update_date' => $NowTime
                 ]
@@ -284,8 +300,23 @@ class RecommendController extends Controller
         // 檢查是否全部都存在資料庫中
         $CustomErrors = [ 'custom_hot' => [] ,
                           'category'   => [] ,
+                          'cus_desc'   => [] ,
                         ];
         $ErrorSwitch = 0 ;
+
+        if( mb_strlen( $request->custom_desc ) <= 0)
+        {
+            $desString = '為您推薦情趣用品最熱銷的商品,讓您一次就買到最熱門的情趣用品';
+        }
+        elseif( mb_strlen( $request->custom_desc ) > 128 )
+        {
+            $ErrorSwitch = 1;
+            array_push( $CustomErrors['cus_desc'] , "自訂模組說明最多128個字");
+        }
+        else
+        {
+            $desString = $request->custom_desc;
+        }
 
         foreach ($HotArrs as $HotArrk => $HotArr) {
             
@@ -330,13 +361,14 @@ class RecommendController extends Controller
         DB::beginTransaction();
 
         try {        
-            
+
             DB::table('xyzs_league_recommend')
             ->updateOrInsert(
                 ['user_id' => $LeagueId , 'recommmand_type' => 2 ],
                 ['custom_set' =>  serialize( $HotArrs ),
                  'avoid_cat'  =>  serialize( $request->cats ),
-                 'update_date' => $NowTime
+                 'update_date' => $NowTime,
+                 'cus_desc' => $desString
                 ]
             );
 
@@ -450,12 +482,28 @@ class RecommendController extends Controller
 
         } 
 
+
         
         // 檢查是否全部都存在資料庫中
         $CustomErrors = [ 'custom_hot' => [] ,
                           'category'   => [] ,
+                          'cus_desc'   => [] ,
                         ];
         $ErrorSwitch = 0 ;
+
+        if( mb_strlen( $request->custom_desc ) <= 0)
+        {
+            $desString = '為您推薦最新潮最刺激的情趣用品,讓你走在情趣的時代尖端';
+        }
+        elseif( mb_strlen( $request->custom_desc ) > 128 )
+        {
+            $ErrorSwitch = 1;
+            array_push( $CustomErrors['cus_desc'] , "自訂模組說明最多128個字");
+        }
+        else
+        {
+            $desString = $request->custom_desc;
+        }
 
         foreach ($HotArrs as $HotArrk => $HotArr) {
             
@@ -508,7 +556,8 @@ class RecommendController extends Controller
                 ['user_id' => $LeagueId , 'recommmand_type' => 3 ],
                 ['custom_set' =>  serialize( $HotArrs ),
                  'avoid_cat'  =>  serialize( $request->cats ),
-                 'update_date' => $NowTime
+                 'update_date' => $NowTime,
+                 'cus_desc'    => $desString
                 ]
             );
 

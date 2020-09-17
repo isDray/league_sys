@@ -22,6 +22,17 @@
                 {{ csrf_field() }}
 
                 <div class="box-body ">
+
+                    <div class="form-group ">
+                        <label for="custom_hot">自訂模組說明</label>
+                        <textarea class="form-control" rows="2" placeholder="為此模組填寫說明( 如未填寫 , 則採用預設文字 )" id='custom_desc' name='custom_desc' >{{$HotSet['cus_desc']}}</textarea>
+                        @if ($errors->has('cus_desc'))
+                            @foreach( $errors->get('cus_desc') as $cus_desc_errork => $cus_desc_error)
+                            <label id="custom_hot-error" class="form_invalid" for="custom_desc">{{ $cus_desc_error }}</label><br>
+                            @endforeach
+                        @endif  
+                    </div> 
+
                     <div class="form-group ">
                         <label for="custom_hot">自訂熱銷商品</label>
                         <textarea class="form-control" rows="5" placeholder="自訂熱銷商品,請在此輸入商品貨號,一個貨號一行" id='custom_hot' name='custom_hot' >@foreach( $HotSet['custom_sets'] as $custom_setk => $custom_set ){!!$custom_set."\n"!!}@endforeach</textarea>

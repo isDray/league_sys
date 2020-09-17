@@ -3,14 +3,14 @@ use App\Cus_lib\Lib_block;
 use Illuminate\Http\Request;
 
 $recommends = Lib_block::get_recommend('new');
-
+$new_desc   = Lib_block::get_recommend('new','cus_desc');
 @endphp
 <div class="box box-solid">
     
     <div class="box-header with-border">
 
         <h2 class="box-title recommend_title ">新品上市</h2>
-        <h3 class="page_more_desc">為您推薦最新潮最刺激的情趣用品,讓你走在情趣的時代尖端</h3>
+        <h3 class="page_more_desc">@if(!empty($new_desc)) {{$new_desc}} @else 為您推薦最新潮最刺激的情趣用品,讓你走在情趣的時代尖端 @endif</h3>
 
     </div>
     
