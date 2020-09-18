@@ -199,8 +199,12 @@ class CheckLeague
         /**
          * 判斷是否驗證過18歲
          **/
+
+        
+
         if( !isset( $_COOKIE['over18'] ))
         {   
+           
             if( !empty($LeagueData['ml']) && file_exists( public_path("over18_pic/{$LeagueData['user_id']}/{$LeagueData['ml']}") ) )
             {
                 
@@ -222,10 +226,11 @@ class CheckLeague
 
             View::share('over18' , false );  
 
+            View::share('cookie_domain', $_SERVER['SERVER_NAME'] );
+
         }
         else
-        {
-            
+        {  
             View::share('over18' , true );
         }
 

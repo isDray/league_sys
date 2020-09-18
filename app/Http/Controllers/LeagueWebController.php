@@ -19,34 +19,6 @@ class LeagueWebController extends Controller
     */
     public function index( Request $request ){
         
-        /*
-        $indexUrl = explode('/', \Request::fullUrl());
-        
-        if( end( $indexUrl) != 'index' ){
-            
-            $urlarr = explode('/',url()->previous());
-        
-        
-            if( trim(end( $urlarr )) == 'over18' ){
-            
-                setcookie('over18',true,time()+86400);
-             
-            }else{
-        
-            
-                if( !isset( $_COOKIE['over18'] )){
-
-                    return redirect('/over18');
-
-                }            
-            }
-
-        }else{
-
-            setcookie('over18',true,time()+86400);
-        }
-        */
-
 
         $LeagueId = $request->session()->get('league_id');
         
@@ -100,6 +72,8 @@ class LeagueWebController extends Controller
         }
 
         $shopDatas = Lib_common::_getShopDatas();
+        
+
         
         return view('web_index', [ 'CenterBlocks' => $CenterBlocks ,
                                    'center_css'   => $final_css,

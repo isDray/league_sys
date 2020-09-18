@@ -58,7 +58,6 @@
             <td id='over_yes'><img src="{{url($over18_r)}}" alt="已滿18歲開始探索情趣用品"></td>
         </tr>
     </table>
-      
 </div>
 @endif
 
@@ -763,9 +762,7 @@ $("#over_no").click(function(){
 $("#over_yes").click(function(){
     var ms = new Date().getTime() + 86400000;
     var exd = new Date(ms);
-    document.cookie = "over18=true; expires="+ exd;
- 
-    //console.log (new Date("2012-02-29"));
+    document.cookie = "over18=true;domain={{$cookie_domain}}; path=/; expires="+ exd;
     $("#over18").hide();
 });
 @endif
