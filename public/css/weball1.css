@@ -6,11 +6,23 @@
 */
 
 @import url(https://fonts.googleapis.com/earlyaccess/cwtexyen.css);
+.m_only{
+    display: none;
+}
 ._np{
-	padding: 0px;
+    padding: 0px;
 }
 ._nm{
-	margin: 0px;
+    margin: 0px;
+}
+
+@media(max-width:991px){
+    .m_only{
+        display: block;
+    }
+    .over_m{
+        display: none;
+    }    
 }
 #menu_box{
 	padding: 0px;

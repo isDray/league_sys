@@ -38,9 +38,11 @@ class LeagueWebController extends Controller
         
         $center_css = ['10'=>'block_cga_recommend.css'];
         $final_css  = [];
-
+       
         foreach ($CenterBlocks as $CenterBlockk => $CenterBlock) {
             
+            //var_dump($CenterBlock);
+
             $BlockName = DB::table('xyzs_league_block')->where('id',$CenterBlock)->first();
 
             if( $BlockName != NULL ){
@@ -95,6 +97,8 @@ class LeagueWebController extends Controller
     */
     public function article( Request $request ){
         
+        $LeagueId = $request->session()->get('league_id');
+
         $article = DB::table('xyzs_article')->where('article_id',$request->article_id)->first();
 
         if( $article ){
@@ -111,6 +115,34 @@ class LeagueWebController extends Controller
     
     
 
+
+    /*
+    |--------------------------------------------------------------------------
+    | 加盟會員文章
+    |--------------------------------------------------------------------------
+    |
+    */
+    public function league_article( Request $request )
+    {
+        $LeagueId = $request->session()->get('league_id');
+
+        $leagueArticle = db::table("xyzs_league_article")
+                         ->where( 'id' , $request->article_id )
+                         ->where( 'league_id' , $LeagueId )
+                         ->first();
+
+        if( !$leagueArticle )
+        {
+            return redirect("/");
+        }
+        else
+        {
+            $leagueArticle = (array)$leagueArticle;
+
+            return view( 'web_atricle' , ['article'=>$leagueArticle['article'] , 'article_title'=>$leagueArticle['title'] ]);
+
+        }
+    }
 
     /*
     |--------------------------------------------------------------------------

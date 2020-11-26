@@ -1,0 +1,64 @@
+{
+  "_from": "suggestags",
+  "_id": "suggestags@1.20.0",
+  "_inBundle": false,
+  "_integrity": "sha512-V7i/yHS/JqXCOM6XsOg9+yY40Cjx5m3DW62ZK9UAYq+hJ9KntGR5nVSv0wrShAKoGclsFJU9XYSqKk4M2EbprA==",
+  "_location": "/suggestags",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "suggestags",
+    "name": "suggestags",
+    "escapedName": "suggestags",
+    "rawSpec": "",
+    "saveSpec": null,
+    "fetchSpec": "latest"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/suggestags/-/suggestags-1.20.0.tgz",
+  "_shasum": "54c0848d424259e5dac940a1718728d412489eea",
+  "_spec": "suggestags",
+  "_where": "C:\\xampp\\htdocs\\pg",
+  "author": {
+    "name": "amsify42"
+  },
+  "browser": {
+    "suggestags": "./node_modules/suggestags/js/jquery.amsify.suggestags.js"
+  },
+  "bugs": {
+    "url": "https://github.com/amsify42/jquery.amsify.suggestags/issues"
+  },
+  "bundleDependencies": false,
+  "dependencies": {
+    "jquery": ">=3.4.0"
+  },
+  "deprecated": false,
+  "description": "This is a JQuery plugin for input tags with auto complete suggestion.",
+  "directories": {
+    "example": "examples"
+  },
+  "homepage": "https://github.com/amsify42/jquery.amsify.suggestags#readme",
+  "keywords": [
+    "jquery",
+    "amsify42",
+    "suggestags"
+  ],
+  "license": "MIT",
+  "main": "./js/jquery.amsify.suggestags.js",
+  "name": "suggestags",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/amsify42/jquery.amsify.suggestags.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "style": [
+    "./node_modules/suggestags/css/amsify-suggestags.css"
+  ],
+  "version": "1.20.0"
+}

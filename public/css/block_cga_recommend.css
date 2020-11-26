@@ -81,6 +81,19 @@
   margin-top:60px;
   font-size: 24px;
 }
+@media( max-width: 991px ){
+    .cgaa.m_only{
+        position: absolute;
+        z-index: 10!important;
+        right: 10%;
+        bottom: 10%;
+        /*display: inline-block;*/
+    }
+    .cgaa.m_only .cga_more
+    {   width: auto!important;
+        margin-left: 0px!important;
+    }
+}
 @media( max-width: 995px){
 .cga_more{  
      font-size: 22px;

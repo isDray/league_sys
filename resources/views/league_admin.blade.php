@@ -158,6 +158,20 @@
         </li>
         <!-- /模組管理 -->
 
+        <!-- 文章管理 -->
+        <li class="treeview  @if( isset($tree) && $tree=='article' ) active @endif" >
+            <a href="#">
+                <i class="fa fa-fw fa-file-text-o text-light-blue"></i> <span>文章管理</span>
+                <span class="pull-right-container">
+                    <i class="fa fa-angle-left pull-right"></i>
+                </span>                
+            </a>
+            <ul class="treeview-menu">
+                <li><a href="{{url('/league_article')}}"><i class="fa fa-fw fa-angle-right"></i>文章列表</a></li>
+            </ul>                
+        </li>
+        <!-- /文章管理 -->        
+
         <li><a href="{{url('/league_webset')}}"><i class="fa fa-fw fa-globe text-light-blue"></i> <span>網站設定</span></a></li>
         
         <!-- 網站地圖 -->

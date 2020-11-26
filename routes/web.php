@@ -215,6 +215,19 @@ Route::group(['middleware' => ['CheckLogin']], function () {
     // 免運差額推薦功能
     Route::post('/league_module_recommend_shipping_free_act','RecommendController@league_module_recommend_shipping_free_act');
 
+    /***
+     * 文章相關
+     **/
+    Route::get("/league_article","LeagueArticleController@articleList");
+
+    Route::get('/league_article_edit/{id?}','LeagueArticleController@league_article_edit');
+
+    Route::get('/league_article_tag','LeagueArticleController@league_article_tag');
+
+    Route::post('/league_article_edit_act','LeagueArticleController@league_article_edit_act');
+    
+    Route::post('/league_article_del','LeagueArticleController@league_article_del');
+
     // 網站設定
     Route::get('/league_webset','WebsetController@league_webset');
     
@@ -347,6 +360,9 @@ Route::group(['middleware' => ['CheckLeague']], function () {
 
     // 網站文章
     Route::get('/article/{article_id}','LeagueWebController@article');
+
+    // 加盟會員文章
+    Route::get('/league_article/{article_id}','LeagueWebController@league_article');
     
 
     /**

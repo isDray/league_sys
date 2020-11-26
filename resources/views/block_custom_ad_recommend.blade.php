@@ -18,25 +18,31 @@
         	<div class="gadanimate{{$custom_ad['animate']}} limg imgbox">
             <img lazysrc="https://***REMOVED***.com/***REMOVED***/{{$custom_ad['img']}}" data-holder-rendered="true" class="lazyload" alt="" src="https://***REMOVED***.com/***REMOVED***/{{$custom_ad['img']}}">
             </div>
+            <a href="{{$custom_ad['link']}}" class="m_only cgaa"><div class='cga_more col-md-4 col-md-offset-4 col-sm-4 col-sm-offset-4 col-xs-6 col-xs-offset-6' >了解更多</div></a>
         </div>         
         <div class='col-md-8 col-sm-8 col-xs-12 cga_desc'>
             <p>
         	    {{$custom_ad['descript']}}
             </p>
 
-        	<a href="{{$custom_ad['link']}}"><div class='cga_more col-md-4 col-md-offset-4 col-sm-4 col-sm-offset-4 col-xs-6 col-xs-offset-6' >了解更多</div></a>
+        	<a href="{{$custom_ad['link']}}" class="over_m"><div class='cga_more col-md-4 col-md-offset-4 col-sm-4 col-sm-offset-4 col-xs-6 col-xs-offset-6' >了解更多</div></a>
         </div>
+
+
+
+
         @elseif($custom_ad['rorl'] == 2)
         <div class='col-md-8 col-sm-8 col-xs-12 cga_desc'>
             <p>
         	    {{$custom_ad['descript']}}
             </p>
-        	<a href="{{$custom_ad['link']}}"><div class='cga_more col-md-4 col-md-offset-4 col-sm-4 col-sm-offset-4 col-xs-6 col-xs-offset-0'>了解更多</div></a>
+        	<a href="{{$custom_ad['link']}}" class="over_m" ><div class='cga_more col-md-4 col-md-offset-4 col-sm-4 col-sm-offset-4 col-xs-6 col-xs-offset-0'>了解更多</div></a>
         </div>
         <div class='col-md-4 col-sm-4 col-xs-12'>
         	<div class="gadanimate{{$custom_ad['animate']}} rimg imgbox">
             <img lazysrc="https://***REMOVED***.com/***REMOVED***/{{$custom_ad['img']}}" data-holder-rendered="true" class="lazyload" alt="" src="https://***REMOVED***.com/***REMOVED***/{{$custom_ad['img']}}">
             </div>
+            <a href="{{$custom_ad['link']}}" class="m_only cgaa"><div class='cga_more col-md-4 col-md-offset-4 col-sm-4 col-sm-offset-4 col-xs-6 col-xs-offset-6' >了解更多</div></a>
         </div>
         @endif
     </div>

@@ -467,5 +467,65 @@ class Lib_block{
         return ['percent'=>$percent,'msg'=>$msg , 'shipping_goods'=>$shipping_goods ];
     }
 
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | 文章模組 
+    |--------------------------------------------------------------------------
+    | 將所屬文章、關聯標籤取出
+    |
+    */
+    public static function get_article( )
+    {
+        $LeagueId = Session::get( 'league_id' );
+
+        $datas =  DB::table('xyzs_league_article as a')
+                  //->leftjoin("xyzs_league_article_hash as ah","a.id","=","ah.article_id")
+                  //->leftjoin("xyzs_league_hash as h","ah.hash_id","=","h.id")
+                  ->where('league_id',$LeagueId)
+                  ->select("a.title","a.id")
+                  ->orderBy('a.sort' , 'asc')
+                  ->limit(3)
+                  ->get();        
+        
+        $datas = json_decode( $datas , true ); 
+        
+        
+        foreach ($datas as $datak => $data ) {
+            
+            $tags = DB::table("xyzs_league_article_hash as ah")
+                     ->leftjoin("xyzs_league_hash as h" , "ah.hash_id","=","h.id")
+                     ->where("ah.article_id",$data['id'])
+                     ->get();
+            
+            if($tags)
+            {
+                $tags = json_decode( $tags , true );
+                $datas[$datak]['hashtag'] = [];
+                
+                foreach ($tags as $tagk => $tag) {
+                    
+                    array_push( $datas[$datak]['hashtag'] , $tag['hashtag']);
+                }
+
+            }
+            else
+            {
+                $datas[$datak]['hashtag'] = [];
+            }
+        }
+
+        //var_dump($datas);
+
+        if( !$datas )
+        {
+            return [];
+        }
+
+        return $datas;
+    }
+
 }
 ?>
