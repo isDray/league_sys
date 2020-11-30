@@ -20,20 +20,28 @@
 	<div class="box-body">
 	@foreach( $articles as $articlek => $article )
         <div class="col-md-4 col-sm-4 col-xs-12">
-            <h2><a href="/league_article/{{$article['id']}}">{{ $article['title'] }}</a></h2>
+            <h2 class='articleName'><a href="/league_article/{{$article['id']}}">{{ $article['title'] }}</a></h2>
 
-            <div>
+            <div class='articleTagBox'>
                 @foreach( $article['hashtag'] as $tag)
                 <span class='tagSpan'>#{{$tag}}</span>
                 @endforeach
             </div>
+
+<!--             <div class='viewBtn'>
+                <a href="">
+                <span>閱讀</span>
+                </a>
+            </div> 
+
+-->
         </div>
 	@endforeach
 
 	</div>
 
 	<div class="box-footer">
-	    <span id="moreArticle" ><a href=""><b>查看全部文章</b></a></span>
+	    <span id="moreArticle" ><a href="{{url('/league_article_list')}}"><b>查看全部文章</b></a></span>
 	</div>
 
 </div>
@@ -41,10 +49,44 @@
 @endif
 
 <style type="text/css">
+.articleName{
+    height: 80px;
+    line-height: 40px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;    
+}
 .tagSpan{
+    margin-top: 5px;
     display: inline-block;
     border-radius: 20px;
     background-color: orange;
     padding:0px 5px 0px 5px;
+    line-height: 30px;
 }
+.articleTagBox{
+    height: 40px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;       
+}
+/*.viewBtn{
+    text-align:center;
+    height: 40px;
+}
+.viewBtn > a {
+    color:#333;
+}
+.viewBtn > a > span {  
+    display: inline-block;
+    width: 33%;
+    background-color:#d4d4d4;
+    border-radius: 20px;
+    line-height: 30px;
+    margin-top: 5px;
+}*/
 </style>

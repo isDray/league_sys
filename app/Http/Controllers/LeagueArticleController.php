@@ -40,7 +40,7 @@ class LeagueArticleController extends Controller
         {   
             $PageTitle = '新增文章';
             $act = "new";
-        
+            $tags = '';
         }
         else
         {   

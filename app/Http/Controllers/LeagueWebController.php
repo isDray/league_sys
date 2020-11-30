@@ -8,6 +8,7 @@ use DB;
 use App\Cus_lib\hctTool;
 use Illuminate\Support\Facades\Storage;
 use App\Cus_lib\Lib_common;
+use Illuminate\Support\Facades\Cookie;
 
 class LeagueWebController extends Controller
 {
@@ -143,6 +144,197 @@ class LeagueWebController extends Controller
 
         }
     }
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | 加盟會員文章列表
+    |--------------------------------------------------------------------------
+    |
+    */
+    public function league_article_list( Request $request ){
+        
+        $LeagueId = $request->session()->get('league_id');    
+        
+        $query    = DB::table('xyzs_league_article as la')->where('league_id', $LeagueId );
+        
+        /***
+         * 判斷是否為搜尋表單觸發 ，
+         */ 
+        $formSearch = 1;
+
+        if( isset( $request->act ) && $request->act == 'search' )
+        {
+            $formSearch = 1;
+        }
+        
+        // 一頁幾筆判讀
+        if( isset( $request->perPage ) )
+        {
+            $perPage           = $request->perPage;
+            $filter['perPage'] = $request->perPage;
+        }
+        else
+        {
+            if( Cookie::get('perPage') !== null )
+            {
+                $perPage           = $request->perPage;
+                $filter['perPage'] = $request->perPage;
+            }
+            else
+            {
+                $perPage           = 15;
+                $filter['perPage'] = 15;
+            }
+        }
+        
+        // 根據關鍵字做過濾 
+        if( !empty( $request->keyword ) )
+        {
+            $filter['keyword'] = $keyword = trim($request->keyword);
+            
+            $query->where(function ($query) use ( $keyword ){
+                
+                $query->where('la.title', 'LIKE', '%'.$keyword.'%')
+                      
+                      ->orWhere('la.article', 'LIKE', '%'.$keyword.'%');
+            });
+        }
+
+        // 根據標籤做過濾
+        if( !empty( $request->hashtags ) )
+        {   
+            
+            $filter['hashtags'] = $hashtags = trim($request->hashtags);
+
+            $hashtags = explode(',', $hashtags);
+            
+            // 先針對標籤做一次查詢
+            $hashRess = DB::table('xyzs_league_hash')->whereIn('hashtag', $hashtags )->get();
+            
+            $hashCodeArray = [];
+
+            if( count($hashRess) > 0 )
+            {   
+                $hashRess = json_decode( $hashRess , true );
+
+                foreach ($hashRess as $hashResk => $hashRes) {
+
+                    array_push( $hashCodeArray, $hashRes['id']);
+
+                }
+                
+            }
+
+            $query->leftJoin("xyzs_league_article_hash as ah","la.id","=","ah.article_id");
+            
+            $query->whereNotNull( "ah.hash_id" );
+
+            $query->whereIn( "ah.hash_id" , $hashCodeArray );
+
+        }
+        
+        $query->select("la.*");
+
+        $query->limit( $perPage );
+
+        $articles = $query->get();
+
+        $articles = json_decode( $articles , true );
+
+        // 找出所有標籤
+        foreach ($articles as $articlek => $article ) 
+        {
+            $tags = DB::table("xyzs_league_article_hash as ah")
+                     ->leftjoin("xyzs_league_hash as h" , "ah.hash_id","=","h.id")
+                     ->where("ah.article_id",$article['id'])
+                     ->get();
+            
+            if($tags)
+            {
+                $tags = json_decode( $tags , true );
+                $articles[$articlek]['hashtag'] = [];
+                
+                foreach ($tags as $tagk => $tag) {
+                    
+                    array_push( $articles[$articlek]['hashtag'] , $tag['hashtag']);
+                }
+
+            }
+            else
+            {
+                $articles[$articlek]['hashtag'] = [];
+            }
+        }
+
+        
+
+        return view( 'web_atricle_all' , ['articles'   => $articles,
+                                          'formSearch' => $formSearch
+                                         ]);
+
+    }
+
+
+
+    
+    /*
+    |--------------------------------------------------------------------------
+    | 加盟會員文章列表
+    |--------------------------------------------------------------------------
+    |
+    |
+    */
+    public function league_article_list_query( Request $request ){
+        
+        $LeagueId = $request->session()->get('league_id');
+
+
+    }
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | 前台標籤搜尋
+    |--------------------------------------------------------------------------
+    |
+    */
+    public function league_article_tag( Request $request )
+    {
+        header('Content-Type: application/json');
+
+        $returnDatas = [] ;
+
+        if( !empty( $request->term ) )
+        {
+            $tagDatas = 
+                DB::table('xyzs_league_hash')
+                ->where('hashtag', 'like', "%{$request->term}%")
+                ->get();
+
+            $tagDatas = json_decode( $tagDatas , true );
+            
+    
+
+            if( COUNT($tagDatas) > 0 )
+            {   
+                foreach ($tagDatas as $tagDatak => $tagData) {
+                    array_push( $returnDatas , $tagData['hashtag'] );
+                }
+                
+            }
+
+
+        }
+        echo json_encode( ['suggestions'=>$returnDatas] );
+    }
+
+
+
 
     /*
     |--------------------------------------------------------------------------
@@ -482,8 +674,6 @@ class LeagueWebController extends Controller
         
         $sitemapDomain = trim( \Request::server ("SERVER_NAME") );
         $res = Storage::disk('sitemaps')->put('sitemaps.xml', Lib_common::makeSitemaps($sitemapDomain) );
-
-
 
     }
 

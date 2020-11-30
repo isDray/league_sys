@@ -222,8 +222,6 @@ Route::group(['middleware' => ['CheckLogin']], function () {
 
     Route::get('/league_article_edit/{id?}','LeagueArticleController@league_article_edit');
 
-    Route::get('/league_article_tag','LeagueArticleController@league_article_tag');
-
     Route::post('/league_article_edit_act','LeagueArticleController@league_article_edit_act');
     
     Route::post('/league_article_del','LeagueArticleController@league_article_del');
@@ -364,6 +362,11 @@ Route::group(['middleware' => ['CheckLeague']], function () {
     // 加盟會員文章
     Route::get('/league_article/{article_id}','LeagueWebController@league_article');
     
+    // 全部文章頁面
+    Route::any('/league_article_list/','LeagueWebController@league_article_list');
+   
+    // 標籤ajax 
+    Route::get('/league_article_tag','LeagueWebController@league_article_tag');
 
     /**
      * 加盟商私人會員
