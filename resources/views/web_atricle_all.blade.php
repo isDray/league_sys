@@ -33,12 +33,12 @@
             
                 <div class="col-md-4 col-sm-6 col-xs-12">
                         <label for="keyword"> 關鍵字: </label>
-                        <input type="text" class="form-control" id="keyword"  name="keyword" placeholder="">
+                        <input type="text" class="form-control" id="keyword" name="keyword" placeholder="" value="@if( isset($filter['keyword'])){{$filter['keyword']}}@endif" >
                 </div>
                 
                 <div class="col-md-4 col-sm-6 col-xs-12">
                         <label for="hashtags"> 標籤: </label>
-                        <input type="text" class="form-control" id="hashtags" name='hashtags' placeholder="">
+                        <input type="text" class="form-control" id="hashtags" name='hashtags' placeholder="" value="@if( isset($filter['hashtags'])){{$filter['hashtags']}}@endif">
                 </div>
 
                 <div class="col-md-4 col-sm-6 col-xs-12">
@@ -69,16 +69,15 @@
             <h2 class='articleName'><a href="/league_article/{{$article['id']}}">{{ $article['title'] }}</a></h2>
             <div class='articleTagBox'>
                 @foreach( $article['hashtag'] as $tag)
-                <span class='tagSpan'>#{{$tag}}</span>
+                <span class='tagSpan' value="{{$tag}}">#{{$tag}}</span>
                 @endforeach
-
-
             </div>
 
             <!-- <div class='actMask text-center'> -->
                 <!-- <span><a href="">閱讀</a></span> -->
             <!-- </div> -->
         </div>
+        
     @endforeach
     </div>
     <!-- /.box-body -->
@@ -100,6 +99,7 @@
     -webkit-box-orient: vertical;    
 }
 .tagSpan{
+    cursor: pointer;
     margin-top: 5px;
     display: inline-block;
     border-radius: 20px;
@@ -148,16 +148,18 @@
 <script src="{{url('/suggestags/js/jquery.amsify.suggestags.js')}}"></script>
 <script type="text/javascript">
 $(function()
-{
-    $('input[name="hashtags"]').amsifySuggestags({
-        
+{   
+
+    amsifySuggestags = new AmsifySuggestags($('input[name="hashtags"]'));
+ 
+    amsifySuggestags._settings({
+
         suggestionsAction : {
         timeout: -1,
         minChars: 1,
         minChange: -1,
         delay: 500,
         type: 'GET',
-        //term: 'ABC',
 
         url: "{{url('/league_article_tag')}}",
         beforeSend : function() {
@@ -195,7 +197,17 @@ $(function()
                     }
                 }
             
-            });
+    });
+    
+    amsifySuggestags._init(); 
+
+    $(".tagSpan").click(function(){
+    
+        var tmpTag = $(this).text().replace('#', '');
+
+        amsifySuggestags.addTag( tmpTag );
+
+    });
 })
 </script>
 @endsection

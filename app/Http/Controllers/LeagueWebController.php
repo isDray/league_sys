@@ -237,9 +237,11 @@ class LeagueWebController extends Controller
         }
         
         $query->select("la.*");
+        
+        $query->groupBy('la.id');
 
         $query->limit( $perPage );
-
+         
         $articles = $query->get();
 
         $articles = json_decode( $articles , true );
@@ -268,11 +270,15 @@ class LeagueWebController extends Controller
                 $articles[$articlek]['hashtag'] = [];
             }
         }
+        
+
+
 
         
 
         return view( 'web_atricle_all' , ['articles'   => $articles,
-                                          'formSearch' => $formSearch
+                                          'formSearch' => $formSearch,
+                                          'filter'     => $filter
                                          ]);
 
     }
