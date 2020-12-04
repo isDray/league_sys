@@ -528,6 +528,11 @@ class CartController extends Controller
                         unset($payment_list[$key]);
                     } 
 
+                    if( $payment['pay_code'] == 'line_pay'){
+                        
+                        unset($payment_list[$key]);
+                    }
+
                 }
             }
 

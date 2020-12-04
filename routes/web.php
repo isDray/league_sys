@@ -363,7 +363,7 @@ Route::group(['middleware' => ['CheckLeague']], function () {
     Route::get('/league_article/{article_id}','LeagueWebController@league_article');
     
     // 全部文章頁面
-    Route::any('/league_article_list/','LeagueWebController@league_article_list');
+    Route::any('/league_article_list/{hashtags?}','LeagueWebController@league_article_list');
    
     // 標籤ajax 
     Route::get('/league_article_tag','LeagueWebController@league_article_tag');

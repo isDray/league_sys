@@ -507,7 +507,8 @@ class Lib_block{
                 
                 foreach ($tags as $tagk => $tag) {
                     
-                    array_push( $datas[$datak]['hashtag'] , $tag['hashtag']);
+                    //array_push( $datas[$datak]['hashtag'] , $tag['hashtag']);
+                    $datas[$datak]['hashtag'][ $data['id'].'_'.$tag['id'] ] = $tag['hashtag'];
                 }
 
             }
@@ -526,6 +527,45 @@ class Lib_block{
 
         return $datas;
     }
+    
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | 取出搜尋量最高的文字標籤
+    |--------------------------------------------------------------------------
+    |
+    */
+    public static function get_hot_tags()
+    {
+        $LeagueId = Session::get( 'league_id' );
+        
+        $tages = 
+        DB::table("xyzs_league_article as la")
+        ->leftJoin("xyzs_league_article_hash as lah","la.id","=","lah.article_id")
+        ->leftJoin("xyzs_league_hash as lh","lh.id","=","lah.hash_id")
+        ->where("la.league_id",$LeagueId)
+        ->whereNotNull("lh.id")
+        ->groupBy("lh.id")
+        ->select("lh.*")
+        ->orderBy("lh.use_count","DESC")
+        ->limit(30)
+        ->get();
+
+        $tages = json_decode($tages,true);
+
+        if( count($tages) > 0 )
+        {
+            return $tages;
+        }
+        else   
+        {
+            return false;
+        }
+
+    }
+    
 
 }
 ?>

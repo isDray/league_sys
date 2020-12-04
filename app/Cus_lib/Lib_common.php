@@ -1067,6 +1067,21 @@ class Lib_common{
        
         return $returnDatas;
     }
+    
 
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | 標籤總計加一
+    |--------------------------------------------------------------------------
+    |
+    */
+    public static function _hashTagIncrease( array $_hashtag )
+    {
+        DB::table('xyzs_league_hash')
+          ->whereIn('id', $_hashtag )
+          ->update(['use_count' => DB::raw('use_count + 1')]);
+    }
 }
 ?>

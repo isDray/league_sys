@@ -227,12 +227,15 @@ class LeagueWebController extends Controller
                 }
                 
             }
-
+            
+            Lib_common::_hashTagIncrease( $hashCodeArray );
+            
             $query->leftJoin("xyzs_league_article_hash as ah","la.id","=","ah.article_id");
             
             $query->whereNotNull( "ah.hash_id" );
 
             $query->whereIn( "ah.hash_id" , $hashCodeArray );
+
 
         }
         
@@ -271,10 +274,7 @@ class LeagueWebController extends Controller
             }
         }
         
-
-
-
-        
+     
 
         return view( 'web_atricle_all' , ['articles'   => $articles,
                                           'formSearch' => $formSearch,

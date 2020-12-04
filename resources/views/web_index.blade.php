@@ -19,6 +19,12 @@
 @endif
 
 @section('content_left')
+
+@php
+    // 目前區塊代碼
+    $nowblock = 2;
+@endphp
+
 @parent
     @foreach( $LeftBlocks as $LeftBlockk => $LeftBlock)
         
@@ -28,13 +34,16 @@
             @includeIf('block_'. $LeftBlock)
         @endif
             
-
     @endforeach
 
 @endsection
 
 @section('content_right')
       
+@php
+    // 目前區塊代碼
+    $nowblock = 1;
+@endphp      
     @foreach( $CenterBlocks as $CenterBlockk => $CenterBlock)
 
         @if( is_array($CenterBlock) )
