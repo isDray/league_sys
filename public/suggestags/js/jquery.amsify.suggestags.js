@@ -42,7 +42,7 @@ var AmsifySuggestags;
 		};
 		this.method        = undefined;
 		this.name          = null;
-		this.defaultLabel  = 'Type here';
+		this.defaultLabel  = '輸入標籤';
 		this.classes       = {
 			sTagsArea     : '.amsify-suggestags-area',
 			inputArea     : '.amsify-suggestags-input-area',

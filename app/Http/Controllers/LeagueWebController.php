@@ -339,6 +339,46 @@ class LeagueWebController extends Controller
         echo json_encode( ['suggestions'=>$returnDatas] );
     }
 
+     
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | 前台商品搜尋
+    |--------------------------------------------------------------------------
+    |
+    |
+    */
+    public function league_goods( Request $request )
+    {
+        header('Content-Type: application/json');
+
+        $returnDatas = [] ;
+
+        if( !empty( $request->term ) )
+        {
+            $tagDatas = 
+                DB::table('xyzs_goods')
+                ->where('goods_sn', 'like', "%{$request->term}%")
+                ->get();
+
+            $tagDatas = json_decode( $tagDatas , true );
+            
+    
+
+            if( COUNT($tagDatas) > 0 )
+            {   
+                foreach ($tagDatas as $tagDatak => $tagData) {
+                    array_push( $returnDatas , $tagData['goods_sn'] );
+                }
+                
+            }
+
+
+        }
+        echo json_encode( ['suggestions'=>$returnDatas] );
+    }
+
 
 
 

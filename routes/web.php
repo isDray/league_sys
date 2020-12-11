@@ -214,7 +214,24 @@ Route::group(['middleware' => ['CheckLogin']], function () {
 
     // 免運差額推薦功能
     Route::post('/league_module_recommend_shipping_free_act','RecommendController@league_module_recommend_shipping_free_act');
+    
+    // 商品對應標籤列表功能
+    Route::get('/league_module_goods_and_tags/{page?}/{perpage?}','RecommendController@league_module_goods_and_tags');  
+    
+    // 商品對應標籤編輯畫面
+    Route::get('/league_module_goods_and_tags_edit/{id?}','RecommendController@league_module_goods_and_tags_edit');   
 
+    // 商品對應標籤實作
+    Route::post('/league_module_goods_and_tags_edit_act','RecommendController@league_module_goods_and_tags_edit_act');   
+    
+    // 商品對應標籤刪除
+    Route::post('/league_module_goods_and_tags_del','RecommendController@league_module_goods_and_tags_del');
+
+    // 動態撈取相關資料
+    Route::post('/leagueGetTagsByGoodsSn','RecommendController@leagueGetTagsByGoodsSn');   
+
+    
+    
     /***
      * 文章相關
      **/
@@ -367,6 +384,9 @@ Route::group(['middleware' => ['CheckLeague']], function () {
    
     // 標籤ajax 
     Route::get('/league_article_tag','LeagueWebController@league_article_tag');
+    
+    // 商品ajax 
+    Route::get("/league_goods" , "LeagueWebController@league_goods");
 
     /**
      * 加盟商私人會員

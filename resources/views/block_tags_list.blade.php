@@ -6,10 +6,11 @@
   
   $hotTags = Lib_block::get_hot_tags();
   
-  /*var_dump( $hotTags );*/
 @endphp
 
 @if( $hotTags )
+<!-- <div class='borderAnim'>
+</div> -->
 <div class="box box-solid">
 	<div class="box-header with-border">
 	    <h2 class="box-title recommend_title">熱門標籤</h2>			
@@ -19,9 +20,9 @@
 	<div class="box-body">
 
 		@foreach( $hotTags as $hotTagk => $hotTag )
-        <input type='checkbox' id="@if( isset($nowblock) && $nowblock ==1 ) block1hotTag{{$hotTagk}} @else block2hotTag{{$hotTagk}} @endif" class='twoStepCheckbox'>
+        <input type='checkbox' id="@if( isset($nowblock) && $nowblock ==1 )block1hotTag{{$hotTagk}} @else block2hotTag{{$hotTagk}} @endif" class='twoStepCheckbox'>
 
-        <label for="@if( isset($nowblock) && $nowblock ==1 ) block1hotTag{{$hotTagk}} @else block2hotTag{{$hotTagk}} @endif" class='tagSpan_block' tagtext="{{$hotTag['hashtag']}}">
+        <label for="@if( isset($nowblock) && $nowblock ==1 )block1hotTag{{$hotTagk}} @else block2hotTag{{$hotTagk}} @endif" class='tagSpan_block' tagtext="{{$hotTag['hashtag']}}">
             {{$hotTag['hashtag']}}
             <a href="{{url('/search')}}/{{$hotTag['hashtag']}}" title='查商品'><span><i class="fa fa-fw fa-gift"></i></span></a>
             <a href="{{url('/league_article_list')}}/{{$hotTag['hashtag']}}" title="查文章"><span><i class="fa fa-fw fa-file-text-o"></i></span></a>
@@ -43,6 +44,9 @@
     padding:0px 20px 0px 20px;
     line-height: 30px;
     min-width: 100px;
+}
+.twoStepCheckbox{
+    display: none;
 }
 .tagSpan_block::before
 {   
@@ -101,6 +105,7 @@ input:checked + .tagSpan_block::after{
 	height: 40px;
 	background-color:#c4d4d4;
 	overflow: hidden;
+    border-radius: 40px;
 }
 .borderAnim::before{
     position: absolute;
@@ -112,23 +117,23 @@ input:checked + .tagSpan_block::after{
     left: 1px;
     z-index: 2;
     background-color: #c4c4c4;
+    border-radius: 40px;
+    /*border:1px solid gray;*/
 }
 .borderAnim::after{
     position: absolute;
     content: "";
     display: inline-block;
-    width: 60px;
-    height: 60px;
-    background-image: linear-gradient(to left, #008b8b, #ffff00);
-    border:1px solid #dddddd;
-    top:calc( 50% - 1px );
-    left:calc( 50% - 31px);
+    width: 80px;
+    height: 40px;
+    background-image: linear-gradient(to left,#ffc0c0 ,#ec7070 );
+    top:calc( 50%);
+    left:calc( 50% - 40px );
     z-index: 1;
-    /*animation-name: example;*/
-     /*animation-timing-function: ease;*/
-    animation-timing-function: ease-in;
-    animation:example 6s infinite;    
+    animation:example 3s infinite;
+    animation-timing-function: linear;
     transform-origin:top center;
+    box-shadow: 0px 0px 60px 20px #ffc0c0;
 }
 
 @keyframes example {

@@ -66,6 +66,8 @@ class SearchController extends Controller
 
         // 撈出符合分類之商品
         $CondQuery = DB::table('xyzs_goods AS g')
+                   ->leftJoin("xyzs_league_googs_hash as lgh","g.goods_id","=","lgh.goods_id")
+                   ->leftJoin("xyzs_league_hash as lh","lgh.hash_id","=","lh.id")
                    ->select("g.*",DB::raw( "ROUND(shop_price) as shop_price" ))
                    ->where('g.is_on_sale','1')
                    ->where('g.goods_number','>',0)
@@ -75,6 +77,7 @@ class SearchController extends Controller
                    })*/
                    ->where('g.goods_name','like', '%'.$keyword.'%')
                    ->orWhere('g.goods_sn','like', '%'.$keyword.'%')
+                   ->orWhere('lh.hashtag','like', '%'.$keyword.'%')
                    ->groupBy('g.goods_id');
 
         $CondQuery->orderBy($CatSortItem,$CatSortWay);

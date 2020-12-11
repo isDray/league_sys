@@ -23,7 +23,78 @@
 
 <!-- 呈現區塊 -->
 @if( $formSearch )
+<style type="text/css">
+.folder{
+    position: relative;
+    width: 40px;
+    height: 30px;
+    border-radius:2px 2px 0px 0px;
+    background-color: orange;
+    transform-origin:bottom;
+    transform:skewX(-3deg);    
+}
+.folder::after{
+    position: absolute;
+    display: inline-block;
+    content: "";
+    width: calc(100% - 1px);
+    height: 70%;
+    z-index: 64;
+    background-color: orange;
+    left:0px;
+    bottom: 0px;
+    box-shadow: 1px -1px 3px rgba(0,0,0,.6);
+    transform-origin:bottom;
+    transform:skewX(10deg);
+    transition: 1.2s;
+    transition-timing-function: ease;
+}
+input:checked+.folder::after
+{
+    transform-origin:bottom;
+    height: 30%;
+    transform:skewX(60deg);
+    box-shadow: 1px 0px 3px rgba(0,0,0,.6);
+}
+.folder > span{
+    position: absolute;
+    display: inline-block;
+    width: 100%;
+    height: 80%;
+    background-color: white;
+    border:1px solid #d4d4d4;
+    /*bottom: attr()*/
+    right: 0px;
+    transform-origin:bottom;
+    transform:skewX(-2deg);
+    transition: 1.2s;
+    transition-timing-function: ease;    
+}
+
+input:checked+.folder > span
+{   
+    transform-origin:bottom;
+    transform:skewX(2deg);
+    width: 120%;
+    height: 120%;
+    right: -140%;
+}
+</style>
 <div class="box box-solid">
+   <!-- 
+    <div class='box-body'>
+        
+        <div class='col-md-12 col-sm-12 col-xs-12'>
+            <input type='checkbox' id='folder'> 
+                
+                <label class='folder' for='folder' >
+                    <span style='bottom:0px;z-index:63'></span>
+                    <span style='bottom:2px;z-index:62'></span>
+                    <span style='bottom:4px;z-index:61'></span>
+                </label>
+        </div>        
+    </div>
+    -->
     <div class="box-body">
         <form action="{{url('/league_article_list')}}" method="post">
             {{ csrf_field() }}

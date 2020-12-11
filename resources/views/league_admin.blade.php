@@ -153,6 +153,7 @@
                 <li><a href="{{url('/league_module_recommend_category_list')}}"><i class="fa fa-fw fa-angle-right"></i>類別商品功能管理</a></li>
                 <li><a href="{{url('/league_module_recommend_stack')}}"><i class="fa fa-fw fa-angle-right"></i>堆疊商品輪播功能管理</a></li>
                 <li><a href="{{url('/league_module_recommend_custom_ad')}}"><i class="fa fa-fw fa-angle-right"></i>推薦卡片功能管理</a></li>
+                <li><a href="{{url('/league_module_goods_and_tags')}}"><i class="fa fa-fw fa-angle-right"></i>商品對應標籤</a></li>                
                 <!-- <li><a href="{{url('/league_module_recommend_shipping_free')}}"><i class="fa fa-fw fa-angle-right"></i>免運差額推薦管理</a></li> -->
             </ul>                
         </li>

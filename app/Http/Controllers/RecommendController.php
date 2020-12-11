@@ -1892,5 +1892,428 @@ class RecommendController extends Controller
         return redirect('/league_message');        
 
     }
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | 商品與標籤 列表
+    |--------------------------------------------------------------------------
+    |
+    |
+    */
+    public function league_module_goods_and_tags( Request $request )
+    {   
+        DB::enableQueryLog();
+        // 當下會員ID 
+        $LeagueId = $request->session()->get('user_id');
+
+        $stacks   = DB::table('xyzs_league_stack')->select('*')->where('league_id',$LeagueId)->get();
+
+        $stacks   = json_decode( $stacks , true );
+
+        $PageTitle = '商品對應標籤管理';
+              
+        if( empty($request->perpage) ){
+            
+            $request->perpage = 15;
+
+        }
+        $max = DB::table('xyzs_league_googs_hash')->where('league_id',$LeagueId)->groupBy('goods_id')->get();
+
+        $max = count( $max );
+        
+        $maxPage = ceil( $max / $request->perpage);
+
+        if( empty($request->page) ){
+            
+            $request->page = 1;
+
+        }else{
+            
+            if( $request->page > $maxPage ){
+
+                $request->page = $maxPage;
+            }
+        }
+                              
+        $datas = DB::table('xyzs_league_googs_hash as lgh')
+                 ->leftJoin('xyzs_league_hash as lh','lgh.hash_id','=','lh.id')
+                 ->where('lgh.league_id',$LeagueId)
+                 ->select( DB::raw("group_concat(lh.hashtag ORDER BY lh.id ASC ) as goodsTags ") , 'lgh.*' )
+                 ->groupBy('lgh.goods_id')
+                 ->offset( (($request->page -1 ) * $request->perpage ) )
+                 ->limit( $request->perpage )                 
+                 ->get();
+        
+        $pages = Lib_common::create_page('/league_module_goods_and_tags/', $max , $request->page , $request->perpage , 3 );
+
+        $goodsTags = json_decode( $datas , true );
+
+        return view('league_module_goods_and_tags_list', ['goodsTags' => $goodsTags,
+                                                          'pages'     => $pages
+                                                         ]);
+       
+
+    }
     
+    
+
+    
+    /*
+    |--------------------------------------------------------------------------
+    | 動態取得商品及商品標籤
+    |--------------------------------------------------------------------------
+    | 回傳:
+    | [ 
+    |   'res'   => <true>     / <false>
+    |   'datas' => <標籤資料> / <提示訊息>
+    | ]
+    |
+    */
+    public function leagueGetTagsByGoodsSn( Request $request )
+    {   
+
+        // 當下會員ID 
+        $LeagueId = $request->session()->get('user_id');
+
+        $returnData = 
+        [ 'res'   => false,
+          'msg'   => '',
+          'datas' => [],
+        ];
+
+        if( !isset($request->goodsSn) || empty($request->goodsSn) )
+        {
+            $returnData = 
+            [ 'res'   => false,
+              'msg'   => '請確實輸入貨號',
+              'datas' => [],
+            ];
+
+        }
+        else
+        {
+            // 全部資料轉換成大寫
+            $request->goodsSn = strtoupper( $request->goodsSn );
+
+            // 根據每一列分割一次
+            $goodsSns = preg_split('/\n|\r\n?/', $request->goodsSn );
+            
+            $goodsSns = array_map('trim',$goodsSns);
+
+            // 確認資料庫資料
+            foreach( $goodsSns as $goodsSnk => $goodsSn )
+            {   
+                $tmpDatas = 
+                DB::table('xyzs_goods')
+                ->where('goods_sn', $goodsSn )
+                ->first();
+                
+                if( $tmpDatas == NULL)
+                {
+                    $returnData['msg'] .= "貨號{$goodsSn}找不到商品";
+                }
+                else
+                {        
+                    $tmpTagsArr = [];
+                    $tmpTagsStr = '';
+                        
+                    $tmpDatas = (array)$tmpDatas;
+
+                    $tmpTags = 
+                    DB::table('xyzs_league_googs_hash as lgh')
+                    ->leftJoin('xyzs_league_hash as lh','lgh.hash_id','=','lh.id')
+                    ->where( 'league_id' , $LeagueId )
+                    ->where( 'goods_id'  , $tmpDatas['goods_id'] )
+                    ->select( 'lh.hashtag')
+                    ->get();
+                    
+                    if( count( $tmpTags ) )
+                    {   
+
+                        $tmpTags = json_decode( $tmpTags , true );
+
+                        // 迴圈整理出字串
+                        foreach ($tmpTags as $tmpTagk => $tmpTag) {
+                            
+                            array_push( $tmpTagsArr , $tmpTag['hashtag'] );
+                        }
+                        
+                        $tmpTagsStr = implode( ',' , $tmpTagsArr);
+                        
+                    }
+                    
+                    // 寫入要回傳陣列
+                    $returnData['datas'][$goodsSn] = $tmpTagsStr;
+             
+                }
+            }
+            
+             
+
+            $returnData['res'] = true;
+            
+        }
+         
+        return json_encode( $returnData );
+
+    }
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | 商品標籤編輯
+    |--------------------------------------------------------------------------
+    |
+    */
+    public function league_module_goods_and_tags_edit( Request $request )
+    {
+        // 當下會員ID 
+        $LeagueId = $request->session()->get('user_id');
+        
+        // 如果沒有接收到id , 表示為新增動作
+        if( !isset( $request->id ) )
+        {   
+            $act = 'new';
+
+            return view('league_module_goods_and_tags_edit', [ 'act' => $act ] );
+        }        
+        // 有接收到id則為編輯動作
+        else
+        {
+            // 檢查是否真的有商品關聯標籤存在 
+            if( DB::table('xyzs_league_googs_hash')->where('league_id',$LeagueId)->where('goods_id', $request->id)->first() )
+            {
+                // 取出商品全部相關標籤
+                $act = 'edit';
+
+                //$goodsTags = DB::table('xyzs_league_googs_hash')->where('league_id',$LeagueId)->where('goods_id', $request->id)->first();
+                $goodsTags = 
+                    DB::table('xyzs_league_googs_hash as lgh')
+                    ->leftJoin('xyzs_league_hash as lh','lgh.hash_id','=','lh.id')
+                    ->where('lgh.league_id',$LeagueId)
+                    ->where('lgh.goods_id',$request->id)
+                    ->select( DB::raw("group_concat(lh.hashtag ORDER BY lh.id ASC ) as goodsTags ") , 'lgh.*' )
+                    ->groupBy('lgh.goods_id')
+                    ->first();
+
+                $goodsTags = (array)$goodsTags;
+
+                return view('league_module_goods_and_tags_edit', [ 'act'       => $act ,
+                                                                   'goodsTags' => $goodsTags
+                                                                 ] );                
+            }
+            else
+            {
+                $league_message =   [ '0',
+                                      "目前無對應資料可供修改",
+                                      [ ['operate_text'=>'回商品關聯標籤列表','operate_path'=>'/league_module_goods_and_tags'] ],
+                                      3
+                                    ];
+
+                $request->session()->put('league_message', $league_message);
+
+                return redirect('/league_message');
+            }
+        }
+    }
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | 商品標籤編輯實作
+    |--------------------------------------------------------------------------
+    |
+    |
+    */
+    public function league_module_goods_and_tags_edit_act( Request $request )
+    {
+        
+        // 當下會員ID 
+        $LeagueId = $request->session()->get('user_id');        
+
+        // 表單驗證
+        $swError = FALSE;
+
+        $validator = Validator::make($request->all(), 
+        [ 
+       
+            'goodsSns'  => 'required',
+            'tagInput' => 'required'        
+        ],
+        [   'goodsSn.required' => "要編輯商品不可為空",
+            'tagInput.required'=> "標籤不可為空",
+
+        ]);
+        
+        if( count($request->goodsSns) != count($request->tagInput) )
+        {
+            $swError = true;
+        }
+        
+        if( $validator->passes() &&  !$swError )
+        {
+
+        }
+        else
+        {    
+            if( $swError )
+            {
+                $validator->errors()->add('goodsSns', '資料數量不匹配');
+            }
+
+            return back()->withErrors( $validator->errors() );
+        }
+        
+        /***************/
+
+        DB::beginTransaction();
+
+        try {        
+            
+            /*
+            DB::table('xyzs_league_recommend')
+            ->updateOrInsert(
+                ['user_id' => $LeagueId , 'recommmand_type' => 1 ],
+                [
+                 'cus_desc'  => $desString,
+                 'custom_set' =>  serialize( $HotArrs ),
+                 'avoid_cat'  =>  serialize( $request->cats ),
+                 'update_date' => $NowTime
+                ]
+            );
+            */
+            // 迴圈處理標籤
+            for ($i=0; $i < count( $request->goodsSns ) ; $i++) { 
+
+                $tmpTags = explode( ',' , $request->tagInput[$i] );
+                
+
+                // 迴圈先處理標籤
+                foreach ( $tmpTags as $tmpTagk => $tmpTag ) {
+                    
+                    $tmpTag = trim( $tmpTag );
+                    
+                    // 如果標籤不存在就先新增
+                    if( !DB::table('xyzs_league_hash')->where('hashtag',$tmpTag)->exists() )
+                    {
+                        DB::table('xyzs_league_hash')->insert([ 'hashtag' => $tmpTag ]);
+                    }
+
+                }
+                
+                // 取出商品資料後開始寫入對應表
+                $tmpGoods = DB::table('xyzs_goods')->select('goods_sn','goods_id')->where('goods_sn',$request->goodsSns[$i])->first();
+
+                // 移除全部資料庫中該加盟的商品
+                DB::table('xyzs_league_googs_hash')->where('goods_id',$tmpGoods->goods_id)->where('league_id',$LeagueId)->delete();
+                
+                foreach ( $tmpTags as $tmpTagk => $tmpTag ) {
+                    
+                    $tmpTag = trim( $tmpTag );
+                    
+                    // 如果標籤不存在就先新增
+                    if( DB::table('xyzs_league_hash')->where('hashtag',$tmpTag)->exists() )
+                    {   
+                        $tmpHash = DB::table('xyzs_league_hash')->where('hashtag',$tmpTag)->first();
+                        /*echo  $tmpGoods->goods_sn.'-'.$tmpHash->id;
+                        echo '<br>';*/
+                        DB::table('xyzs_league_googs_hash')->insert(
+                            ['league_id' => $LeagueId, 
+                             'goods_id'  => $tmpGoods->goods_id,
+                             'goods_sn'  => $tmpGoods->goods_sn,
+                             'hash_id'   => $tmpHash->id
+                            ]);
+                    }                    
+                }
+
+
+            }
+             
+
+            DB::commit();
+            $league_message =   [ '1',
+                                  "設定商品關聯標籤成功",
+                                  [ ['operate_text'=>'回商品關聯標籤列表','operate_path'=>'/league_module_goods_and_tags'] ],
+                                  3
+                                ];
+            $request->session()->put('league_message', $league_message);                                
+
+        } catch (\Exception $e) {
+    
+            DB::rollback();
+            
+            
+            $league_message =   [ '0',
+                                  "設定商品關聯標籤失敗",
+                                  [ ['operate_text'=>'回商品關聯標籤列表','operate_path'=>'/league_module_goods_and_tags'] ],
+                                  3
+                                ];
+
+            $request->session()->put('league_message', $league_message);            
+
+            //return redirect('/register_result/0');
+            // something went wrong
+        }        
+        /***************/
+       
+        return redirect('/league_message');       
+    }
+    
+    
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | 商品關聯標籤刪除
+    |--------------------------------------------------------------------------
+    | 
+    |
+    */
+    public function league_module_goods_and_tags_del( Request $request ){
+        
+        // 當下加盟會員id
+        $LeagueId = $request->session()->get('user_id');
+        
+
+        // 判斷類別推薦是否屬於當下加盟會員
+        $validator = Validator::make($request->all(), 
+        [ 'goodstag_id'=> ['required',
+                        Rule::exists('xyzs_league_googs_hash','goods_id')->where(function ($query) use ($LeagueId) {
+                            $query->where('league_id', $LeagueId);
+                        }),
+                       ],                       
+        ]
+        ,
+        ['goodstag_id.required'=>'移除過程有誤，請重新整理後再嘗試',
+         'goodstag_id.exists'  =>'商品關聯標籤不存在，或者無權限刪除',
+        ]
+        );
+
+        // 驗證成功,可執行刪除
+        if ($validator->passes())
+        {
+            if( DB::table('xyzs_league_googs_hash')->where('goods_id', '=', $request->goodstag_id)->where('league_id','=',$LeagueId)->delete() )
+            {
+                return response()->json(['success'=>'刪除成功']);
+            }
+            else
+            {
+                return response()->json(['error'=>['移除過程有誤，請重新整理後再嘗試']]);
+            }
+        }
+        // 驗證失敗，回傳錯誤訊息
+        else
+        {
+            return response()->json(['error'=>$validator->errors()->all()]);
+        }
+
+        
+    }    
 }
