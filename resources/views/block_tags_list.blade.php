@@ -24,7 +24,7 @@
 
         <label for="@if( isset($nowblock) && $nowblock ==1 )block1hotTag{{$hotTagk}} @else block2hotTag{{$hotTagk}} @endif" class='tagSpan_block' tagtext="{{$hotTag['hashtag']}}">
             {{$hotTag['hashtag']}}
-            <a href="{{url('/search')}}/{{$hotTag['hashtag']}}" title='查商品'><span><i class="fa fa-fw fa-gift"></i></span></a>
+            <a href="{{url('/search')}}/{{$hotTag['hashtag']}}/add_time/asc/1/20/tag" title='查商品'><span><i class="fa fa-fw fa-gift"></i></span></a>
             <a href="{{url('/league_article_list')}}/{{$hotTag['hashtag']}}" title="查文章"><span><i class="fa fa-fw fa-file-text-o"></i></span></a>
         </label>
         @endforeach

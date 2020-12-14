@@ -322,7 +322,7 @@ Route::group(['middleware' => ['CheckLeague']], function () {
     Route::get('/category/{cat_id}/{cat_sort_item?}/{cat_sort_way?}/{now_page?}/{per_page?}','CategoryController@category');
 
     // 搜尋頁面
-    Route::match(['get', 'post'],'/search/{keyword?}/{cat_sort_item?}/{cat_sort_way?}/{now_page?}/{per_page?}','SearchController@search');
+    Route::match(['get', 'post'],'/search/{keyword?}/{cat_sort_item?}/{cat_sort_way?}/{now_page?}/{per_page?}/{by_type?}','SearchController@search');
     
     // 新品
     Route::get('/new_arrival/{now_page?}/{per_page?}','SearchController@newest');

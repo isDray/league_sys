@@ -8,7 +8,7 @@ use App\Cus_lib\Lib_common;
 use Illuminate\Cookie\CookieJar;
 
 class SearchController extends Controller
-{
+{   
     /*
     |--------------------------------------------------------------------------
     | 搜尋功能
@@ -16,7 +16,7 @@ class SearchController extends Controller
     |
     |
     */
-    public function search( Request $request ,$keyword = " " , $cat_sort_item = 'add_time' , $cat_sort_way = 'asc', $now_page = 1 , $per_page = 20 ){
+    public function search( Request $request ,$keyword = " " , $cat_sort_item = 'add_time' , $cat_sort_way = 'asc', $now_page = 1 , $per_page = 20 , $by_type = 'keyword' ){
     
         $keyword = !empty($request->keyword)? $request->keyword:$keyword;
 
@@ -85,6 +85,8 @@ class SearchController extends Controller
         $TotalRow = $CondQuery->get();                   
         
         $TotalRow = count( $TotalRow );
+
+
    
         // 產生分頁
         $target = "/search/$keyword/$CatSortItem/$CatSortWay/";
@@ -98,6 +100,11 @@ class SearchController extends Controller
         $Goods = json_decode( $Goods , true );
         
         $yearMonth = date('Y年n月');
+
+        if( $request->by_type == 'tag' )
+        {
+            Lib_common::_hashTagGoodsIncrease( $request->keyword );
+        }
 
         return view('web_category',[ 'Goods' => $Goods , 
                                      'Pages' => $Pages ,

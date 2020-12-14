@@ -1083,5 +1083,39 @@ class Lib_common{
           ->whereIn('id', $_hashtag )
           ->update(['use_count' => DB::raw('use_count + 1')]);
     }
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | 標籤總計加一(針對商品)
+    |--------------------------------------------------------------------------
+    |
+    |
+    */
+    public static function _hashTagGoodsIncrease( $_hashtag )
+    {   
+
+        $LeagueId = Session::get( 'league_id' );
+        
+        if( !empty( $LeagueId  ) )
+        {   
+            $haveHash = 
+            DB::table('xyzs_league_googs_hash as lgh')
+            ->leftJoin('xyzs_league_hash as lh','lgh.hash_id','=','lh.id')
+            ->where('lh.hashtag',$_hashtag)
+            ->where('lgh.league_id',$LeagueId )
+            ->first();
+
+            if( $haveHash )
+            {
+                DB::table('xyzs_league_hash')
+                   ->where('hashtag', $_hashtag )
+                   ->update(['use_count' => DB::raw('use_count + 1')]);                
+            }
+        }
+
+    }    
 }
 ?>
